@@ -13,4 +13,4 @@ echo "download from: $PLUGIN_DOWNLOAD_URL"
 echo "target path: $PLUGIN_TARGET_PATH"
 
 curl --location "$PLUGIN_DOWNLOAD_URL" -o "$PLUGIN_TARGET_PATH"
-chmod +x -- "$PLUGIN_TARGET_PATH"
+chmod +x "$PLUGIN_TARGET_PATH"
