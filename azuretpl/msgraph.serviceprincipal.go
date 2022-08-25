@@ -8,44 +8,55 @@ import (
 )
 
 func (e *AzureTemplateExecutor) msGraphServicePrincipalByDisplayName(servicePrincipalName string) interface{} {
-	client := msgraph.NewGroupsClient(e.msGraphClient.GetTenantID())
-	client.BaseClient.Authorizer = e.msGraphClient.Authorizer()
+	e.logger.Infof(`fetching MsGraph servicePrincipal by displayName "%v"`, servicePrincipalName)
 
-	queryOpts := odata.Query{
-		Filter: fmt.Sprintf(
-			`displayName eq '%v'`,
-			escapeMsGraphFilter(servicePrincipalName),
-		),
-	}
-	list, _, err := client.List(e.ctx, queryOpts)
-	if err != nil {
-		e.logger.Fatalf(`failed to query MsGraph servicePrincipal: %v`, err.Error())
-	}
+	cacheKey := generateCacheKey(`msGraphServicePrincipalByDisplayName`, servicePrincipalName)
+	return e.cacheResult(cacheKey, func() interface{} {
+		client := msgraph.NewGroupsClient(e.msGraphClient.GetTenantID())
+		client.BaseClient.Authorizer = e.msGraphClient.Authorizer()
 
-	if list == nil {
-		e.logger.Fatalf(`servicePrincipal "%v" was not found in AzureAD`, servicePrincipalName)
-	}
+		queryOpts := odata.Query{
+			Filter: fmt.Sprintf(
+				`displayName eq '%v'`,
+				escapeMsGraphFilter(servicePrincipalName),
+			),
+		}
+		list, _, err := client.List(e.ctx, queryOpts)
+		if err != nil {
+			e.logger.Fatalf(`failed to query MsGraph servicePrincipal: %v`, err.Error())
+		}
 
-	if len(*list) == 1 {
-		return (*list)[0]
-	} else {
-		e.logger.Fatalf(`found more then one servicePrincipal "%v"`, servicePrincipalName)
-	}
+		if list == nil {
+			e.logger.Fatalf(`servicePrincipal "%v" was not found in AzureAD`, servicePrincipalName)
+		}
 
-	return ""
+		if len(*list) == 1 {
+			return (*list)[0]
+		} else {
+			e.logger.Fatalf(`found more then one servicePrincipal "%v"`, servicePrincipalName)
+		}
+
+		return ""
+	})
 }
 
 func (e *AzureTemplateExecutor) msGraphServicePrincipalList(filter string) interface{} {
-	client := msgraph.NewServicePrincipalsClient(e.msGraphClient.GetTenantID())
-	client.BaseClient.Authorizer = e.msGraphClient.Authorizer()
+	e.logger.Infof(`fetching MsGraph servicePrincipal list with $filter "%v"`, filter)
 
-	queryOpts := odata.Query{
-		Filter: filter,
-	}
-	list, _, err := client.List(e.ctx, queryOpts)
-	if err != nil {
-		e.logger.Fatalf(`failed to query MsGraph group: %v`, err.Error())
-	}
+	cacheKey := generateCacheKey(`msGraphServicePrincipalList`, filter)
+	return e.cacheResult(cacheKey, func() interface{} {
+		client := msgraph.NewServicePrincipalsClient(e.msGraphClient.GetTenantID())
+		client.BaseClient.Authorizer = e.msGraphClient.Authorizer()
 
-	return list
+		queryOpts := odata.Query{
+			Filter: filter,
+		}
+		list, _, err := client.List(e.ctx, queryOpts)
+		if err != nil {
+			e.logger.Fatalf(`failed to query MsGraph group: %v`, err.Error())
+		}
+
+		return list
+	})
+
 }

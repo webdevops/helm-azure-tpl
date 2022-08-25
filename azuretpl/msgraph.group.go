@@ -8,44 +8,55 @@ import (
 )
 
 func (e *AzureTemplateExecutor) msGraphGroupByDisplayName(groupName string) interface{} {
-	client := msgraph.NewGroupsClient(e.msGraphClient.GetTenantID())
-	client.BaseClient.Authorizer = e.msGraphClient.Authorizer()
+	e.logger.Infof(`fetching MsGraph group by displayName "%v"`, groupName)
 
-	queryOpts := odata.Query{
-		Filter: fmt.Sprintf(
-			`displayName eq '%v'`,
-			escapeMsGraphFilter(groupName),
-		),
-	}
-	list, _, err := client.List(e.ctx, queryOpts)
-	if err != nil {
-		e.logger.Fatalf(`failed to query MsGraph group: %v`, err.Error())
-	}
+	cacheKey := generateCacheKey(`msGraphGroupByDisplayName`, groupName)
+	return e.cacheResult(cacheKey, func() interface{} {
+		client := msgraph.NewGroupsClient(e.msGraphClient.GetTenantID())
+		client.BaseClient.Authorizer = e.msGraphClient.Authorizer()
 
-	if list == nil {
-		e.logger.Fatalf(`group "%v" was not found in AzureAD`, groupName)
-	}
+		queryOpts := odata.Query{
+			Filter: fmt.Sprintf(
+				`displayName eq '%v'`,
+				escapeMsGraphFilter(groupName),
+			),
+		}
+		list, _, err := client.List(e.ctx, queryOpts)
+		if err != nil {
+			e.logger.Fatalf(`failed to query MsGraph group: %v`, err.Error())
+		}
 
-	if len(*list) == 1 {
-		return (*list)[0]
-	} else {
-		e.logger.Fatalf(`found more then one group "%v"`, groupName)
-	}
+		if list == nil {
+			e.logger.Fatalf(`group "%v" was not found in AzureAD`, groupName)
+		}
 
-	return ""
+		if len(*list) == 1 {
+			return (*list)[0]
+		} else {
+			e.logger.Fatalf(`found more then one group "%v"`, groupName)
+		}
+
+		return ""
+	})
 }
 
 func (e *AzureTemplateExecutor) msGraphGroupList(filter string) interface{} {
-	client := msgraph.NewGroupsClient(e.msGraphClient.GetTenantID())
-	client.BaseClient.Authorizer = e.msGraphClient.Authorizer()
+	e.logger.Infof(`fetching MsGraph group list with $filter "%v"`, filter)
 
-	queryOpts := odata.Query{
-		Filter: filter,
-	}
-	list, _, err := client.List(e.ctx, queryOpts)
-	if err != nil {
-		e.logger.Fatalf(`failed to query MsGraph group: %v`, err.Error())
-	}
+	cacheKey := generateCacheKey(`msGraphGroupList`, filter)
+	return e.cacheResult(cacheKey, func() interface{} {
+		client := msgraph.NewGroupsClient(e.msGraphClient.GetTenantID())
+		client.BaseClient.Authorizer = e.msGraphClient.Authorizer()
 
-	return list
+		queryOpts := odata.Query{
+			Filter: filter,
+		}
+		list, _, err := client.List(e.ctx, queryOpts)
+		if err != nil {
+			e.logger.Fatalf(`failed to query MsGraph group: %v`, err.Error())
+		}
+
+		return list
+	})
+
 }

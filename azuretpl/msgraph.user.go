@@ -8,44 +8,54 @@ import (
 )
 
 func (e *AzureTemplateExecutor) msGraphUserByUserPrincipalName(userPrincipalName string) interface{} {
-	client := msgraph.NewUsersClient(e.msGraphClient.GetTenantID())
-	client.BaseClient.Authorizer = e.msGraphClient.Authorizer()
+	e.logger.Infof(`fetching MsGraph user by userPrincipalName "%v"`, userPrincipalName)
 
-	queryOpts := odata.Query{
-		Filter: fmt.Sprintf(
-			`userPrincipalName eq '%v'`,
-			escapeMsGraphFilter(userPrincipalName),
-		),
-	}
-	list, _, err := client.List(e.ctx, queryOpts)
-	if err != nil {
-		e.logger.Fatalf(`failed to query MsGraph user: %v`, err.Error())
-	}
+	cacheKey := generateCacheKey(`msGraphUserByUserPrincipalName`, userPrincipalName)
+	return e.cacheResult(cacheKey, func() interface{} {
+		client := msgraph.NewUsersClient(e.msGraphClient.GetTenantID())
+		client.BaseClient.Authorizer = e.msGraphClient.Authorizer()
 
-	if list == nil {
-		e.logger.Fatalf(`user "%v" was not found in AzureAD`, userPrincipalName)
-	}
+		queryOpts := odata.Query{
+			Filter: fmt.Sprintf(
+				`userPrincipalName eq '%v'`,
+				escapeMsGraphFilter(userPrincipalName),
+			),
+		}
+		list, _, err := client.List(e.ctx, queryOpts)
+		if err != nil {
+			e.logger.Fatalf(`failed to query MsGraph user: %v`, err.Error())
+		}
 
-	if len(*list) == 1 {
-		return (*list)[0]
-	} else {
-		e.logger.Fatalf(`found more then one user "%v"`, userPrincipalName)
-	}
+		if list == nil {
+			e.logger.Fatalf(`user "%v" was not found in AzureAD`, userPrincipalName)
+		}
 
-	return ""
+		if len(*list) == 1 {
+			return (*list)[0]
+		} else {
+			e.logger.Fatalf(`found more then one user "%v"`, userPrincipalName)
+		}
+
+		return ""
+	})
 }
 
 func (e *AzureTemplateExecutor) msGraphUserList(filter string) interface{} {
-	client := msgraph.NewUsersClient(e.msGraphClient.GetTenantID())
-	client.BaseClient.Authorizer = e.msGraphClient.Authorizer()
+	e.logger.Infof(`fetching MsGraph user list with $filter "%v"`, filter)
 
-	queryOpts := odata.Query{
-		Filter: filter,
-	}
-	list, _, err := client.List(e.ctx, queryOpts)
-	if err != nil {
-		e.logger.Fatalf(`failed to query MsGraph group: %v`, err.Error())
-	}
+	cacheKey := generateCacheKey(`msGraphUserList`, filter)
+	return e.cacheResult(cacheKey, func() interface{} {
+		client := msgraph.NewUsersClient(e.msGraphClient.GetTenantID())
+		client.BaseClient.Authorizer = e.msGraphClient.Authorizer()
 
-	return list
+		queryOpts := odata.Query{
+			Filter: filter,
+		}
+		list, _, err := client.List(e.ctx, queryOpts)
+		if err != nil {
+			e.logger.Fatalf(`failed to query MsGraph group: %v`, err.Error())
+		}
+
+		return list
+	})
 }
