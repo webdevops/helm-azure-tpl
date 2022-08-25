@@ -15,11 +15,11 @@ RUN go mod download
 COPY . .
 RUN make test
 
-RUN chmod +x entrypoint.sh
 ARG TARGETARCH
 
 # Compile
 RUN GOARCH=${TARGETARCH} make build-all
+RUN chmod +x entrypoint.sh
 
 #############################################
 # Test
