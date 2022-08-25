@@ -8,4 +8,4 @@ HOST_ARCH=$(uname -m | tr '[:upper:]' '[:lower:]')
 PLUGIN_DOWNLOAD_FILE="helm-azure-tpl.${HOST_OS}.${HOST_ARCH}"
 PLUGIN_DOWNLOAD_URL="https://github.com/webdevops/helm-azure-tpl/releases/download/${HELM_AZURE_TPL_VERSION}/${PLUGIN_DOWNLOAD_FILE}"
 
-curl "PLUGIN_DOWNLOAD_URL" -o "${HELM_PLUGIN_DIR}/${PLUGIN_DOWNLOAD_FILE}"
+curl "$PLUGIN_DOWNLOAD_URL" -o "${HELM_PLUGIN_DIR}/${PLUGIN_DOWNLOAD_FILE}"
