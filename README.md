@@ -56,7 +56,7 @@ TODO
 
 ## Sprig template functions
 
-[Sprig template functions](http://masterminds.github.io/sprig/defaults.html) are also available
+[Sprig template functions](https://masterminds.github.io/sprig/) are also available
 
 
 ## Examples
