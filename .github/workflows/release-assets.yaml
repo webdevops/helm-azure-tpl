@@ -45,9 +45,12 @@ jobs:
           check-latest: true
       - name: Build
         run: |
-          GOOS="${{matrix.GOOS}}" GOARCH="${{matrix.GOARCH}}" BUILDPREFIX="${{matrix.BUILDPREFIX}}" make build-asset
-      - uses: actions/upload-artifact@v3
+          make release-assets
+      - name: Upload assets to release
+        uses: svenstaro/upload-release-action@v2
         with:
-          name: helm-azure-tpl.${{matrix.GOOS}}.${{matrix.GOARCH}}${{matrix.BUILDPREFIX}}
-          path: helm-azure-tpl.${{matrix.GOOS}}.${{matrix.GOARCH}}${{matrix.BUILDPREFIX}}
-          if-no-files-found: error
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./release-assets/*
+          tag: ${{ github.ref }}
+          overwrite: true
+          file_glob: true
