@@ -1,5 +1,5 @@
 ---
-name: "helm-azure-tpl"
+name: "azure-tpl"
 version: "test2"
 usage: "applies azure information into your helm files"
 description: |-
