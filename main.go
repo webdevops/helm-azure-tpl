@@ -42,27 +42,33 @@ var (
 func main() {
 	initArgparser()
 
-	log.Infof("starting helm-azuretpl-tpl v%s (%s; %s; by %v)", gitTag, gitCommit, runtime.Version(), Author)
+	log.Infof("helm-azuretpl-tpl v%s (%s; %s; by %v)", gitTag, gitCommit, runtime.Version(), Author)
 	log.Info(string(opts.GetJson()))
 
-	log.Infof("init Azure connection")
+	log.Infof("connecting to Azure")
 	initAzureConnection()
 
 	ctx := context.Background()
 
 	for _, filePath := range args {
-		targetFile := filePath
-		if strings.Contains(filePath, ":") {
-			parts := strings.SplitN(filePath, ":", 2)
-			filePath = parts[0]
-			targetFile = parts[1]
+		sourcePath := filePath
+		targetPath := filePath
+		if strings.Contains(sourcePath, ":") {
+			parts := strings.SplitN(sourcePath, ":", 2)
+			sourcePath = parts[0]
+			targetPath = parts[1]
 		}
 
-		contextLogger := log.WithField(`file`, filePath)
+		contextLogger := log.WithFields(log.Fields{
+			`sourcePath`: sourcePath,
+			`targetPath`: targetPath,
+		})
+		contextLogger.Infof(`processing file`)
+
 		azureTemplate := azuretpl.New(ctx, AzureClient, contextLogger)
 		tmpl := template.New("helm-azuretpl-tpl").Funcs(sprig.TxtFuncMap()).Funcs(azureTemplate.TxtFuncMap())
 
-		content, err := os.ReadFile(filePath) // #nosec G304 passed as parameter
+		content, err := os.ReadFile(sourcePath) // #nosec G304 passed as parameter
 		if err != nil {
 			contextLogger.Fatalf(`unable to read file: %v`, err.Error())
 		}
@@ -79,10 +85,10 @@ func main() {
 		}
 
 		if !opts.DryRun {
-			contextLogger.Infof(`writing file "%v"`, targetFile)
-			err := os.WriteFile(targetFile, buf.Bytes(), 0600)
+			contextLogger.Infof(`writing file "%v"`, targetPath)
+			err := os.WriteFile(targetPath, buf.Bytes(), 0600)
 			if err != nil {
-				contextLogger.Fatalf(`unable to write target file "%v": %v`, targetFile, err.Error())
+				contextLogger.Fatalf(`unable to write target file "%v": %v`, targetPath, err.Error())
 			}
 		}
 
@@ -139,6 +145,13 @@ func initArgparser() {
 
 func initAzureConnection() {
 	var err error
+
+	// we're going to use az cli auth here
+	err = os.Setenv("AZURE_AUTH", "az")
+	if err != nil {
+		log.Panic(err.Error())
+	}
+
 	AzureClient, err = armclient.NewArmClientWithCloudName(*opts.Azure.Environment, log.StandardLogger())
 	if err != nil {
 		log.Panic(err.Error())

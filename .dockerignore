@@ -2,3 +2,4 @@
 /vendor/
 /helm-azure-tpl*
 /release-assets
+/tmp
