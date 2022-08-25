@@ -14,6 +14,16 @@ all: build
 clean:
 	git clean -Xfd .
 
+.PHONY: build-all
+build-all:
+	GOOS=linux   GOARCH=${GOARCH} CGO_ENABLED=0 go build -ldflags '$(LDFLAGS)' -o '$(PROJECT_NAME)' .
+	GOOS=darwin  GOARCH=${GOARCH} CGO_ENABLED=0 go build -ldflags '$(LDFLAGS)' -o '$(PROJECT_NAME).darwin' .
+	GOOS=windows GOARCH=${GOARCH} CGO_ENABLED=0 go build -ldflags '$(LDFLAGS)' -o '$(PROJECT_NAME).exe' .
+
+.PHONY: build-asset
+build-asset:
+	GOOS=${GOOS} GOARCH=${GOARCH} CGO_ENABLED=0 go build -ldflags '$(LDFLAGS)' -o '$(PROJECT_NAME).${GOOS}.${GOARCH}${BUILDSUFFIX}' .
+
 .PHONY: build
 build:
 	GOOS=${GOOS} GOARCH=${GOARCH} CGO_ENABLED=0 go build -ldflags '$(LDFLAGS)' -o $(PROJECT_NAME) .

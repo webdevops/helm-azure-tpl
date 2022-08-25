@@ -1,0 +1,53 @@
+name: "Release: assets"
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run Gosec Security Scanner
+        uses: securego/gosec@master
+        with:
+          args: ./...
+
+      - name: Run Golangci lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: latest
+          args: -E exportloopref,gofmt --timeout=30m
+
+  build:
+    needs: lint
+    strategy:
+      fail-fast: false
+      matrix:
+        GOOS: [linux, windows, darwin]
+        GOARCH: [amd64, arm64]
+        BUILDPREFIX: [""]
+        include:
+          - GOOS: windows
+            GOARCH: amd64
+            BUILDPREFIX: ".exe"
+          - GOOS: windows
+            GOARCH: arm64
+            BUILDPREFIX: ".exe"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '1.19'
+          check-latest: true
+      - name: Build
+        run: |
+          GOOS="${{matrix.GOOS}}" GOARCH="${{matrix.GOARCH}}" BUILDPREFIX="${{matrix.BUILDPREFIX}}" make build-asset
+      - uses: actions/upload-artifact@v3
+        with:
+          name: helm-azure-tpl.${{matrix.GOOS}}.${{matrix.GOARCH}}${{matrix.BUILDPREFIX}}
+          path: helm-azure-tpl.${{matrix.GOOS}}.${{matrix.GOARCH}}${{matrix.BUILDPREFIX}}
+          if-no-files-found: error
