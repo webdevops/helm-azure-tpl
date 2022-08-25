@@ -10,6 +10,7 @@ require (
 	github.com/PaesslerAG/jsonpath v0.1.1
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/manicminer/hamilton v0.46.0
+	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/sirupsen/logrus v1.9.0
 	github.com/webdevops/go-common v0.0.0-20220825163541-b8fdac75a80e
 	sigs.k8s.io/yaml v1.3.0
@@ -51,7 +52,6 @@ require (
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
-	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
 	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8 // indirect
 	github.com/prometheus/client_golang v1.13.0 // indirect
 	github.com/prometheus/client_model v0.2.0 // indirect
