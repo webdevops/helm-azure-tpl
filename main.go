@@ -42,7 +42,7 @@ var (
 func main() {
 	initArgparser()
 
-	log.Infof("helm-azuretpl-tpl v%s (%s; %s; by %v)", gitTag, gitCommit, runtime.Version(), Author)
+	log.Infof("helm-azure-tpl v%s (%s; %s; by %v)", gitTag, gitCommit, runtime.Version(), Author)
 	log.Info(string(opts.GetJson()))
 
 	log.Infof("connecting to Azure")
