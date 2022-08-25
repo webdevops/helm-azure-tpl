@@ -6,9 +6,46 @@
 [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/helm-azure-tpl)](https://artifacthub.io/packages/search?repo=helm-azure-tpl)
 
 
+## Installation
+
+requires `sed` and `curl`
+
+```
+helm plugin install https://github.com/webdevops/helm-azure-tpl
+```
+
 ## Usage
 
-TODO
+`helm azure-tpl` uses AzureCLI authentication to talk to Azure
+
+Process one file and overwrite it:
+```
+helm azure-tpl template.tpl
+```
+
+Process one file and saves generated content as another file:
+```
+helm azure-tpl template.tpl:template.yaml
+```
+
+General usage:
+```
+Usage:
+  helm azure-tpl [OPTIONS]
+
+Application Options:
+      --debug              debug mode [$DEBUG]
+  -v, --verbose            verbose mode [$VERBOSE]
+      --log.json           Switch log output to json format [$LOG_JSON]
+      --azure.tenant=      Azure tenant id [$AZURE_TENANT_ID]
+      --azure.environment= Azure environment name (default: AzurePublicCloud) [$AZURE_ENVIRONMENT]
+      --dry-run            dry run [$DRY_RUN]
+
+Help Options:
+  -h, --help               Show this help message
+```
+
+
 
 ## Template functions
 
