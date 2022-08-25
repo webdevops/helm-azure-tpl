@@ -9,21 +9,21 @@ useTunnel: true
 platformCommand:
   - os: linux
     arch: amd64
-    command: "helm-azure-tpl.linux.amd64"
+    command: "$HELM_PLUGIN_DIR/helm-azure-tpl.linux.amd64"
   - os: linux
     arch: arm64
-    command: "helm-azure-tpl.linux.arm64"
+    command: "$HELM_PLUGIN_DIR/helm-azure-tpl.linux.arm64"
   - os: darwin
     arch: arm64
-    command: "helm-azure-tpl.darwin.amd64"
+    command: "$HELM_PLUGIN_DIR/helm-azure-tpl.darwin.amd64"
   - os: darwin
     arch: arm64
-    command: "helm-azure-tpl.darwin.arm64"
+    command: "$HELM_PLUGIN_DIR/helm-azure-tpl.darwin.arm64"
   - os: windows
     arch: amd64
-    command: "helm-azure-tpl.windows.amd64.exe"
+    command: "$HELM_PLUGIN_DIR/helm-azure-tpl.windows.amd64.exe"
   - os: windows
     arch: arm64
-    command: "helm-azure-tpl.windows.arm64.exe"
+    command: "$HELM_PLUGIN_DIR/helm-azure-tpl.windows.arm64.exe"
 hooks:
   install: "sh $HELM_PLUGIN_DIR/commands/helm-plugin-install.sh"
