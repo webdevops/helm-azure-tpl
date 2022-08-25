@@ -5,7 +5,6 @@ usage: "applies azure information into your helm files"
 description: |-
   see https://github.com/webdevops/helm-azure-tpl/blob/main/README.md
 ignoreFlags: false
-useTunnel: true
 platformCommand:
   ###########################
   # Linux
