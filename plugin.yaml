@@ -26,4 +26,4 @@ platformCommand:
     arch: arm64
     command: "helm-azure-tpl.windows.arm64.exe"
 hooks:
-  install: "$HELM_PLUGIN_DIR/helm-plugin-install.sh"
+  install: "sh $HELM_PLUGIN_DIR/helm-plugin-install.sh"
