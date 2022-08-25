@@ -26,7 +26,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        GOOS: [linux, windows, darwin]
+        GOOS: [linux, darwin]
         GOARCH: [amd64, arm64]
         BUILDPREFIX: [""]
         include:
