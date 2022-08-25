@@ -60,6 +60,16 @@ Help Options:
 | `azureVirtualNetworkAddressPrefixes`       | `resourceID` (string)                          | Fetches address prefix (string array) from Azure VirtualNetwork         |
 | `azureVirtualNetworkSubnetAddressPrefixes` | `resourceID` (string), `subnetName` (string)   | Fetches address prefix (string array) from Azure VirtualNetwork subnet  |
 
+### MsGraph (AzureAD) functions
+
+| Function                               | Parameters             | Description                                                                                                                                                          |
+|----------------------------------------|------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `msGraphUserByUserPrincipalName`       | `userPrincipalName`    | Fetches one user by UserPrincipalName                                                                                                                                |
+| `msGraphUserList`                      | `filter` (string)      | Fetches list of users based on [`$filter`](https://docs.microsoft.com/en-us/graph/filter-query-parameter#examples-using-the-filter-query-operator) query             |
+| `msGraphGroupByDisplayName`            | `displayName` (string) | Fetches one group by displayName                                                                                                                                     |
+| `msGraphGroupList`                     | `filter` (string)      | Fetches list of groups based on [`$filter`](https://docs.microsoft.com/en-us/graph/filter-query-parameter#examples-using-the-filter-query-operator) query            |
+| `msGraphServicePrincipalByDisplayName` | `displayName` (string) | Fetches one serviceprincipal by displayName                                                                                                                          |
+| `msGraphServicePrincipalList`          | `filter` (string)      | Fetches list of servicePrincipals based on [`$filter`](https://docs.microsoft.com/en-us/graph/filter-query-parameter#examples-using-the-filter-query-operator) query |
 
 ### Misc template functions
 

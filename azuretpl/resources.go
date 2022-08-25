@@ -14,7 +14,7 @@ func (e *AzureTemplateExecutor) azureResource(resourceID string, apiVersion stri
 		e.logger.Fatalf(`unable to parse Azure resourceID "%v": %v`, resourceID, err.Error())
 	}
 
-	client, err := armresources.NewClient(resourceInfo.Subscription, e.client.GetCred(), e.client.NewArmClientOptions())
+	client, err := armresources.NewClient(resourceInfo.Subscription, e.azureClient.GetCred(), e.azureClient.NewArmClientOptions())
 	if err != nil {
 		e.logger.Fatalf(err.Error())
 	}

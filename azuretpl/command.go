@@ -6,18 +6,25 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/webdevops/go-common/azuresdk/armclient"
+	"github.com/webdevops/go-common/msgraphsdk/hamiltonclient"
 )
 
 type (
 	AzureTemplateExecutor struct {
-		ctx    context.Context
-		client *armclient.ArmClient
-		logger *log.Entry
+		ctx           context.Context
+		azureClient   *armclient.ArmClient
+		msGraphClient *hamiltonclient.MsGraphClient
+		logger        *log.Entry
 	}
 )
 
-func New(ctx context.Context, client *armclient.ArmClient, logger *log.Entry) *AzureTemplateExecutor {
-	return &AzureTemplateExecutor{ctx: ctx, client: client, logger: logger}
+func New(ctx context.Context, azureClient *armclient.ArmClient, msGraphClient *hamiltonclient.MsGraphClient, logger *log.Entry) *AzureTemplateExecutor {
+	return &AzureTemplateExecutor{
+		ctx:           ctx,
+		azureClient:   azureClient,
+		msGraphClient: msGraphClient,
+		logger:        logger,
+	}
 }
 
 func (e *AzureTemplateExecutor) TxtFuncMap() template.FuncMap {
@@ -29,6 +36,14 @@ func (e *AzureTemplateExecutor) TxtFuncMap() template.FuncMap {
 		`azurePublicIpPrefixAddressPrefix`:         e.azurePublicIpPrefixAddressPrefix,
 		`azureVirtualNetworkAddressPrefixes`:       e.azureVirtualNetworkAddressPrefixes,
 		`azureVirtualNetworkSubnetAddressPrefixes`: e.azureVirtualNetworkSubnetAddressPrefixes,
+
+		// msGraph
+		`msGraphUserByUserPrincipalName`:       e.msGraphUserByUserPrincipalName,
+		`msGraphUserList`:                      e.msGraphUserList,
+		`msGraphGroupByDisplayName`:            e.msGraphGroupByDisplayName,
+		`msGraphGroupList`:                     e.msGraphGroupList,
+		`msGraphServicePrincipalByDisplayName`: e.msGraphServicePrincipalByDisplayName,
+		`msGraphServicePrincipalList`:          e.msGraphServicePrincipalList,
 
 		// misc
 		`jsonPath`: e.jsonPath,

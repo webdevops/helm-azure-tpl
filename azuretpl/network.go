@@ -15,7 +15,7 @@ func (e *AzureTemplateExecutor) azurePublicIpAddress(resourceID string) interfac
 		e.logger.Fatalf(`unable to parse Azure resourceID "%v": %v`, resourceID, err.Error())
 	}
 
-	client, err := armnetwork.NewPublicIPAddressesClient(resourceInfo.Subscription, e.client.GetCred(), e.client.NewArmClientOptions())
+	client, err := armnetwork.NewPublicIPAddressesClient(resourceInfo.Subscription, e.azureClient.GetCred(), e.azureClient.NewArmClientOptions())
 	if err != nil {
 		e.logger.Fatalf(err.Error())
 	}
@@ -35,7 +35,7 @@ func (e *AzureTemplateExecutor) azurePublicIpPrefixAddressPrefix(resourceID stri
 		e.logger.Fatalf(`unable to parse Azure resourceID "%v": %v`, resourceID, err.Error())
 	}
 
-	client, err := armnetwork.NewPublicIPPrefixesClient(resourceInfo.Subscription, e.client.GetCred(), e.client.NewArmClientOptions())
+	client, err := armnetwork.NewPublicIPPrefixesClient(resourceInfo.Subscription, e.azureClient.GetCred(), e.azureClient.NewArmClientOptions())
 	if err != nil {
 		e.logger.Fatalf(err.Error())
 	}
@@ -55,7 +55,7 @@ func (e *AzureTemplateExecutor) azureVirtualNetworkAddressPrefixes(resourceID st
 		e.logger.Fatalf(`unable to parse Azure resourceID "%v": %v`, resourceID, err.Error())
 	}
 
-	client, err := armnetwork.NewVirtualNetworksClient(resourceInfo.Subscription, e.client.GetCred(), e.client.NewArmClientOptions())
+	client, err := armnetwork.NewVirtualNetworksClient(resourceInfo.Subscription, e.azureClient.GetCred(), e.azureClient.NewArmClientOptions())
 	if err != nil {
 		e.logger.Fatalf(err.Error())
 	}
@@ -78,7 +78,7 @@ func (e *AzureTemplateExecutor) azureVirtualNetworkSubnetAddressPrefixes(resourc
 		e.logger.Fatalf(`unable to parse Azure resourceID "%v": %v`, resourceID, err.Error())
 	}
 
-	client, err := armnetwork.NewVirtualNetworksClient(resourceInfo.Subscription, e.client.GetCred(), e.client.NewArmClientOptions())
+	client, err := armnetwork.NewVirtualNetworksClient(resourceInfo.Subscription, e.azureClient.GetCred(), e.azureClient.NewArmClientOptions())
 	if err != nil {
 		e.logger.Fatalf(err.Error())
 	}

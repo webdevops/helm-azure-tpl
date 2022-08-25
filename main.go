@@ -3,8 +3,10 @@ package main
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
 	"os"
+	"os/exec"
 	"path"
 	"runtime"
 	"strings"
@@ -14,6 +16,7 @@ import (
 	"github.com/jessevdk/go-flags"
 	log "github.com/sirupsen/logrus"
 	"github.com/webdevops/go-common/azuresdk/armclient"
+	"github.com/webdevops/go-common/msgraphsdk/hamiltonclient"
 
 	"github.com/webdevops/helm-azure-tpl/azuretpl"
 	"github.com/webdevops/helm-azure-tpl/config"
@@ -22,12 +25,17 @@ import (
 const (
 	Author    = "webdevops.io"
 	UserAgent = "helm-azure-tpl/"
+
+	TermColumns = 80
 )
 
 var (
 	argparser *flags.Parser
 
-	AzureClient *armclient.ArmClient
+	AzureClient   *armclient.ArmClient
+	MsGraphClient *hamiltonclient.MsGraphClient
+
+	azAccountInfo AzureCliAccount
 
 	// Git version information
 	gitCommit = "<unknown>"
@@ -45,8 +53,19 @@ func main() {
 	log.Infof("helm-azure-tpl v%s (%s; %s; by %v)", gitTag, gitCommit, runtime.Version(), Author)
 	log.Info(string(opts.GetJson()))
 
+	// we're going to use az cli auth here
+	if err := os.Setenv("AZURE_AUTH", "az"); err != nil {
+		log.Panic(err.Error())
+	}
+
+	log.Infof("detecting Azure account information")
+	fetchAzAccountInfo()
+
 	log.Infof("connecting to Azure")
 	initAzureConnection()
+
+	log.Infof("connecting to MsGraph")
+	initMsGraphConnection()
 
 	ctx := context.Background()
 
@@ -65,7 +84,7 @@ func main() {
 		})
 		contextLogger.Infof(`processing file`)
 
-		azureTemplate := azuretpl.New(ctx, AzureClient, contextLogger)
+		azureTemplate := azuretpl.New(ctx, AzureClient, MsGraphClient, contextLogger)
 		tmpl := template.New("helm-azuretpl-tpl").Funcs(sprig.TxtFuncMap()).Funcs(azureTemplate.TxtFuncMap())
 
 		content, err := os.ReadFile(sourcePath) // #nosec G304 passed as parameter
@@ -84,6 +103,14 @@ func main() {
 			contextLogger.Fatalf(`unable to process template: %v`, err.Error())
 		}
 
+		if opts.Debug {
+			fmt.Println()
+			fmt.Println(strings.Repeat("-", TermColumns))
+			fmt.Println(fmt.Sprintf("--- %v", targetPath))
+			fmt.Println(strings.Repeat("-", TermColumns))
+			fmt.Println(buf.String())
+		}
+
 		if !opts.DryRun {
 			contextLogger.Infof(`writing file "%v"`, targetPath)
 			err := os.WriteFile(targetPath, buf.Bytes(), 0600)
@@ -100,7 +127,7 @@ func initArgparser() {
 	argparser = flags.NewParser(&opts, flags.Default)
 	args, err = argparser.Parse()
 
-	// check if there is an parse error
+	// check if there is a parse error
 	if err != nil {
 		if flagsErr, ok := err.(*flags.Error); ok && flagsErr.Type == flags.ErrHelp {
 			os.Exit(0)
@@ -117,7 +144,7 @@ func initArgparser() {
 	}
 
 	// debug level
-	if opts.Logger.Debug {
+	if opts.Debug {
 		log.SetReportCaller(true)
 		log.SetLevel(log.TraceLevel)
 		log.SetFormatter(&log.TextFormatter{
@@ -143,13 +170,28 @@ func initArgparser() {
 	}
 }
 
+func fetchAzAccountInfo() {
+	cmd := exec.Command("az", "account", "show", "-o", "json")
+	cmd.Stderr = os.Stderr
+
+	accountInfo, err := cmd.Output()
+	if err != nil {
+		log.Fatalf(`unable to detect Azure TenantID via "az account show": %v`, err.Error())
+	}
+
+	err = json.Unmarshal(accountInfo, &azAccountInfo)
+	if err != nil {
+		log.Fatalf(`unable to parse "az account show" output: %v`, err.Error())
+	}
+}
+
 func initAzureConnection() {
 	var err error
 
-	// we're going to use az cli auth here
-	err = os.Setenv("AZURE_AUTH", "az")
-	if err != nil {
-		log.Panic(err.Error())
+	if opts.Azure.Environment == nil || *opts.Azure.Environment == "" {
+		// autodetect tenant
+		log.Infof(`use Azure Environment "%v" from "az account show"`, azAccountInfo.EnvironmentName)
+		opts.Azure.Environment = &azAccountInfo.EnvironmentName
 	}
 
 	AzureClient, err = armclient.NewArmClientWithCloudName(*opts.Azure.Environment, log.StandardLogger())
@@ -158,4 +200,23 @@ func initAzureConnection() {
 	}
 
 	AzureClient.SetUserAgent(UserAgent + gitTag)
+}
+
+func initMsGraphConnection() {
+	var err error
+
+	if opts.Azure.Tenant == nil || *opts.Azure.Tenant == "" {
+		// autodetect tenant
+		log.Infof(`use Azure TenantID "%v" from "az account show"`, azAccountInfo.TenantID)
+		opts.Azure.Tenant = &azAccountInfo.TenantID
+	}
+
+	if MsGraphClient == nil {
+		MsGraphClient, err = hamiltonclient.NewMsGraphClientWithCloudName(*opts.Azure.Environment, *opts.Azure.Tenant, log.StandardLogger())
+		if err != nil {
+			log.Panic(err.Error())
+		}
+
+		MsGraphClient.SetUserAgent(UserAgent + gitTag)
+	}
 }
