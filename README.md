@@ -1,10 +1,11 @@
 # Helm plugin for Azure template processing
 
+(also works as standalone go template processor with Azure functions)
+
 [![license](https://img.shields.io/github/license/webdevops/helm-azure-tpl.svg)](https://github.com/webdevops/helm-azure-tpl/blob/master/LICENSE)
 [![DockerHub](https://img.shields.io/badge/DockerHub-webdevops%2Fhelm--azure--tpl-blue)](https://hub.docker.com/r/webdevops/helm-azure-tpl/)
 [![Quay.io](https://img.shields.io/badge/Quay.io-webdevops%2Fhelm--azure--tpl-blue)](https://quay.io/repository/webdevops/helm-azure-tpl)
 [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/helm-azure-tpl)](https://artifacthub.io/packages/search?repo=helm-azure-tpl)
-
 
 ## Installation
 
@@ -51,14 +52,15 @@ Help Options:
 
 ### Azure template functions
 
-| Function                                   | Parameters                                     | Description                                                             |
-|--------------------------------------------|------------------------------------------------|-------------------------------------------------------------------------|
-| `azureKeyVaultSecret`                      | `vaultUrl` (string), `secretName` (string)     | Fetches secret object from Azure KeyVault                               |
-| `azureResource`                            | `resourceID` (string), `apiVersion` (string)   | Fetches Azure resource information (interface object)                   |
-| `azurePublicIpAddress`                     | `resourceID` (string)                          | Fetches ip address from Azure Public IP                                 |
-| `azurePublicIpPrefixAddressPrefix`         | `resourceID` (string)                          | Fetches ip address prefix from Azure Public IP prefix                   |
-| `azureVirtualNetworkAddressPrefixes`       | `resourceID` (string)                          | Fetches address prefix (string array) from Azure VirtualNetwork         |
-| `azureVirtualNetworkSubnetAddressPrefixes` | `resourceID` (string), `subnetName` (string)   | Fetches address prefix (string array) from Azure VirtualNetwork subnet  |
+| Function                                   | Parameters                                   | Description                                                            |
+|--------------------------------------------|----------------------------------------------|------------------------------------------------------------------------|
+| `azureAccountInfo`                         |                                              | Output of `az account show`                                            |
+| `azureKeyVaultSecret`                      | `vaultUrl` (string), `secretName` (string)   | Fetches secret object from Azure KeyVault                              |
+| `azureResource`                            | `resourceID` (string), `apiVersion` (string) | Fetches Azure resource information (interface object)                  |
+| `azurePublicIpAddress`                     | `resourceID` (string)                        | Fetches ip address from Azure Public IP                                |
+| `azurePublicIpPrefixAddressPrefix`         | `resourceID` (string)                        | Fetches ip address prefix from Azure Public IP prefix                  |
+| `azureVirtualNetworkAddressPrefixes`       | `resourceID` (string)                        | Fetches address prefix (string array) from Azure VirtualNetwork        |
+| `azureVirtualNetworkSubnetAddressPrefixes` | `resourceID` (string), `subnetName` (string) | Fetches address prefix (string array) from Azure VirtualNetwork subnet |
 
 ### MsGraph (AzureAD) functions
 
@@ -84,7 +86,7 @@ Help Options:
     "/subscriptions/d86bcf13-ddf7-45ea-82f1-6f656767a318/resourcegroups/k8s/providers/Microsoft.ContainerService/managedClusters/mblaschke"
     "2022-01-01"
     | jsonPath "$.properties.aadProfile"
-    | toYaml | nindent 2
+    | toYaml
 }}
 
 ```
@@ -111,37 +113,41 @@ Help Options:
 ```gotemplate
 
 ## Fetch resource as object and convert to yaml
-{{
-azureResource
-"/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx/resourcegroups/example-rg/providers/Microsoft.ContainerService/managedClusters/k8scluster"
-"2022-01-01"
-| toYaml
+{{ azureResource
+   "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx/resourcegroups/example-rg/providers/Microsoft.ContainerService/managedClusters/k8scluster"
+   "2022-01-01"
+   | toYaml
 }}
 
 
 ## Fetch resource as object, select .properties.aadProfile via jsonPath and convert to yaml
-{{
-azureResource
-"/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx/resourcegroups/example-rg/providers/Microsoft.ContainerService/managedClusters/k8scluster"
-"2022-01-01"
-| jsonPath "$.properties.aadProfile"
-| toYaml
+{{ azureResource
+   "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx/resourcegroups/example-rg/providers/Microsoft.ContainerService/managedClusters/k8scluster"
+   "2022-01-01"
+   | jsonPath "$.properties.aadProfile"
+   | toYaml
 }}
 
 ## Fetch Azure VirtualNetwork address prefixes
 {{ azureVirtualNetworkAddressPrefixes
-"/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx/resourcegroups/example-rg/providers/Microsoft.Network/virtualNetworks/k8s-vnet"
+    "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx/resourcegroups/example-rg/providers/Microsoft.Network/virtualNetworks/k8s-vnet"
 }}
 
 
 ## Fetch Azure VirtualNetwork subnet address prefixes and join them to a string list
 {{ azureVirtualNetworkSubnetAddressPrefixes
-"/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx/resourcegroups/example-rg/providers/Microsoft.Network/virtualNetworks/k8s-vnet"
-"default2"
-| join ","
+   "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx/resourcegroups/example-rg/providers/Microsoft.Network/virtualNetworks/k8s-vnet"
+   "default2"
+   | join ","
 }}
 
 ## Fetch secret value from Azure KeyVault
 {{ (azureKeyVaultSecret "https://examplevault.vault.azure.net/" "secretname").Value }}
+
+## Fetch current environmentName
+{{ azureAccountInfo.environmentName }}
+
+## Fetch current tenantId
+{{ azureAccountInfo.tenantId }}
 
 ```

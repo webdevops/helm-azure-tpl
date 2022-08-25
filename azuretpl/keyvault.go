@@ -6,6 +6,7 @@ import (
 	"github.com/Azure/azure-sdk-for-go/sdk/keyvault/azsecrets"
 )
 
+// azureKeyVaultSecret fetches secret object from Azure KeyVault
 func (e *AzureTemplateExecutor) azureKeyVaultSecret(vaultUrl string, secretName string) interface{} {
 	e.logger.Infof(`fetching Azure KeyVault secret "%v" -> "%v"`, vaultUrl, secretName)
 

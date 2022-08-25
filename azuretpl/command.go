@@ -20,6 +20,8 @@ type (
 
 		cache    *cache.Cache
 		cacheTtl time.Duration
+
+		azureCliAccountInfo interface{}
 	}
 )
 
@@ -37,7 +39,11 @@ func New(ctx context.Context, azureClient *armclient.ArmClient, msGraphClient *h
 }
 
 func (e *AzureTemplateExecutor) init() {
-	e.cache = cache.New(e.cacheTtl, 1*time.Minute)
+	e.cache = globalCache
+}
+
+func (e *AzureTemplateExecutor) SetAzureCliAccountInfo(accountInfo interface{}) {
+	e.azureCliAccountInfo = accountInfo
 }
 
 func (e *AzureTemplateExecutor) TxtFuncMap() template.FuncMap {
@@ -49,6 +55,7 @@ func (e *AzureTemplateExecutor) TxtFuncMap() template.FuncMap {
 		`azurePublicIpPrefixAddressPrefix`:         e.azurePublicIpPrefixAddressPrefix,
 		`azureVirtualNetworkAddressPrefixes`:       e.azureVirtualNetworkAddressPrefixes,
 		`azureVirtualNetworkSubnetAddressPrefixes`: e.azureVirtualNetworkSubnetAddressPrefixes,
+		`azureAccountInfo`:                         e.azureAccountInfo,
 
 		// msGraph
 		`msGraphUserByUserPrincipalName`:       e.msGraphUserByUserPrincipalName,
@@ -73,6 +80,7 @@ func (e *AzureTemplateExecutor) TxtFuncMap() template.FuncMap {
 	return funcMap
 }
 
+// cacheResult caches template function results (eg. Azure REST API resource information)
 func (e *AzureTemplateExecutor) cacheResult(cacheKey string, callback func() interface{}) interface{} {
 	if val, ok := e.cache.Get(cacheKey); ok {
 		e.logger.Infof("found in cache (%v)", cacheKey)

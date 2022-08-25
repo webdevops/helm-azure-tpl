@@ -8,6 +8,7 @@ import (
 	"github.com/webdevops/go-common/utils/to"
 )
 
+// azurePublicIpAddress fetches ipAddress from Azure Public IP Address
 func (e *AzureTemplateExecutor) azurePublicIpAddress(resourceID string) interface{} {
 	e.logger.Infof(`fetching Azure PublicIpAddress "%v"`, resourceID)
 
@@ -32,6 +33,7 @@ func (e *AzureTemplateExecutor) azurePublicIpAddress(resourceID string) interfac
 	})
 }
 
+// azurePublicIpPrefixAddressPrefix fetches ipAddress prefix from Azure Public IP Address prefix
 func (e *AzureTemplateExecutor) azurePublicIpPrefixAddressPrefix(resourceID string) interface{} {
 	e.logger.Infof(`fetching Azure PublicIpPrefix "%v"`, resourceID)
 
@@ -56,6 +58,7 @@ func (e *AzureTemplateExecutor) azurePublicIpPrefixAddressPrefix(resourceID stri
 	})
 }
 
+// azureVirtualNetworkAddressPrefixes fetches ipAddress prefixes (array) from Azure VirtualNetwork
 func (e *AzureTemplateExecutor) azureVirtualNetworkAddressPrefixes(resourceID string) interface{} {
 	e.logger.Infof(`fetching AddressPrefixes from Azure VirtualNetwork "%v"`, resourceID)
 
@@ -83,6 +86,7 @@ func (e *AzureTemplateExecutor) azureVirtualNetworkAddressPrefixes(resourceID st
 	})
 }
 
+// azureVirtualNetworkSubnetAddressPrefixes fetches ipAddress prefixes (array) from Azure VirtualNetwork subnet
 func (e *AzureTemplateExecutor) azureVirtualNetworkSubnetAddressPrefixes(resourceID string, subnetName string) interface{} {
 	e.logger.Infof(`fetching AddressPrefixes from Azure VirtualNetwork "%v" subnet "%v"`, resourceID, subnetName)
 

@@ -7,6 +7,7 @@ import (
 	"github.com/webdevops/go-common/azuresdk/armclient"
 )
 
+// azureResource fetches resource json from Azure REST API using the specified apiVersion
 func (e *AzureTemplateExecutor) azureResource(resourceID string, apiVersion string) interface{} {
 	e.logger.Infof(`fetching Azure ResourceInfo "%v" in apiVersion "%v"`, resourceID, apiVersion)
 

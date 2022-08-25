@@ -35,7 +35,7 @@ var (
 	AzureClient   *armclient.ArmClient
 	MsGraphClient *hamiltonclient.MsGraphClient
 
-	azAccountInfo AzureCliAccount
+	azAccountInfo map[string]interface{}
 
 	// Git version information
 	gitCommit = "<unknown>"
@@ -85,6 +85,7 @@ func main() {
 		contextLogger.Infof(`processing file`)
 
 		azureTemplate := azuretpl.New(ctx, AzureClient, MsGraphClient, contextLogger)
+		azureTemplate.SetAzureCliAccountInfo(azAccountInfo)
 		tmpl := template.New("helm-azuretpl-tpl").Funcs(sprig.TxtFuncMap()).Funcs(azureTemplate.TxtFuncMap())
 
 		content, err := os.ReadFile(sourcePath) // #nosec G304 passed as parameter
@@ -189,8 +190,10 @@ func initAzureConnection() {
 
 	if opts.Azure.Environment == nil || *opts.Azure.Environment == "" {
 		// autodetect tenant
-		log.Infof(`use Azure Environment "%v" from "az account show"`, azAccountInfo.EnvironmentName)
-		opts.Azure.Environment = &azAccountInfo.EnvironmentName
+		if val, ok := azAccountInfo["environmentName"].(string); ok {
+			log.Infof(`use Azure Environment "%v" from "az account show"`, val)
+			opts.Azure.Environment = &val
+		}
 	}
 
 	AzureClient, err = armclient.NewArmClientWithCloudName(*opts.Azure.Environment, log.StandardLogger())
@@ -206,8 +209,10 @@ func initMsGraphConnection() {
 
 	if opts.Azure.Tenant == nil || *opts.Azure.Tenant == "" {
 		// autodetect tenant
-		log.Infof(`use Azure TenantID "%v" from "az account show"`, azAccountInfo.TenantID)
-		opts.Azure.Tenant = &azAccountInfo.TenantID
+		if val, ok := azAccountInfo["tenantId"].(string); ok {
+			log.Infof(`use Azure TenantID "%v" from "az account show"`, val)
+			opts.Azure.Tenant = &val
+		}
 	}
 
 	if MsGraphClient == nil {

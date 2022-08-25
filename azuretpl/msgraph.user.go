@@ -7,6 +7,7 @@ import (
 	"github.com/manicminer/hamilton/odata"
 )
 
+// msGraphUserByUserPrincipalName fetches one user from MsGraph API using userPrincipalName
 func (e *AzureTemplateExecutor) msGraphUserByUserPrincipalName(userPrincipalName string) interface{} {
 	e.logger.Infof(`fetching MsGraph user by userPrincipalName "%v"`, userPrincipalName)
 
@@ -40,6 +41,7 @@ func (e *AzureTemplateExecutor) msGraphUserByUserPrincipalName(userPrincipalName
 	})
 }
 
+// msGraphUserList fetches list of users from MsGraph API using $filter query
 func (e *AzureTemplateExecutor) msGraphUserList(filter string) interface{} {
 	e.logger.Infof(`fetching MsGraph user list with $filter "%v"`, filter)
 
