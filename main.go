@@ -106,7 +106,7 @@ func main() {
 		if opts.Debug {
 			fmt.Println()
 			fmt.Println(strings.Repeat("-", TermColumns))
-			fmt.Println(fmt.Sprintf("--- %v", targetPath))
+			fmt.Printf("--- %v\n", targetPath)
 			fmt.Println(strings.Repeat("-", TermColumns))
 			fmt.Println(buf.String())
 		}
