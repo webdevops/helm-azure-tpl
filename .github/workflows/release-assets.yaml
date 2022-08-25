@@ -23,19 +23,6 @@ jobs:
 
   build:
     needs: lint
-    strategy:
-      fail-fast: false
-      matrix:
-        GOOS: [linux, darwin]
-        GOARCH: [amd64, arm64]
-        BUILDPREFIX: [""]
-        include:
-          - GOOS: windows
-            GOARCH: amd64
-            BUILDPREFIX: ".exe"
-          - GOOS: windows
-            GOARCH: arm64
-            BUILDPREFIX: ".exe"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
