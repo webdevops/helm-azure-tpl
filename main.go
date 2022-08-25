@@ -62,7 +62,7 @@ func main() {
 		azureTemplate := azuretpl.New(ctx, AzureClient, contextLogger)
 		tmpl := template.New("helm-azuretpl-tpl").Funcs(sprig.TxtFuncMap()).Funcs(azureTemplate.TxtFuncMap())
 
-		content, err := os.ReadFile(filePath)
+		content, err := os.ReadFile(filePath) // #nosec G304 passed as parameter
 		if err != nil {
 			contextLogger.Fatalf(`unable to read file: %v`, err.Error())
 		}
