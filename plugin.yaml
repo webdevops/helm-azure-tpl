@@ -7,18 +7,24 @@ description: |-
 ignoreFlags: false
 useTunnel: true
 platformCommand:
+  ###########################
+  # Linux
   - os: linux
     arch: amd64
     command: "$HELM_PLUGIN_DIR/helm-azure-tpl.linux.amd64"
   - os: linux
     arch: arm64
     command: "$HELM_PLUGIN_DIR/helm-azure-tpl.linux.arm64"
+  ###########################
+  # osx
   - os: darwin
-    arch: arm64
+    arch: amd64
     command: "$HELM_PLUGIN_DIR/helm-azure-tpl.darwin.amd64"
   - os: darwin
     arch: arm64
     command: "$HELM_PLUGIN_DIR/helm-azure-tpl.darwin.arm64"
+  ###########################
+  # Windows
   - os: windows
     arch: amd64
     command: "$HELM_PLUGIN_DIR/helm-azure-tpl.windows.amd64.exe"
