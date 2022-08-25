@@ -1,3 +1,2 @@
 /vendor/
-/helm-azure-tpl
-/helm-azure-tpl.exe
+/helm-azure-tpl*
