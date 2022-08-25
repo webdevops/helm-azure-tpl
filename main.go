@@ -118,7 +118,6 @@ func main() {
 				contextLogger.Fatalf(`unable to write target file "%v": %v`, targetPath, err.Error())
 			}
 		}
-
 	}
 }
 
