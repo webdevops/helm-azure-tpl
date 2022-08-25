@@ -28,7 +28,7 @@ build-all:
 	GOOS=windows GOARCH=${GOARCH} CGO_ENABLED=0 go build -ldflags '$(LDFLAGS)' -o '$(PROJECT_NAME).exe' .
 
 .PHONY: release-assets
-release-assets: clean-release-assets vendor $(RELEASE_ASSETS)
+release-assets: clean-release-assets vendor $(RELEASE_ASSETS) release-assets/helm-plugin
 
 clean-release-assets:
 	rm -rf ./release-assets
@@ -47,6 +47,16 @@ release-assets/helm-azure-tpl.%: $(SOURCE)
  	GOARCH=$(call word-dot,$*,2) \
 	CGO_ENABLED=0 \
 	go build -ldflags '$(LDFLAGS)' -o './release-assets/$(PROJECT_NAME).$(call word-dot,$*,1).$(call word-dot,$*,2)' .
+
+.PHONY: release-assets/helm-plugin
+release-assets/helm-plugin:
+	echo 'build helm plugin'
+	rm -rf    ./tmp
+	mkdir -p  ./tmp/helm-azure-tpl
+	cp -- plugin.yaml  ./tmp/helm-azure-tpl
+	cp -a ./release-assets/* ./tmp/helm-azure-tpl
+	bash -c 'cd ./tmp/helm-azure-tpl/ && tar --exclude *.tgz -czvf ../../release-assets/helm-plugin.tgz *'
+	rm -rf ./tmp
 
 .PHONY: build
 build:

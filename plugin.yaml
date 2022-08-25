@@ -1,0 +1,29 @@
+---
+name: "helm-azure-tpl"
+version: "test2"
+usage: "applies azure information into your helm files"
+description: |-
+  see https://github.com/webdevops/helm-azure-tpl/blob/main/README.md
+ignoreFlags: false
+useTunnel: true
+platformCommand:
+  - os: linux
+    arch: amd64
+    command: "helm-azure-tpl.linux.amd64"
+  - os: linux
+    arch: arm64
+    command: "helm-azure-tpl.linux.arm64"
+  - os: darwin
+    arch: arm64
+    command: "helm-azure-tpl.darwin.amd64"
+  - os: darwin
+    arch: arm64
+    command: "helm-azure-tpl.darwin.arm64"
+  - os: windows
+    arch: amd64
+    command: "helm-azure-tpl.windows.amd64.exe"
+  - os: windows
+    arch: arm64
+    command: "helm-azure-tpl.windows.arm64.exe"
+hooks:
+  install: "$HELM_PLUGIN_DIR/helm-plugin-install.sh"
