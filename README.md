@@ -52,15 +52,17 @@ Help Options:
 
 ### Azure template functions
 
-| Function                                   | Parameters                                   | Description                                                            |
-|--------------------------------------------|----------------------------------------------|------------------------------------------------------------------------|
-| `azureAccountInfo`                         |                                              | Output of `az account show`                                            |
-| `azureKeyVaultSecret`                      | `vaultUrl` (string), `secretName` (string)   | Fetches secret object from Azure KeyVault                              |
-| `azureResource`                            | `resourceID` (string), `apiVersion` (string) | Fetches Azure resource information (interface object)                  |
-| `azurePublicIpAddress`                     | `resourceID` (string)                        | Fetches ip address from Azure Public IP                                |
-| `azurePublicIpPrefixAddressPrefix`         | `resourceID` (string)                        | Fetches ip address prefix from Azure Public IP prefix                  |
-| `azureVirtualNetworkAddressPrefixes`       | `resourceID` (string)                        | Fetches address prefix (string array) from Azure VirtualNetwork        |
-| `azureVirtualNetworkSubnetAddressPrefixes` | `resourceID` (string), `subnetName` (string) | Fetches address prefix (string array) from Azure VirtualNetwork subnet |
+| Function                                   | Parameters                                   | Description                                                                    |
+|--------------------------------------------|----------------------------------------------|--------------------------------------------------------------------------------|
+| `azureAccountInfo`                         |                                              | Output of `az account show`                                                    |
+| `azureSubscription`                        | `subscriptionID` (string, optional)          | Fetches Azure subscription (current selected one if `subscriptionID` is empty) |
+| `azureSubscriptionList`                    |                                              | Fetches list of all visible azure subscriptions                                |
+| `azureKeyVaultSecret`                      | `vaultUrl` (string), `secretName` (string)   | Fetches secret object from Azure KeyVault                                      |
+| `azureResource`                            | `resourceID` (string), `apiVersion` (string) | Fetches Azure resource information (interface object)                          |
+| `azurePublicIpAddress`                     | `resourceID` (string)                        | Fetches ip address from Azure Public IP                                        |
+| `azurePublicIpPrefixAddressPrefix`         | `resourceID` (string)                        | Fetches ip address prefix from Azure Public IP prefix                          |
+| `azureVirtualNetworkAddressPrefixes`       | `resourceID` (string)                        | Fetches address prefix (string array) from Azure VirtualNetwork                |
+| `azureVirtualNetworkSubnetAddressPrefixes` | `resourceID` (string), `subnetName` (string) | Fetches address prefix (string array) from Azure VirtualNetwork subnet         |
 
 ### MsGraph (AzureAD) functions
 
@@ -149,5 +151,8 @@ Help Options:
 
 ## Fetch current tenantId
 {{ azureAccountInfo.tenantId }}
+
+## Fetch current selected subscription displayName
+{{ azureSubscription.displayName }}
 
 ```
