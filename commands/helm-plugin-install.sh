@@ -21,7 +21,7 @@ echo "binary download from: $PLUGIN_DOWNLOAD_URL"
 echo "binary target path:   $PLUGIN_TARGET_PATH"
 
 curl --location "$PLUGIN_DOWNLOAD_URL" -o "$PLUGIN_TARGET_PATH"
-if [ "$?" -nq 0 ]; then
+if [ "$?" -ne 0 ]; then
     >&2 echo "[ERROR] failed to download plugin binary"
     exit 1
 fi
