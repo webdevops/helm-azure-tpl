@@ -72,10 +72,6 @@ func main() {
 func process() {
 	ctx := context.Background()
 
-	if len(opts.Args.Files) == 0 {
-		log.Fatal(`no files specified as arguments`)
-	}
-
 	for _, filePath := range opts.Args.Files {
 		sourcePath := filePath
 		targetPath := filePath
@@ -174,6 +170,10 @@ func initArgparser() {
 				return funcName, fmt.Sprintf("%s:%d", path.Base(f.File), f.Line)
 			},
 		})
+	}
+
+	if len(opts.Args.Files) == 0 {
+		log.Fatal(`no files specified as arguments`)
 	}
 }
 
