@@ -44,7 +44,6 @@ var (
 
 var (
 	opts config.Opts
-	args []string
 )
 
 func main() {
@@ -73,11 +72,11 @@ func main() {
 func process() {
 	ctx := context.Background()
 
-	if len(args) == 0 {
+	if len(opts.Args.Files) == 0 {
 		log.Fatal(`no files specified as arguments`)
 	}
 
-	for _, filePath := range args {
+	for _, filePath := range opts.Args.Files {
 		sourcePath := filePath
 		targetPath := filePath
 		if strings.Contains(sourcePath, ":") {
@@ -133,7 +132,7 @@ func process() {
 func initArgparser() {
 	var err error
 	argparser = flags.NewParser(&opts, flags.Default)
-	args, err = argparser.Parse()
+	_, err = argparser.Parse()
 
 	// check if there is a parse error
 	if err != nil {

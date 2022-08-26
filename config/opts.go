@@ -22,6 +22,10 @@ type (
 
 		DryRun bool `long:"dry-run"      env:"DRY_RUN"  description:"dry run"`
 		Debug  bool `long:"debug"                       description:"debug run (can expose secrets!)"`
+
+		Args struct {
+			Files []string
+		} `positional-args:"yes" description:"List of files to process (will overwrite files, different target file can be specified as sourcefile:targetfile)'" required:"yes"`
 	}
 )
 
