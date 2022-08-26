@@ -67,7 +67,15 @@ func main() {
 	log.Infof("connecting to MsGraph")
 	initMsGraphConnection()
 
+	process()
+}
+
+func process() {
 	ctx := context.Background()
+
+	if len(args) == 0 {
+		log.Fatal(`no files specified as arguments`)
+	}
 
 	for _, filePath := range args {
 		sourcePath := filePath
