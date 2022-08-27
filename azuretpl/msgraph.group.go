@@ -39,8 +39,6 @@ func (e *AzureTemplateExecutor) msGraphGroupByDisplayName(displayName string) (i
 		} else {
 			return nil, fmt.Errorf(`found more then one group '%v'`, displayName)
 		}
-
-		return "", nil
 	})
 }
 

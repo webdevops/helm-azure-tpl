@@ -40,8 +40,6 @@ func (e *AzureTemplateExecutor) msGraphServicePrincipalByDisplayName(displayName
 		} else {
 			return nil, fmt.Errorf(`found more then one servicePrincipal '%v'`, displayName)
 		}
-
-		return "", nil
 	})
 }
 

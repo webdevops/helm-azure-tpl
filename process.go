@@ -1,19 +1,15 @@
 package main
 
 import (
-	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
 	"runtime"
 	"strings"
-	"text/template"
 
-	"github.com/Masterminds/sprig/v3"
 	log "github.com/sirupsen/logrus"
-
-	"github.com/webdevops/helm-azure-tpl/azuretpl"
 )
 
 const (
@@ -21,15 +17,6 @@ const (
 	CommandVersion = "version"
 	CommandLint    = "lint"
 	CommandProcess = "apply"
-)
-
-type (
-	TemplateFile struct {
-		SourceFile      string
-		TargetFile      string
-		TemplateBaseDir string
-		Logger          *log.Entry
-	}
 )
 
 var (
@@ -45,7 +32,7 @@ func run() {
 		fmt.Printf("helm-azure-tpl version: %v (%v, %v)\n", gitTag, gitCommit, runtime.Version())
 		os.Exit(0)
 	case CommandLint:
-		log.Info("enabling lint mode, all functions are in dry run")
+		log.Info("enabling lint mode, all functions are in dry mode")
 		lintMode = true
 		fallthrough
 	case CommandProcess:
@@ -54,6 +41,8 @@ func run() {
 		if len(opts.Args.Files) == 0 {
 			log.Fatal(`no files specified as arguments`)
 		}
+
+		templateFileList := buildSourceTargetList()
 
 		if !lintMode {
 			log.Infof("detecting Azure account information")
@@ -66,7 +55,13 @@ func run() {
 			initMsGraphConnection()
 		}
 
-		process()
+		for _, templateFile := range templateFileList {
+			if lintMode {
+				templateFile.Lint()
+			} else {
+				templateFile.Apply()
+			}
+		}
 
 		log.Info("finished")
 	default:
@@ -83,6 +78,8 @@ func printAppHeader() {
 }
 
 func buildSourceTargetList() (list []TemplateFile) {
+	ctx := context.Background()
+
 	for _, filePath := range opts.Args.Files {
 		sourcePath := filePath
 		// automatic target path
@@ -108,6 +105,10 @@ func buildSourceTargetList() (list []TemplateFile) {
 			`targetPath`: targetPath,
 		})
 
+		if _, err := os.Stat(sourcePath); errors.Is(err, os.ErrNotExist) {
+			log.Fatalf(err.Error())
+		}
+
 		var templateBasePath string
 		if opts.Template.BasePath != nil {
 			templateBasePath = *opts.Template.BasePath
@@ -122,6 +123,7 @@ func buildSourceTargetList() (list []TemplateFile) {
 		list = append(
 			list,
 			TemplateFile{
+				Context:         ctx,
 				SourceFile:      sourcePath,
 				TargetFile:      targetPath,
 				TemplateBaseDir: templateBasePath,
@@ -131,65 +133,4 @@ func buildSourceTargetList() (list []TemplateFile) {
 	}
 
 	return
-}
-
-func process() {
-	ctx := context.Background()
-
-	for _, templateFile := range buildSourceTargetList() {
-		contextLogger := templateFile.Logger
-
-		if lintMode {
-			contextLogger.Infof(`linting file`)
-		} else {
-			contextLogger.Infof(`processing file`)
-		}
-
-		azureTemplate := azuretpl.New(ctx, AzureClient, MsGraphClient, contextLogger)
-		azureTemplate.SetAzureCliAccountInfo(azAccountInfo)
-		azureTemplate.SetLintMode(lintMode)
-		azureTemplate.SetTemplateBasePath(templateFile.TemplateBaseDir)
-
-		tmpl := template.New(templateFile.SourceFile).Funcs(sprig.TxtFuncMap())
-		tmpl = tmpl.Funcs(azureTemplate.TxtFuncMap(tmpl))
-
-		content, err := os.ReadFile(templateFile.SourceFile) // #nosec G304 passed as parameter
-		if err != nil {
-			contextLogger.Fatalf(`unable to read file: '%v'`, err.Error())
-		}
-
-		parsedContent, err := tmpl.Parse(string(content))
-		if err != nil {
-			contextLogger.Fatalf(`unable to parse file: %v`, err.Error())
-		}
-
-		var buf bytes.Buffer
-		err = parsedContent.Execute(&buf, nil)
-		if err != nil {
-			contextLogger.Fatalf(`unable to process template: '%v'`, err.Error())
-		}
-
-		if lintMode {
-			contextLogger.Info(`file successfully linted`)
-			continue
-		}
-
-		if opts.Debug {
-			fmt.Println()
-			fmt.Println(strings.Repeat("-", TermColumns))
-			fmt.Printf("--- %v\n", templateFile.TargetFile)
-			fmt.Println(strings.Repeat("-", TermColumns))
-			fmt.Println(buf.String())
-		}
-
-		if !opts.DryRun {
-			contextLogger.Infof(`writing file '%v'`, templateFile.TargetFile)
-			err := os.WriteFile(templateFile.TargetFile, buf.Bytes(), 0600)
-			if err != nil {
-				contextLogger.Fatalf(`unable to write target file '%v': %v`, templateFile.TargetFile, err.Error())
-			}
-		} else {
-			contextLogger.Warn(`not writing file, DRY RUN active`)
-		}
-	}
 }

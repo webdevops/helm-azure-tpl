@@ -137,7 +137,5 @@ func (e *AzureTemplateExecutor) azureVirtualNetworkSubnetAddressPrefixes(resourc
 		}
 
 		return nil, fmt.Errorf(`unable to find Azure VirtualNetwork '%v' subnet '%v'`, resourceID, subnetName)
-
-		return []string{}, nil
 	})
 }
