@@ -11,6 +11,10 @@ import (
 func (e *AzureTemplateExecutor) msGraphGroupByDisplayName(displayName string) interface{} {
 	e.logger.Infof(`fetching MsGraph group by displayName "%v"`, displayName)
 
+	if val, enabled := e.lintResult(); enabled {
+		return val
+	}
+
 	cacheKey := generateCacheKey(`msGraphGroupByDisplayName`, displayName)
 	return e.cacheResult(cacheKey, func() interface{} {
 		client := msgraph.NewGroupsClient(e.msGraphClient.GetTenantID())
@@ -44,6 +48,10 @@ func (e *AzureTemplateExecutor) msGraphGroupByDisplayName(displayName string) in
 // msGraphGroupList fetches list of groups from MsGraph API using $filter query
 func (e *AzureTemplateExecutor) msGraphGroupList(filter string) interface{} {
 	e.logger.Infof(`fetching MsGraph group list with $filter "%v"`, filter)
+
+	if val, enabled := e.lintResult(); enabled {
+		return val
+	}
 
 	cacheKey := generateCacheKey(`msGraphGroupList`, filter)
 	return e.cacheResult(cacheKey, func() interface{} {

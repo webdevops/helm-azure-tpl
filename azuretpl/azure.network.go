@@ -12,6 +12,10 @@ import (
 func (e *AzureTemplateExecutor) azurePublicIpAddress(resourceID string) interface{} {
 	e.logger.Infof(`fetching Azure PublicIpAddress "%v"`, resourceID)
 
+	if val, enabled := e.lintResult(); enabled {
+		return val
+	}
+
 	cacheKey := generateCacheKey(`azurePublicIpAddress`, resourceID)
 	return e.cacheResult(cacheKey, func() interface{} {
 		resourceInfo, err := armclient.ParseResourceId(resourceID)
@@ -37,6 +41,10 @@ func (e *AzureTemplateExecutor) azurePublicIpAddress(resourceID string) interfac
 func (e *AzureTemplateExecutor) azurePublicIpPrefixAddressPrefix(resourceID string) interface{} {
 	e.logger.Infof(`fetching Azure PublicIpPrefix "%v"`, resourceID)
 
+	if val, enabled := e.lintResult(); enabled {
+		return val
+	}
+
 	cacheKey := generateCacheKey(`azurePublicIpPrefixAddressPrefix`, resourceID)
 	return e.cacheResult(cacheKey, func() interface{} {
 		resourceInfo, err := armclient.ParseResourceId(resourceID)
@@ -61,6 +69,10 @@ func (e *AzureTemplateExecutor) azurePublicIpPrefixAddressPrefix(resourceID stri
 // azureVirtualNetworkAddressPrefixes fetches ipAddress prefixes (array) from Azure VirtualNetwork
 func (e *AzureTemplateExecutor) azureVirtualNetworkAddressPrefixes(resourceID string) interface{} {
 	e.logger.Infof(`fetching AddressPrefixes from Azure VirtualNetwork "%v"`, resourceID)
+
+	if val, enabled := e.lintResult(); enabled {
+		return val
+	}
 
 	cacheKey := generateCacheKey(`azureVirtualNetworkAddressPrefixes`, resourceID)
 	return e.cacheResult(cacheKey, func() interface{} {
@@ -89,6 +101,10 @@ func (e *AzureTemplateExecutor) azureVirtualNetworkAddressPrefixes(resourceID st
 // azureVirtualNetworkSubnetAddressPrefixes fetches ipAddress prefixes (array) from Azure VirtualNetwork subnet
 func (e *AzureTemplateExecutor) azureVirtualNetworkSubnetAddressPrefixes(resourceID string, subnetName string) interface{} {
 	e.logger.Infof(`fetching AddressPrefixes from Azure VirtualNetwork "%v" subnet "%v"`, resourceID, subnetName)
+
+	if val, enabled := e.lintResult(); enabled {
+		return val
+	}
 
 	cacheKey := generateCacheKey(`azureVirtualNetworkSubnetAddressPrefixes`, resourceID, subnetName)
 	return e.cacheResult(cacheKey, func() interface{} {

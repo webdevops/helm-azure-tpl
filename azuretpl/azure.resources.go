@@ -4,6 +4,10 @@ package azuretpl
 func (e *AzureTemplateExecutor) azureResource(resourceID string, apiVersion string) interface{} {
 	e.logger.Infof(`fetching Azure Resource "%v" in apiVersion "%v"`, resourceID, apiVersion)
 
+	if val, enabled := e.lintResult(); enabled {
+		return val
+	}
+
 	cacheKey := generateCacheKey(`azureResource`, resourceID, apiVersion)
 	return e.cacheResult(cacheKey, func() interface{} {
 		return e.fetchAzureResource(resourceID, apiVersion)

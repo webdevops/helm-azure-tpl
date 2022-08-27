@@ -21,11 +21,12 @@ type (
 		}
 
 		DryRun bool `long:"dry-run"      env:"DRY_RUN"  description:"dry run"`
-		Debug  bool `long:"debug"                       description:"debug run (can expose secrets!)"`
+		Debug  bool `long:"debug"                       description:"debug run (WARNING: can expose secrets!)"`
 
 		Args struct {
-			Files []string
-		} `positional-args:"yes" description:"List of files to process (will overwrite files, different target file can be specified as sourcefile:targetfile)'" required:"yes"`
+			Command string   `choice:"help" choice:"version" choice:"lint" choice:"apply" required:"yes"` // nolint:staticcheck
+			Files   []string `description:"List of files to process (will overwrite files, different target file can be specified as sourcefile:targetfile)'"`
+		} `positional-args:"yes" `
 	}
 )
 

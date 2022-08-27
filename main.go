@@ -1,8 +1,6 @@
 package main
 
 import (
-	"bytes"
-	"context"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -10,15 +8,12 @@ import (
 	"path"
 	"runtime"
 	"strings"
-	"text/template"
 
-	sprig "github.com/Masterminds/sprig/v3"
 	"github.com/jessevdk/go-flags"
 	log "github.com/sirupsen/logrus"
 	"github.com/webdevops/go-common/azuresdk/armclient"
 	"github.com/webdevops/go-common/msgraphsdk/hamiltonclient"
 
-	"github.com/webdevops/helm-azure-tpl/azuretpl"
 	"github.com/webdevops/helm-azure-tpl/config"
 )
 
@@ -49,80 +44,12 @@ var (
 func main() {
 	initArgparser()
 
-	log.Infof("helm-azure-tpl v%s (%s; %s; by %v)", gitTag, gitCommit, runtime.Version(), Author)
-	log.Info(string(opts.GetJson()))
-
 	// we're going to use az cli auth here
 	if err := os.Setenv("AZURE_AUTH", "az"); err != nil {
 		log.Panic(err.Error())
 	}
 
-	log.Infof("detecting Azure account information")
-	fetchAzAccountInfo()
-
-	log.Infof("connecting to Azure")
-	initAzureConnection()
-
-	log.Infof("connecting to MsGraph")
-	initMsGraphConnection()
-
-	process()
-}
-
-func process() {
-	ctx := context.Background()
-
-	for _, filePath := range opts.Args.Files {
-		sourcePath := filePath
-		targetPath := filePath
-		if strings.Contains(sourcePath, ":") {
-			parts := strings.SplitN(sourcePath, ":", 2)
-			sourcePath = parts[0]
-			targetPath = parts[1]
-		}
-
-		contextLogger := log.WithFields(log.Fields{
-			`sourcePath`: sourcePath,
-			`targetPath`: targetPath,
-		})
-		contextLogger.Infof(`processing file`)
-
-		azureTemplate := azuretpl.New(ctx, AzureClient, MsGraphClient, contextLogger)
-		azureTemplate.SetAzureCliAccountInfo(azAccountInfo)
-		tmpl := template.New("helm-azuretpl-tpl").Funcs(sprig.TxtFuncMap()).Funcs(azureTemplate.TxtFuncMap())
-
-		content, err := os.ReadFile(sourcePath) // #nosec G304 passed as parameter
-		if err != nil {
-			contextLogger.Fatalf(`unable to read file: %v`, err.Error())
-		}
-
-		parsedContent, err := tmpl.Parse(string(content))
-		if err != nil {
-			contextLogger.Fatalf(`unable to parse file: %v`, err.Error())
-		}
-
-		var buf bytes.Buffer
-		err = parsedContent.Execute(&buf, nil)
-		if err != nil {
-			contextLogger.Fatalf(`unable to process template: %v`, err.Error())
-		}
-
-		if opts.Debug {
-			fmt.Println()
-			fmt.Println(strings.Repeat("-", TermColumns))
-			fmt.Printf("--- %v\n", targetPath)
-			fmt.Println(strings.Repeat("-", TermColumns))
-			fmt.Println(buf.String())
-		}
-
-		if !opts.DryRun {
-			contextLogger.Infof(`writing file "%v"`, targetPath)
-			err := os.WriteFile(targetPath, buf.Bytes(), 0600)
-			if err != nil {
-				contextLogger.Fatalf(`unable to write target file "%v": %v`, targetPath, err.Error())
-			}
-		}
-	}
+	run()
 }
 
 func initArgparser() {
@@ -170,10 +97,6 @@ func initArgparser() {
 				return funcName, fmt.Sprintf("%s:%d", path.Base(f.File), f.Line)
 			},
 		})
-	}
-
-	if len(opts.Args.Files) == 0 {
-		log.Fatal(`no files specified as arguments`)
 	}
 }
 

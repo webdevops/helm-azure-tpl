@@ -11,6 +11,10 @@ import (
 func (e *AzureTemplateExecutor) msGraphServicePrincipalByDisplayName(displayName string) interface{} {
 	e.logger.Infof(`fetching MsGraph servicePrincipal by displayName "%v"`, displayName)
 
+	if val, enabled := e.lintResult(); enabled {
+		return val
+	}
+
 	cacheKey := generateCacheKey(`msGraphServicePrincipalByDisplayName`, displayName)
 	return e.cacheResult(cacheKey, func() interface{} {
 		client := msgraph.NewGroupsClient(e.msGraphClient.GetTenantID())
@@ -44,6 +48,10 @@ func (e *AzureTemplateExecutor) msGraphServicePrincipalByDisplayName(displayName
 // msGraphServicePrincipalList fetches list of servicePrincipals from MsGraph API using $filter query
 func (e *AzureTemplateExecutor) msGraphServicePrincipalList(filter string) interface{} {
 	e.logger.Infof(`fetching MsGraph servicePrincipal list with $filter "%v"`, filter)
+
+	if val, enabled := e.lintResult(); enabled {
+		return val
+	}
 
 	cacheKey := generateCacheKey(`msGraphServicePrincipalList`, filter)
 	return e.cacheResult(cacheKey, func() interface{} {

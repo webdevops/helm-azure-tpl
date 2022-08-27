@@ -12,6 +12,10 @@ func (e *AzureTemplateExecutor) azureSubscription(subscriptionID ...string) inte
 		e.logger.Fatalf(`{{azureSubscription}} only supports zero or one subscriptionIDs`)
 	}
 
+	if val, enabled := e.lintResult(); enabled {
+		return val
+	}
+
 	if len(subscriptionID) == 1 {
 		//
 		selectedSubscriptionId = subscriptionID[0]
@@ -49,6 +53,10 @@ func (e *AzureTemplateExecutor) azureSubscription(subscriptionID ...string) inte
 // azureSubscriptionList fetches list of visible Azure subscriptions
 func (e *AzureTemplateExecutor) azureSubscriptionList() interface{} {
 	e.logger.Infof(`fetching Azure subscriptions`)
+
+	if val, enabled := e.lintResult(); enabled {
+		return val
+	}
 
 	cacheKey := generateCacheKey(`azureSubscriptionList`)
 	return e.cacheResult(cacheKey, func() interface{} {

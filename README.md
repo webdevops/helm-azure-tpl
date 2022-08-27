@@ -94,16 +94,19 @@ Help Options:
 ```
 
 
-### Helm template functions (borrowed from helm project)
+### Helm template functions (borrowed from [helm project](https://github.com/helm/helm))
 
-| Function        | Parameters | Description                 |
-|-----------------|------------|-----------------------------|
-| `toYaml`        |            | Convert object to yaml      |
-| `fromYaml`      |            | Convert yaml to object      |
-| `fromYamlArray` |            | Convert yaml array to array |
-| `toJson`        |            | Convert object to json      |
-| `fromJson`      |            | Convert json to object      |
-| `fromJsonArray` |            | Convert json array to array |
+| Function        | Parameters                          | Description                                  |
+|-----------------|-------------------------------------|----------------------------------------------|
+| `include`       | `path` (string), `data` (interface) | Parses and includes template file            |
+| `required`      | `message` (string)                  | Throws error if passed object/value is empty |
+| `fail`          | `message` (string)                  | Throws error                                 |
+| `toYaml`        |                                     | Convert object to yaml                       |
+| `fromYaml`      |                                     | Convert yaml to object                       |
+| `fromYamlArray` |                                     | Convert yaml array to array                  |
+| `toJson`        |                                     | Convert object to json                       |
+| `fromJson`      |                                     | Convert json to object                       |
+| `fromJsonArray` |                                     | Convert json array to array                  |
 
 ## Sprig template functions
 

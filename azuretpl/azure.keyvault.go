@@ -10,6 +10,10 @@ import (
 func (e *AzureTemplateExecutor) azureKeyVaultSecret(vaultUrl string, secretName string) interface{} {
 	e.logger.Infof(`fetching Azure KeyVault secret "%v" -> "%v"`, vaultUrl, secretName)
 
+	if val, enabled := e.lintResult(); enabled {
+		return val
+	}
+
 	cacheKey := generateCacheKey(`azureKeyVaultSecret`, vaultUrl, secretName)
 	return e.cacheResult(cacheKey, func() interface{} {
 		secretClient := azsecrets.NewClient(vaultUrl, e.azureClient.GetCred(), nil)

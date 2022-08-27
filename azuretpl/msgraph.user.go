@@ -11,6 +11,10 @@ import (
 func (e *AzureTemplateExecutor) msGraphUserByUserPrincipalName(userPrincipalName string) interface{} {
 	e.logger.Infof(`fetching MsGraph user by userPrincipalName "%v"`, userPrincipalName)
 
+	if val, enabled := e.lintResult(); enabled {
+		return val
+	}
+
 	cacheKey := generateCacheKey(`msGraphUserByUserPrincipalName`, userPrincipalName)
 	return e.cacheResult(cacheKey, func() interface{} {
 		client := msgraph.NewUsersClient(e.msGraphClient.GetTenantID())
@@ -44,6 +48,10 @@ func (e *AzureTemplateExecutor) msGraphUserByUserPrincipalName(userPrincipalName
 // msGraphUserList fetches list of users from MsGraph API using $filter query
 func (e *AzureTemplateExecutor) msGraphUserList(filter string) interface{} {
 	e.logger.Infof(`fetching MsGraph user list with $filter "%v"`, filter)
+
+	if val, enabled := e.lintResult(); enabled {
+		return val
+	}
 
 	cacheKey := generateCacheKey(`msGraphUserList`, filter)
 	return e.cacheResult(cacheKey, func() interface{} {
