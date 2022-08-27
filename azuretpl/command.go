@@ -111,7 +111,7 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *template.Template) template.Fun
 
 			if !strings.HasPrefix(sourcePath, e.TemplateBasePath) {
 				return "", fmt.Errorf(
-					`"%v" must be in same directory or below (expected prefix: %v, got: %v)`,
+					`'%v' must be in same directory or below (expected prefix: %v, got: %v)`,
 					path,
 					e.TemplateBasePath,
 					filepath.Dir(sourcePath),
@@ -120,7 +120,7 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *template.Template) template.Fun
 
 			if v, ok := includedNames[sourcePath]; ok {
 				if v > recursionMaxNums {
-					return "", fmt.Errorf(`too many recursions for inclusion of "%v"`, path)
+					return "", fmt.Errorf(`too many recursions for inclusion of '%v'`, path)
 				}
 				includedNames[sourcePath]++
 			} else {
@@ -206,7 +206,7 @@ func (e *AzureTemplateExecutor) cacheResult(cacheKey string, callback func() int
 func (e *AzureTemplateExecutor) fetchAzureResource(resourceID string, apiVersion string) interface{} {
 	resourceInfo, err := armclient.ParseResourceId(resourceID)
 	if err != nil {
-		e.logger.Fatalf(`unable to parse Azure resourceID "%v": %v`, resourceID, err.Error())
+		e.logger.Fatalf(`unable to parse Azure resourceID '%v': %v`, resourceID, err.Error())
 	}
 
 	client, err := armresources.NewClient(resourceInfo.Subscription, e.azureClient.GetCred(), e.azureClient.NewArmClientOptions())
@@ -216,18 +216,18 @@ func (e *AzureTemplateExecutor) fetchAzureResource(resourceID string, apiVersion
 
 	resource, err := client.GetByID(e.ctx, resourceID, apiVersion, nil)
 	if err != nil {
-		e.logger.Fatalf(`unable to fetch Azure resource "%v": %v`, resourceID, err.Error())
+		e.logger.Fatalf(`unable to fetch Azure resource '%v': %v`, resourceID, err.Error())
 	}
 
 	data, err := resource.MarshalJSON()
 	if err != nil {
-		e.logger.Fatalf(`unable to marshal Azure resource "%v": %v`, resourceID, err.Error())
+		e.logger.Fatalf(`unable to marshal Azure resource '%v': %v`, resourceID, err.Error())
 	}
 
 	var resourceRawInfo map[string]interface{}
 	err = json.Unmarshal(data, &resourceRawInfo)
 	if err != nil {
-		e.logger.Fatalf(`unable to unmarshal Azure resource "%v": %v`, resourceID, err.Error())
+		e.logger.Fatalf(`unable to unmarshal Azure resource '%v': %v`, resourceID, err.Error())
 	}
 
 	return resourceRawInfo

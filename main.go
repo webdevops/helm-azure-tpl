@@ -113,12 +113,12 @@ func fetchAzAccountInfo() {
 
 	accountInfo, err := cmd.Output()
 	if err != nil {
-		log.Fatalf(`unable to detect Azure TenantID via "az account show": %v`, err.Error())
+		log.Fatalf(`unable to detect Azure TenantID via 'az account show': %v`, err.Error())
 	}
 
 	err = json.Unmarshal(accountInfo, &azAccountInfo)
 	if err != nil {
-		log.Fatalf(`unable to parse "az account show" output: %v`, err.Error())
+		log.Fatalf(`unable to parse 'az account show' output: %v`, err.Error())
 	}
 }
 
@@ -128,7 +128,7 @@ func initAzureConnection() {
 	if opts.Azure.Environment == nil || *opts.Azure.Environment == "" {
 		// autodetect tenant
 		if val, ok := azAccountInfo["environmentName"].(string); ok {
-			log.Infof(`use Azure Environment "%v" from "az account show"`, val)
+			log.Infof(`use Azure Environment '%v' from 'az account show'`, val)
 			opts.Azure.Environment = &val
 		}
 	}
@@ -147,7 +147,7 @@ func initMsGraphConnection() {
 	if opts.Azure.Tenant == nil || *opts.Azure.Tenant == "" {
 		// autodetect tenant
 		if val, ok := azAccountInfo["tenantId"].(string); ok {
-			log.Infof(`use Azure TenantID "%v" from "az account show"`, val)
+			log.Infof(`use Azure TenantID '%v' from 'az account show'`, val)
 			opts.Azure.Tenant = &val
 		}
 	}

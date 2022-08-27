@@ -9,7 +9,7 @@ import (
 
 // msGraphUserByUserPrincipalName fetches one user from MsGraph API using userPrincipalName
 func (e *AzureTemplateExecutor) msGraphUserByUserPrincipalName(userPrincipalName string) interface{} {
-	e.logger.Infof(`fetching MsGraph user by userPrincipalName "%v"`, userPrincipalName)
+	e.logger.Infof(`fetching MsGraph user by userPrincipalName '%v'`, userPrincipalName)
 
 	if val, enabled := e.lintResult(); enabled {
 		return val
@@ -32,13 +32,13 @@ func (e *AzureTemplateExecutor) msGraphUserByUserPrincipalName(userPrincipalName
 		}
 
 		if list == nil {
-			e.logger.Fatalf(`user "%v" was not found in AzureAD`, userPrincipalName)
+			e.logger.Fatalf(`user '%v' was not found in AzureAD`, userPrincipalName)
 		}
 
 		if len(*list) == 1 {
 			return (*list)[0]
 		} else {
-			e.logger.Fatalf(`found more then one user "%v"`, userPrincipalName)
+			e.logger.Fatalf(`found more then one user '%v'`, userPrincipalName)
 		}
 
 		return ""
@@ -47,7 +47,7 @@ func (e *AzureTemplateExecutor) msGraphUserByUserPrincipalName(userPrincipalName
 
 // msGraphUserList fetches list of users from MsGraph API using $filter query
 func (e *AzureTemplateExecutor) msGraphUserList(filter string) interface{} {
-	e.logger.Infof(`fetching MsGraph user list with $filter "%v"`, filter)
+	e.logger.Infof(`fetching MsGraph user list with $filter '%v'`, filter)
 
 	if val, enabled := e.lintResult(); enabled {
 		return val

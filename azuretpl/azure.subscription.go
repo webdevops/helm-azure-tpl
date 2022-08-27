@@ -28,7 +28,7 @@ func (e *AzureTemplateExecutor) azureSubscription(subscriptionID ...string) inte
 		}
 	}
 
-	e.logger.Infof(`fetching Azure subscription "%v"`, selectedSubscriptionId)
+	e.logger.Infof(`fetching Azure subscription '%v'`, selectedSubscriptionId)
 
 	cacheKey := generateCacheKey(`azureSubscription`, selectedSubscriptionId)
 	return e.cacheResult(cacheKey, func() interface{} {
@@ -39,12 +39,12 @@ func (e *AzureTemplateExecutor) azureSubscription(subscriptionID ...string) inte
 
 		resource, err := client.Get(e.ctx, selectedSubscriptionId, nil)
 		if err != nil {
-			e.logger.Fatalf(`unable to fetch Azure subscription "%v": %v`, selectedSubscriptionId, err.Error())
+			e.logger.Fatalf(`unable to fetch Azure subscription '%v': %v`, selectedSubscriptionId, err.Error())
 		}
 
 		subscriptionData, err := transformToInterface(resource)
 		if err != nil {
-			e.logger.Fatalf(`unable to transform Azure subscription "%v": %v`, selectedSubscriptionId, err.Error())
+			e.logger.Fatalf(`unable to transform Azure subscription '%v': %v`, selectedSubscriptionId, err.Error())
 		}
 		return subscriptionData
 	})
@@ -76,7 +76,7 @@ func (e *AzureTemplateExecutor) azureSubscriptionList() interface{} {
 			for _, subscription := range result.Value {
 				subscriptionData, err := transformToInterface(subscription)
 				if err != nil {
-					e.logger.Fatalf(`unable to transform Azure subscription "%v": %v`, to.String(subscription.SubscriptionID), err.Error())
+					e.logger.Fatalf(`unable to transform Azure subscription '%v': %v`, to.String(subscription.SubscriptionID), err.Error())
 				}
 				ret = append(ret, subscriptionData)
 			}

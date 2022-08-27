@@ -2,7 +2,7 @@ package azuretpl
 
 // azureResource fetches resource json from Azure REST API using the specified apiVersion
 func (e *AzureTemplateExecutor) azureResource(resourceID string, apiVersion string) interface{} {
-	e.logger.Infof(`fetching Azure Resource "%v" in apiVersion "%v"`, resourceID, apiVersion)
+	e.logger.Infof(`fetching Azure Resource '%v' in apiVersion '%v'`, resourceID, apiVersion)
 
 	if val, enabled := e.lintResult(); enabled {
 		return val

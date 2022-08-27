@@ -32,21 +32,23 @@ helm azure-tpl template.tpl:template.yaml
 General usage:
 ```
 Usage:
-  helm azure-tpl [OPTIONS]
+  helm azure-tpl [OPTIONS] [Command] [Files...]
 
 Application Options:
-      --debug              debug mode [$DEBUG]
   -v, --verbose            verbose mode [$VERBOSE]
       --log.json           Switch log output to json format [$LOG_JSON]
       --azure.tenant=      Azure tenant id [$AZURE_TENANT_ID]
-      --azure.environment= Azure environment name (default: AzurePublicCloud) [$AZURE_ENVIRONMENT]
+      --azure.environment= Azure environment name [$AZURE_ENVIRONMENT]
       --dry-run            dry run [$DRY_RUN]
+      --debug              debug run (WARNING: can expose secrets!)
+      --template.basepath= sets custom base path (if empty, base path is set by base directory for each file) [$TEMPLATE_BASEPATH]
 
 Help Options:
   -h, --help               Show this help message
+
+Arguments:
+  Files:                   List of files to process (will overwrite files, different target file can be specified as sourcefile:targetfile)'
 ```
-
-
 
 ## Template functions
 

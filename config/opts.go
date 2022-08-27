@@ -27,9 +27,14 @@ type (
 			BasePath *string `long:"template.basepath"  env:"TEMPLATE_BASEPATH"  description:"sets custom base path (if empty, base path is set by base directory for each file)"`
 		}
 
+		Target struct {
+			Prefix string `long:"target.prefix"  env:"TARGET_PREFIX"  description:"adds this value as prefix to filename on save (not used if targetfile is specified in argument)"`
+			Suffix string `long:"target.suffix"  env:"TARGET_SUFFIX"  description:"adds this value as suffix to filename on save (not used if targetfile is specified in argument)"`
+		}
+
 		Args struct {
-			Command string   `choice:"help" choice:"version" choice:"lint" choice:"apply" required:"yes"` // nolint:staticcheck
-			Files   []string `description:"List of files to process (will overwrite files, different target file can be specified as sourcefile:targetfile)'"`
+			Command string   `description:"specifies what to do (help, version, lint, apply)" choice:"help" choice:"version" choice:"lint" choice:"apply" required:"yes"` // nolint:staticcheck
+			Files   []string `description:"list of files to process (will overwrite files, different target file can be specified as sourcefile:targetfile)'"`
 		} `positional-args:"yes" `
 	}
 )

@@ -23,6 +23,15 @@ const (
 	CommandProcess = "apply"
 )
 
+type (
+	TemplateFile struct {
+		SourceFile      string
+		TargetFile      string
+		TemplateBaseDir string
+		Logger          *log.Entry
+	}
+)
+
 var (
 	lintMode = false
 )
@@ -58,10 +67,13 @@ func run() {
 		}
 
 		process()
-		
+
 		log.Info("finished")
 	default:
-		log.Fatalf(`invalid command "%v"`, opts.Args.Command)
+		fmt.Printf("invalid command '%v'\n", opts.Args.Command)
+		fmt.Println()
+		argparser.WriteHelp(os.Stdout)
+		os.Exit(1)
 	}
 }
 
@@ -70,13 +82,19 @@ func printAppHeader() {
 	log.Info(string(opts.GetJson()))
 }
 
-func process() {
-	ctx := context.Background()
-
+func buildSourceTargetList() (list []TemplateFile) {
 	for _, filePath := range opts.Args.Files {
 		sourcePath := filePath
-		targetPath := sourcePath
+		// automatic target path
+		targetPath := fmt.Sprintf(
+			"%s%v%s",
+			opts.Target.Prefix,
+			sourcePath,
+			opts.Target.Suffix,
+		)
+
 		if strings.Contains(sourcePath, ":") {
+			// explicit target path set in argument (source:target)
 			parts := strings.SplitN(sourcePath, ":", 2)
 			sourcePath = parts[0]
 			targetPath = parts[1]
@@ -97,9 +115,29 @@ func process() {
 			if val, err := filepath.Abs(sourcePath); err == nil {
 				templateBasePath = filepath.Dir(val)
 			} else {
-				contextLogger.Fatalf(`unable to resolve file: %v`, err)
+				log.Fatalf(`unable to resolve file: %v`, err)
 			}
 		}
+
+		list = append(
+			list,
+			TemplateFile{
+				SourceFile:      sourcePath,
+				TargetFile:      targetPath,
+				TemplateBaseDir: templateBasePath,
+				Logger:          contextLogger,
+			},
+		)
+	}
+
+	return
+}
+
+func process() {
+	ctx := context.Background()
+
+	for _, templateFile := range buildSourceTargetList() {
+		contextLogger := templateFile.Logger
 
 		if lintMode {
 			contextLogger.Infof(`linting file`)
@@ -110,13 +148,14 @@ func process() {
 		azureTemplate := azuretpl.New(ctx, AzureClient, MsGraphClient, contextLogger)
 		azureTemplate.SetAzureCliAccountInfo(azAccountInfo)
 		azureTemplate.SetLintMode(lintMode)
-		azureTemplate.SetTemplateBasePath(templateBasePath)
-		tmpl := template.New("helm-azuretpl-tpl").Funcs(sprig.TxtFuncMap())
+		azureTemplate.SetTemplateBasePath(templateFile.TemplateBaseDir)
+
+		tmpl := template.New(templateFile.SourceFile).Funcs(sprig.TxtFuncMap())
 		tmpl = tmpl.Funcs(azureTemplate.TxtFuncMap(tmpl))
 
-		content, err := os.ReadFile(sourcePath) // #nosec G304 passed as parameter
+		content, err := os.ReadFile(templateFile.SourceFile) // #nosec G304 passed as parameter
 		if err != nil {
-			contextLogger.Fatalf(`unable to read file: %v`, err.Error())
+			contextLogger.Fatalf(`unable to read file: '%v'`, err.Error())
 		}
 
 		parsedContent, err := tmpl.Parse(string(content))
@@ -127,7 +166,7 @@ func process() {
 		var buf bytes.Buffer
 		err = parsedContent.Execute(&buf, nil)
 		if err != nil {
-			contextLogger.Fatalf(`unable to process template: %v`, err.Error())
+			contextLogger.Fatalf(`unable to process template: '%v'`, err.Error())
 		}
 
 		if lintMode {
@@ -138,16 +177,16 @@ func process() {
 		if opts.Debug {
 			fmt.Println()
 			fmt.Println(strings.Repeat("-", TermColumns))
-			fmt.Printf("--- %v\n", targetPath)
+			fmt.Printf("--- %v\n", templateFile.TargetFile)
 			fmt.Println(strings.Repeat("-", TermColumns))
 			fmt.Println(buf.String())
 		}
 
 		if !opts.DryRun {
-			contextLogger.Infof(`writing file "%v"`, targetPath)
-			err := os.WriteFile(targetPath, buf.Bytes(), 0600)
+			contextLogger.Infof(`writing file '%v'`, templateFile.TargetFile)
+			err := os.WriteFile(templateFile.TargetFile, buf.Bytes(), 0600)
 			if err != nil {
-				contextLogger.Fatalf(`unable to write target file "%v": %v`, targetPath, err.Error())
+				contextLogger.Fatalf(`unable to write target file '%v': %v`, templateFile.TargetFile, err.Error())
 			}
 		} else {
 			contextLogger.Warn(`not writing file, DRY RUN active`)

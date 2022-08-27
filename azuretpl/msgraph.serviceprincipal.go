@@ -9,7 +9,7 @@ import (
 
 // msGraphServicePrincipalByDisplayName fetches one servicePrincipal from MsGraph API using displayName
 func (e *AzureTemplateExecutor) msGraphServicePrincipalByDisplayName(displayName string) interface{} {
-	e.logger.Infof(`fetching MsGraph servicePrincipal by displayName "%v"`, displayName)
+	e.logger.Infof(`fetching MsGraph servicePrincipal by displayName '%v'`, displayName)
 
 	if val, enabled := e.lintResult(); enabled {
 		return val
@@ -32,13 +32,13 @@ func (e *AzureTemplateExecutor) msGraphServicePrincipalByDisplayName(displayName
 		}
 
 		if list == nil {
-			e.logger.Fatalf(`servicePrincipal "%v" was not found in AzureAD`, displayName)
+			e.logger.Fatalf(`servicePrincipal '%v' was not found in AzureAD`, displayName)
 		}
 
 		if len(*list) == 1 {
 			return (*list)[0]
 		} else {
-			e.logger.Fatalf(`found more then one servicePrincipal "%v"`, displayName)
+			e.logger.Fatalf(`found more then one servicePrincipal '%v'`, displayName)
 		}
 
 		return ""
@@ -47,7 +47,7 @@ func (e *AzureTemplateExecutor) msGraphServicePrincipalByDisplayName(displayName
 
 // msGraphServicePrincipalList fetches list of servicePrincipals from MsGraph API using $filter query
 func (e *AzureTemplateExecutor) msGraphServicePrincipalList(filter string) interface{} {
-	e.logger.Infof(`fetching MsGraph servicePrincipal list with $filter "%v"`, filter)
+	e.logger.Infof(`fetching MsGraph servicePrincipal list with $filter '%v'`, filter)
 
 	if val, enabled := e.lintResult(); enabled {
 		return val

@@ -8,7 +8,7 @@ import (
 
 // azureKeyVaultSecret fetches secret object from Azure KeyVault
 func (e *AzureTemplateExecutor) azureKeyVaultSecret(vaultUrl string, secretName string) interface{} {
-	e.logger.Infof(`fetching Azure KeyVault secret "%v" -> "%v"`, vaultUrl, secretName)
+	e.logger.Infof(`fetching Azure KeyVault secret '%v' -> '%v'`, vaultUrl, secretName)
 
 	if val, enabled := e.lintResult(); enabled {
 		return val
@@ -24,15 +24,15 @@ func (e *AzureTemplateExecutor) azureKeyVaultSecret(vaultUrl string, secretName 
 		}
 
 		if !*secret.Attributes.Enabled {
-			e.logger.Fatalf(`Azure KeyVault secret "%v" -> "%v" is not enabled`, vaultUrl, secretName)
+			e.logger.Fatalf(`Azure KeyVault secret '%v' -> '%v' is not enabled`, vaultUrl, secretName)
 		}
 
 		if secret.Attributes.NotBefore != nil && time.Now().Before(*secret.Attributes.NotBefore) {
-			e.logger.Fatalf(`Azure KeyVault secret "%v" -> "%v" is not yet active (notBefore: %v)`, vaultUrl, secretName, secret.Attributes.NotBefore.Format(time.RFC3339))
+			e.logger.Fatalf(`Azure KeyVault secret '%v' -> '%v' is not yet active (notBefore: %v)`, vaultUrl, secretName, secret.Attributes.NotBefore.Format(time.RFC3339))
 		}
 
 		if secret.Attributes.Expires != nil && time.Now().After(*secret.Attributes.Expires) {
-			e.logger.Fatalf(`Azure KeyVault secret "%v" -> "%v" is expired (expires: %v)`, vaultUrl, secretName, secret.Attributes.Expires.Format(time.RFC3339))
+			e.logger.Fatalf(`Azure KeyVault secret '%v' -> '%v' is expired (expires: %v)`, vaultUrl, secretName, secret.Attributes.Expires.Format(time.RFC3339))
 		}
 
 		return secret

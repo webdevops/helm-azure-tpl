@@ -9,7 +9,7 @@ import (
 
 // msGraphGroupByDisplayName fetches one group from MsGraph API using displayName
 func (e *AzureTemplateExecutor) msGraphGroupByDisplayName(displayName string) interface{} {
-	e.logger.Infof(`fetching MsGraph group by displayName "%v"`, displayName)
+	e.logger.Infof(`fetching MsGraph group by displayName '%v'`, displayName)
 
 	if val, enabled := e.lintResult(); enabled {
 		return val
@@ -32,13 +32,13 @@ func (e *AzureTemplateExecutor) msGraphGroupByDisplayName(displayName string) in
 		}
 
 		if list == nil {
-			e.logger.Fatalf(`group "%v" was not found in AzureAD`, displayName)
+			e.logger.Fatalf(`group '%v' was not found in AzureAD`, displayName)
 		}
 
 		if len(*list) == 1 {
 			return (*list)[0]
 		} else {
-			e.logger.Fatalf(`found more then one group "%v"`, displayName)
+			e.logger.Fatalf(`found more then one group '%v'`, displayName)
 		}
 
 		return ""
@@ -47,7 +47,7 @@ func (e *AzureTemplateExecutor) msGraphGroupByDisplayName(displayName string) in
 
 // msGraphGroupList fetches list of groups from MsGraph API using $filter query
 func (e *AzureTemplateExecutor) msGraphGroupList(filter string) interface{} {
-	e.logger.Infof(`fetching MsGraph group list with $filter "%v"`, filter)
+	e.logger.Infof(`fetching MsGraph group list with $filter '%v'`, filter)
 
 	if val, enabled := e.lintResult(); enabled {
 		return val

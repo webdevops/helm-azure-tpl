@@ -10,7 +10,7 @@ import (
 
 // azurePublicIpAddress fetches ipAddress from Azure Public IP Address
 func (e *AzureTemplateExecutor) azurePublicIpAddress(resourceID string) interface{} {
-	e.logger.Infof(`fetching Azure PublicIpAddress "%v"`, resourceID)
+	e.logger.Infof(`fetching Azure PublicIpAddress '%v'`, resourceID)
 
 	if val, enabled := e.lintResult(); enabled {
 		return val
@@ -20,7 +20,7 @@ func (e *AzureTemplateExecutor) azurePublicIpAddress(resourceID string) interfac
 	return e.cacheResult(cacheKey, func() interface{} {
 		resourceInfo, err := armclient.ParseResourceId(resourceID)
 		if err != nil {
-			e.logger.Fatalf(`unable to parse Azure resourceID "%v": %v`, resourceID, err.Error())
+			e.logger.Fatalf(`unable to parse Azure resourceID '%v': %v`, resourceID, err.Error())
 		}
 
 		client, err := armnetwork.NewPublicIPAddressesClient(resourceInfo.Subscription, e.azureClient.GetCred(), e.azureClient.NewArmClientOptions())
@@ -30,7 +30,7 @@ func (e *AzureTemplateExecutor) azurePublicIpAddress(resourceID string) interfac
 
 		pipAddress, err := client.Get(e.ctx, resourceInfo.ResourceGroup, resourceInfo.ResourceName, nil)
 		if err != nil {
-			e.logger.Fatalf(`unable to fetch Azure resource "%v": %v`, resourceID, err.Error())
+			e.logger.Fatalf(`unable to fetch Azure resource '%v': %v`, resourceID, err.Error())
 		}
 
 		return to.String(pipAddress.Properties.IPAddress)
@@ -39,7 +39,7 @@ func (e *AzureTemplateExecutor) azurePublicIpAddress(resourceID string) interfac
 
 // azurePublicIpPrefixAddressPrefix fetches ipAddress prefix from Azure Public IP Address prefix
 func (e *AzureTemplateExecutor) azurePublicIpPrefixAddressPrefix(resourceID string) interface{} {
-	e.logger.Infof(`fetching Azure PublicIpPrefix "%v"`, resourceID)
+	e.logger.Infof(`fetching Azure PublicIpPrefix '%v'`, resourceID)
 
 	if val, enabled := e.lintResult(); enabled {
 		return val
@@ -49,7 +49,7 @@ func (e *AzureTemplateExecutor) azurePublicIpPrefixAddressPrefix(resourceID stri
 	return e.cacheResult(cacheKey, func() interface{} {
 		resourceInfo, err := armclient.ParseResourceId(resourceID)
 		if err != nil {
-			e.logger.Fatalf(`unable to parse Azure resourceID "%v": %v`, resourceID, err.Error())
+			e.logger.Fatalf(`unable to parse Azure resourceID '%v': %v`, resourceID, err.Error())
 		}
 
 		client, err := armnetwork.NewPublicIPPrefixesClient(resourceInfo.Subscription, e.azureClient.GetCred(), e.azureClient.NewArmClientOptions())
@@ -59,7 +59,7 @@ func (e *AzureTemplateExecutor) azurePublicIpPrefixAddressPrefix(resourceID stri
 
 		pipAddress, err := client.Get(e.ctx, resourceInfo.ResourceGroup, resourceInfo.ResourceName, nil)
 		if err != nil {
-			e.logger.Fatalf(`unable to fetch Azure resource "%v": %v`, resourceID, err.Error())
+			e.logger.Fatalf(`unable to fetch Azure resource '%v': %v`, resourceID, err.Error())
 		}
 
 		return to.String(pipAddress.Properties.IPPrefix)
@@ -68,7 +68,7 @@ func (e *AzureTemplateExecutor) azurePublicIpPrefixAddressPrefix(resourceID stri
 
 // azureVirtualNetworkAddressPrefixes fetches ipAddress prefixes (array) from Azure VirtualNetwork
 func (e *AzureTemplateExecutor) azureVirtualNetworkAddressPrefixes(resourceID string) interface{} {
-	e.logger.Infof(`fetching AddressPrefixes from Azure VirtualNetwork "%v"`, resourceID)
+	e.logger.Infof(`fetching AddressPrefixes from Azure VirtualNetwork '%v'`, resourceID)
 
 	if val, enabled := e.lintResult(); enabled {
 		return val
@@ -78,7 +78,7 @@ func (e *AzureTemplateExecutor) azureVirtualNetworkAddressPrefixes(resourceID st
 	return e.cacheResult(cacheKey, func() interface{} {
 		resourceInfo, err := armclient.ParseResourceId(resourceID)
 		if err != nil {
-			e.logger.Fatalf(`unable to parse Azure resourceID "%v": %v`, resourceID, err.Error())
+			e.logger.Fatalf(`unable to parse Azure resourceID '%v': %v`, resourceID, err.Error())
 		}
 
 		client, err := armnetwork.NewVirtualNetworksClient(resourceInfo.Subscription, e.azureClient.GetCred(), e.azureClient.NewArmClientOptions())
@@ -88,7 +88,7 @@ func (e *AzureTemplateExecutor) azureVirtualNetworkAddressPrefixes(resourceID st
 
 		vnet, err := client.Get(e.ctx, resourceInfo.ResourceGroup, resourceInfo.ResourceName, nil)
 		if err != nil {
-			e.logger.Fatalf(`unable to fetch Azure resource "%v": %v`, resourceID, err.Error())
+			e.logger.Fatalf(`unable to fetch Azure resource '%v': %v`, resourceID, err.Error())
 		}
 
 		if vnet.Properties.AddressSpace != nil {
@@ -100,7 +100,7 @@ func (e *AzureTemplateExecutor) azureVirtualNetworkAddressPrefixes(resourceID st
 
 // azureVirtualNetworkSubnetAddressPrefixes fetches ipAddress prefixes (array) from Azure VirtualNetwork subnet
 func (e *AzureTemplateExecutor) azureVirtualNetworkSubnetAddressPrefixes(resourceID string, subnetName string) interface{} {
-	e.logger.Infof(`fetching AddressPrefixes from Azure VirtualNetwork "%v" subnet "%v"`, resourceID, subnetName)
+	e.logger.Infof(`fetching AddressPrefixes from Azure VirtualNetwork '%v' subnet '%v'`, resourceID, subnetName)
 
 	if val, enabled := e.lintResult(); enabled {
 		return val
@@ -110,7 +110,7 @@ func (e *AzureTemplateExecutor) azureVirtualNetworkSubnetAddressPrefixes(resourc
 	return e.cacheResult(cacheKey, func() interface{} {
 		resourceInfo, err := armclient.ParseResourceId(resourceID)
 		if err != nil {
-			e.logger.Fatalf(`unable to parse Azure resourceID "%v": %v`, resourceID, err.Error())
+			e.logger.Fatalf(`unable to parse Azure resourceID '%v': %v`, resourceID, err.Error())
 		}
 
 		client, err := armnetwork.NewVirtualNetworksClient(resourceInfo.Subscription, e.azureClient.GetCred(), e.azureClient.NewArmClientOptions())
@@ -120,7 +120,7 @@ func (e *AzureTemplateExecutor) azureVirtualNetworkSubnetAddressPrefixes(resourc
 
 		vnet, err := client.Get(e.ctx, resourceInfo.ResourceGroup, resourceInfo.ResourceName, nil)
 		if err != nil {
-			e.logger.Fatalf(`unable to fetch Azure resource "%v": %v`, resourceID, err.Error())
+			e.logger.Fatalf(`unable to fetch Azure resource '%v': %v`, resourceID, err.Error())
 		}
 
 		if vnet.Properties.Subnets != nil {
@@ -135,7 +135,7 @@ func (e *AzureTemplateExecutor) azureVirtualNetworkSubnetAddressPrefixes(resourc
 			}
 		}
 
-		e.logger.Fatalf(`unable to find Azure VirtualNetwork "%v" subnet "%v"`, resourceID, subnetName)
+		e.logger.Fatalf(`unable to find Azure VirtualNetwork '%v' subnet '%v'`, resourceID, subnetName)
 
 		return []string{}
 	})
