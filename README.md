@@ -42,12 +42,15 @@ Application Options:
       --dry-run            dry run [$DRY_RUN]
       --debug              debug run (WARNING: can expose secrets!)
       --template.basepath= sets custom base path (if empty, base path is set by base directory for each file) [$TEMPLATE_BASEPATH]
+      --target.prefix=     adds this value as prefix to filename on save (not used if targetfile is specified in argument) [$TARGET_PREFIX]
+      --target.suffix=     adds this value as suffix to filename on save (not used if targetfile is specified in argument) [$TARGET_SUFFIX]
 
 Help Options:
   -h, --help               Show this help message
 
 Arguments:
-  Files:                   List of files to process (will overwrite files, different target file can be specified as sourcefile:targetfile)'
+  Command:                 specifies what to do (help, version, lint, apply)
+  Files:                   list of files to process (will overwrite files, different target file can be specified as sourcefile:targetfile)
 ```
 
 ## Template functions

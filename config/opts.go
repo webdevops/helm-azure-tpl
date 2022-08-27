@@ -34,7 +34,7 @@ type (
 
 		Args struct {
 			Command string   `description:"specifies what to do (help, version, lint, apply)" choice:"help" choice:"version" choice:"lint" choice:"apply" required:"yes"` // nolint:staticcheck
-			Files   []string `description:"list of files to process (will overwrite files, different target file can be specified as sourcefile:targetfile)'"`
+			Files   []string `description:"list of files to process (will overwrite files, different target file can be specified as sourcefile:targetfile)"`
 		} `positional-args:"yes" `
 	}
 )
