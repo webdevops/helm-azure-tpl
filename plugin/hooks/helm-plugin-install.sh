@@ -22,7 +22,9 @@ echo "  platform: ${HOST_OS}/${HOST_ARCH}"
 echo "       url: $PLUGIN_DOWNLOAD_URL"
 echo "    target: $PLUGIN_TARGET_PATH"
 
+rm -f "$PLUGIN_TARGET_PATH"
 curl --location "$PLUGIN_DOWNLOAD_URL" -o "$PLUGIN_TARGET_PATH"
+ls -l $HELM_PLUGIN_DIR
 if [ "$?" -ne 0 ]; then
     >&2 echo "[ERROR] failed to download plugin executable"
     exit 1
