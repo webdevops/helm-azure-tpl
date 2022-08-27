@@ -111,10 +111,10 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *template.Template) template.Fun
 
 			if !strings.HasPrefix(sourcePath, e.TemplateBasePath) {
 				return "", fmt.Errorf(
-					`"%v" must be in same directory or blow (expected path: %v, got: %v)`,
+					`"%v" must be in same directory or below (expected prefix: %v, got: %v)`,
 					path,
-					filepath.Dir(sourcePath),
 					e.TemplateBasePath,
+					filepath.Dir(sourcePath),
 				)
 			}
 

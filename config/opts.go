@@ -23,6 +23,10 @@ type (
 		DryRun bool `long:"dry-run"      env:"DRY_RUN"  description:"dry run"`
 		Debug  bool `long:"debug"                       description:"debug run (WARNING: can expose secrets!)"`
 
+		Template struct {
+			BasePath *string `long:"template.basepath"  env:"TEMPLATE_BASEPATH"  description:"sets custom base path (if empty, base path is set by base directory for each file)"`
+		}
+
 		Args struct {
 			Command string   `choice:"help" choice:"version" choice:"lint" choice:"apply" required:"yes"` // nolint:staticcheck
 			Files   []string `description:"List of files to process (will overwrite files, different target file can be specified as sourcefile:targetfile)'"`

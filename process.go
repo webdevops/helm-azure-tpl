@@ -87,10 +87,14 @@ func process() {
 		})
 
 		var templateBasePath string
-		if val, err := filepath.Abs(sourcePath); err == nil {
-			templateBasePath = filepath.Dir(val)
+		if opts.Template.BasePath != nil {
+			templateBasePath = *opts.Template.BasePath
 		} else {
-			contextLogger.Fatalf(`unable to resolve file: %v`, err)
+			if val, err := filepath.Abs(sourcePath); err == nil {
+				templateBasePath = filepath.Dir(val)
+			} else {
+				contextLogger.Fatalf(`unable to resolve file: %v`, err)
+			}
 		}
 
 		if lintMode {
