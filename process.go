@@ -36,6 +36,7 @@ func run() {
 		fmt.Printf("helm-azure-tpl version: %v (%v, %v)\n", gitTag, gitCommit, runtime.Version())
 		os.Exit(0)
 	case CommandLint:
+		log.Info("enabling lint mode, all functions are in dry run")
 		lintMode = true
 		fallthrough
 	case CommandProcess:
@@ -55,14 +56,17 @@ func run() {
 			log.Infof("connecting to MsGraph")
 			initMsGraphConnection()
 		}
+
 		process()
+		
+		log.Info("finished")
 	default:
 		log.Fatalf(`invalid command "%v"`, opts.Args.Command)
 	}
 }
 
 func printAppHeader() {
-	log.Infof("helm-azure-tpl v%s (%s; %s; by %v)", gitTag, gitCommit, runtime.Version(), Author)
+	log.Infof("%v v%s (%s; %s; by %v)", argparser.Command.Name, gitTag, gitCommit, runtime.Version(), Author)
 	log.Info(string(opts.GetJson()))
 }
 
@@ -127,6 +131,7 @@ func process() {
 		}
 
 		if lintMode {
+			contextLogger.Info(`file successfully linted`)
 			continue
 		}
 

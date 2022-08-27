@@ -55,6 +55,13 @@ func main() {
 func initArgparser() {
 	var err error
 	argparser = flags.NewParser(&opts, flags.Default)
+
+	// check if run by helm
+	if helmCmd := os.Getenv("HELM_BIN"); helmCmd != "" {
+		if pluginName := os.Getenv("HELM_PLUGIN_NAME"); pluginName != "" {
+			argparser.Command.Name = fmt.Sprintf(`%v %v`, helmCmd, pluginName)
+		}
+	}
 	_, err = argparser.Parse()
 
 	// check if there is a parse error
