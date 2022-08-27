@@ -8,15 +8,14 @@ import (
 )
 
 // msGraphGroupByDisplayName fetches one group from MsGraph API using displayName
-func (e *AzureTemplateExecutor) msGraphGroupByDisplayName(displayName string) interface{} {
+func (e *AzureTemplateExecutor) msGraphGroupByDisplayName(displayName string) (interface{}, error) {
 	e.logger.Infof(`fetching MsGraph group by displayName '%v'`, displayName)
 
 	if val, enabled := e.lintResult(); enabled {
-		return val
+		return val, nil
 	}
-
 	cacheKey := generateCacheKey(`msGraphGroupByDisplayName`, displayName)
-	return e.cacheResult(cacheKey, func() interface{} {
+	return e.cacheResult(cacheKey, func() (interface{}, error) {
 		client := msgraph.NewGroupsClient(e.msGraphClient.GetTenantID())
 		client.BaseClient.Authorizer = e.msGraphClient.Authorizer()
 
@@ -28,33 +27,32 @@ func (e *AzureTemplateExecutor) msGraphGroupByDisplayName(displayName string) in
 		}
 		list, _, err := client.List(e.ctx, queryOpts)
 		if err != nil {
-			e.logger.Fatalf(`failed to query MsGraph group: %v`, err.Error())
+			return nil, fmt.Errorf(`failed to query MsGraph group: %v`, err.Error())
 		}
 
 		if list == nil {
-			e.logger.Fatalf(`group '%v' was not found in AzureAD`, displayName)
+			return nil, fmt.Errorf(`group '%v' was not found in AzureAD`, displayName)
 		}
 
 		if len(*list) == 1 {
-			return (*list)[0]
+			return (*list)[0], nil
 		} else {
-			e.logger.Fatalf(`found more then one group '%v'`, displayName)
+			return nil, fmt.Errorf(`found more then one group '%v'`, displayName)
 		}
 
-		return ""
+		return "", nil
 	})
 }
 
 // msGraphGroupList fetches list of groups from MsGraph API using $filter query
-func (e *AzureTemplateExecutor) msGraphGroupList(filter string) interface{} {
+func (e *AzureTemplateExecutor) msGraphGroupList(filter string) (interface{}, error) {
 	e.logger.Infof(`fetching MsGraph group list with $filter '%v'`, filter)
 
 	if val, enabled := e.lintResult(); enabled {
-		return val
+		return val, nil
 	}
-
 	cacheKey := generateCacheKey(`msGraphGroupList`, filter)
-	return e.cacheResult(cacheKey, func() interface{} {
+	return e.cacheResult(cacheKey, func() (interface{}, error) {
 		client := msgraph.NewGroupsClient(e.msGraphClient.GetTenantID())
 		client.BaseClient.Authorizer = e.msGraphClient.Authorizer()
 
@@ -63,10 +61,10 @@ func (e *AzureTemplateExecutor) msGraphGroupList(filter string) interface{} {
 		}
 		list, _, err := client.List(e.ctx, queryOpts)
 		if err != nil {
-			e.logger.Fatalf(`failed to query MsGraph group: %v`, err.Error())
+			return nil, fmt.Errorf(`failed to query MsGraph group: %v`, err.Error())
 		}
 
-		return list
+		return list, nil
 	})
 
 }

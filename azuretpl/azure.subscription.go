@@ -1,19 +1,21 @@
 package azuretpl
 
 import (
+	"fmt"
+
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resources/armsubscriptions"
 	"github.com/webdevops/go-common/utils/to"
 )
 
 // azureSubscription fetches current or defined Azure subscription
-func (e *AzureTemplateExecutor) azureSubscription(subscriptionID ...string) interface{} {
+func (e *AzureTemplateExecutor) azureSubscription(subscriptionID ...string) (interface{}, error) {
 	var selectedSubscriptionId string
 	if len(subscriptionID) > 1 {
-		e.logger.Fatalf(`{{azureSubscription}} only supports zero or one subscriptionIDs`)
+		return nil, fmt.Errorf(`{{azureSubscription}} only supports zero or one subscriptionIDs`)
 	}
 
 	if val, enabled := e.lintResult(); enabled {
-		return val
+		return val, nil
 	}
 
 	if len(subscriptionID) == 1 {
@@ -24,42 +26,42 @@ func (e *AzureTemplateExecutor) azureSubscription(subscriptionID ...string) inte
 		if val, exists := e.azureCliAccountInfo["id"].(string); exists {
 			selectedSubscriptionId = val
 		} else {
-			e.logger.Fatalf(`{{azureSubscription}} is unable to find current subscription from "az account show" output`)
+			return nil, fmt.Errorf(`{{azureSubscription}} is unable to find current subscription from "az account show" output`)
 		}
 	}
 
 	e.logger.Infof(`fetching Azure subscription '%v'`, selectedSubscriptionId)
 
 	cacheKey := generateCacheKey(`azureSubscription`, selectedSubscriptionId)
-	return e.cacheResult(cacheKey, func() interface{} {
+	return e.cacheResult(cacheKey, func() (interface{}, error) {
 		client, err := armsubscriptions.NewClient(e.azureClient.GetCred(), e.azureClient.NewArmClientOptions())
 		if err != nil {
-			e.logger.Fatalf(err.Error())
+			return nil, fmt.Errorf(err.Error())
 		}
 
 		resource, err := client.Get(e.ctx, selectedSubscriptionId, nil)
 		if err != nil {
-			e.logger.Fatalf(`unable to fetch Azure subscription '%v': %v`, selectedSubscriptionId, err.Error())
+			return nil, fmt.Errorf(`unable to fetch Azure subscription '%v': %v`, selectedSubscriptionId, err.Error())
 		}
 
 		subscriptionData, err := transformToInterface(resource)
 		if err != nil {
-			e.logger.Fatalf(`unable to transform Azure subscription '%v': %v`, selectedSubscriptionId, err.Error())
+			return nil, fmt.Errorf(`unable to transform Azure subscription '%v': %v`, selectedSubscriptionId, err.Error())
 		}
-		return subscriptionData
+		return subscriptionData, nil
 	})
 }
 
 // azureSubscriptionList fetches list of visible Azure subscriptions
-func (e *AzureTemplateExecutor) azureSubscriptionList() interface{} {
+func (e *AzureTemplateExecutor) azureSubscriptionList() (interface{}, error) {
 	e.logger.Infof(`fetching Azure subscriptions`)
 
 	if val, enabled := e.lintResult(); enabled {
-		return val
+		return val, nil
 	}
 
 	cacheKey := generateCacheKey(`azureSubscriptionList`)
-	return e.cacheResult(cacheKey, func() interface{} {
+	return e.cacheResult(cacheKey, func() (interface{}, error) {
 		client, err := armsubscriptions.NewClient(e.azureClient.GetCred(), e.azureClient.NewArmClientOptions())
 		if err != nil {
 			e.logger.Panic(err.Error())
@@ -76,12 +78,12 @@ func (e *AzureTemplateExecutor) azureSubscriptionList() interface{} {
 			for _, subscription := range result.Value {
 				subscriptionData, err := transformToInterface(subscription)
 				if err != nil {
-					e.logger.Fatalf(`unable to transform Azure subscription '%v': %v`, to.String(subscription.SubscriptionID), err.Error())
+					return nil, fmt.Errorf(`unable to transform Azure subscription '%v': %v`, to.String(subscription.SubscriptionID), err.Error())
 				}
 				ret = append(ret, subscriptionData)
 			}
 		}
 
-		return ret
+		return ret, nil
 	})
 }

@@ -1,6 +1,6 @@
 /.idea
 /vendor/
 /helm-azure-tpl*
-/development.tpl
+/development.*
 /release-assets
 /tmp

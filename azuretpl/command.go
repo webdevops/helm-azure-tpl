@@ -140,7 +140,7 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *template.Template) template.Fun
 			var buf bytes.Buffer
 			err = parsedContent.Execute(&buf, nil)
 			if err != nil {
-				e.logger.Fatalf(`unable to process template: %v`, err.Error())
+				e.logger.Fatalf("unable to process template:\n%v", err.Error())
 			}
 
 			includedNames[sourcePath]--
@@ -151,7 +151,7 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *template.Template) template.Fun
 			if val == nil {
 				if e.LintMode {
 					// Don't fail on missing required values when linting
-					e.logger.Infof("[TPL] missing required value: %s", message)
+					e.logger.Infof("[TPL::required] missing required value: %s", message)
 					return "", nil
 				}
 				return val, errors.New(message)
@@ -159,7 +159,7 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *template.Template) template.Fun
 				if val == "" {
 					if e.LintMode {
 						// Don't fail on missing required values when linting
-						e.logger.Infof("[TPL] missing required value: %s", message)
+						e.logger.Infof("[TPL::required] missing required value: %s", message)
 						return "", nil
 					}
 					return val, errors.New(message)
@@ -171,7 +171,7 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *template.Template) template.Fun
 		"fail": func(message string) (string, error) {
 			if e.LintMode {
 				// Don't fail when linting
-				e.logger.Infof("[TPL] fail: %s", message)
+				e.logger.Infof("[TPL::fail] fail: %s", message)
 				return "", nil
 			}
 			return "", errors.New(message)
@@ -190,45 +190,52 @@ func (e *AzureTemplateExecutor) lintResult() (interface{}, bool) {
 }
 
 // cacheResult caches template function results (eg. Azure REST API resource information)
-func (e *AzureTemplateExecutor) cacheResult(cacheKey string, callback func() interface{}) interface{} {
+func (e *AzureTemplateExecutor) cacheResult(cacheKey string, callback func() (interface{}, error)) (interface{}, error) {
 	if val, ok := e.cache.Get(cacheKey); ok {
 		e.logger.Infof("found in cache (%v)", cacheKey)
-		return val
+		return val, nil
 	}
 
-	ret := callback()
+	ret, err := callback()
+	if err != nil {
+		return nil, err
+	}
 
-	e.cache.Set(cacheKey, ret, e.cacheTtl)
+	e.cache.SetDefault(cacheKey, ret)
 
-	return ret
+	return ret, nil
 }
 
-func (e *AzureTemplateExecutor) fetchAzureResource(resourceID string, apiVersion string) interface{} {
+func (e *AzureTemplateExecutor) fetchAzureResource(resourceID string, apiVersion string) (interface{}, error) {
 	resourceInfo, err := armclient.ParseResourceId(resourceID)
 	if err != nil {
-		e.logger.Fatalf(`unable to parse Azure resourceID '%v': %v`, resourceID, err.Error())
+		return nil, fmt.Errorf(`unable to parse Azure resourceID '%v': %v`, resourceID, err.Error())
+	}
+
+	if val, enabled := e.lintResult(); enabled {
+		return val, nil
 	}
 
 	client, err := armresources.NewClient(resourceInfo.Subscription, e.azureClient.GetCred(), e.azureClient.NewArmClientOptions())
 	if err != nil {
-		e.logger.Fatalf(err.Error())
+		return nil, err
 	}
 
 	resource, err := client.GetByID(e.ctx, resourceID, apiVersion, nil)
 	if err != nil {
-		e.logger.Fatalf(`unable to fetch Azure resource '%v': %v`, resourceID, err.Error())
+		return nil, fmt.Errorf(`unable to fetch Azure resource '%v': %v`, resourceID, err.Error())
 	}
 
 	data, err := resource.MarshalJSON()
 	if err != nil {
-		e.logger.Fatalf(`unable to marshal Azure resource '%v': %v`, resourceID, err.Error())
+		return nil, fmt.Errorf(`unable to marshal Azure resource '%v': %v`, resourceID, err.Error())
 	}
 
 	var resourceRawInfo map[string]interface{}
 	err = json.Unmarshal(data, &resourceRawInfo)
 	if err != nil {
-		e.logger.Fatalf(`unable to unmarshal Azure resource '%v': %v`, resourceID, err.Error())
+		return nil, fmt.Errorf(`unable to unmarshal Azure resource '%v': %v`, resourceID, err.Error())
 	}
 
-	return resourceRawInfo
+	return resourceRawInfo, nil
 }
