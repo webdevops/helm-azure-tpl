@@ -1,6 +1,7 @@
 # Helm plugin for Azure template processing
 
-(also works as standalone go template processor with Azure functions)
+Plugin for [Helm](https://github.com/helm/helm) to inject Azure information (subscriptions, resources, msgraph) and Azure KeyVault secrets.
+Also works as standalone executable outside of Helm.
 
 [![license](https://img.shields.io/github/license/webdevops/helm-azure-tpl.svg)](https://github.com/webdevops/helm-azure-tpl/blob/master/LICENSE)
 [![DockerHub](https://img.shields.io/badge/DockerHub-webdevops%2Fhelm--azure--tpl-blue)](https://hub.docker.com/r/webdevops/helm-azure-tpl/)
@@ -9,7 +10,7 @@
 
 ## Installation
 
-requires `sed` and `curl`
+requires `sed` and `curl` for installation
 
 ```
 helm plugin install https://github.com/webdevops/helm-azure-tpl
@@ -21,12 +22,12 @@ helm plugin install https://github.com/webdevops/helm-azure-tpl
 
 Process one file and overwrite it:
 ```
-helm azure-tpl template.tpl
+helm azure-tpl apply template.tpl
 ```
 
 Process one file and saves generated content as another file:
 ```
-helm azure-tpl template.tpl:template.yaml
+helm azure-tpl apply template.tpl:template.yaml
 ```
 
 General usage:
@@ -39,8 +40,8 @@ Application Options:
       --log.json           Switch log output to json format [$LOG_JSON]
       --azure.tenant=      Azure tenant id [$AZURE_TENANT_ID]
       --azure.environment= Azure environment name [$AZURE_ENVIRONMENT]
-      --dry-run            dry run [$DRY_RUN]
-      --debug              debug run (WARNING: can expose secrets!)
+      --dry-run            dry run, do not write any files [$DRY_RUN]
+      --debug              debug run, print generated content to stdout (WARNING: can expose secrets!)
       --template.basepath= sets custom base path (if empty, base path is set by base directory for each file) [$TEMPLATE_BASEPATH]
       --target.prefix=     adds this value as prefix to filename on save (not used if targetfile is specified in argument) [$TARGET_PREFIX]
       --target.suffix=     adds this value as suffix to filename on save (not used if targetfile is specified in argument) [$TARGET_SUFFIX]
