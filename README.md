@@ -30,6 +30,11 @@ Process one file and saves generated content as another file:
 helm azure-tpl apply template.tpl:template.yaml
 ```
 
+Processes all `.tpl` files and saves them as `.yaml` files
+```
+helm azure-tpl apply --target.fileext=.yaml *.tpl
+```
+
 General usage:
 ```
 Usage:
@@ -45,6 +50,7 @@ Application Options:
       --template.basepath= sets custom base path (if empty, base path is set by base directory for each file) [$TEMPLATE_BASEPATH]
       --target.prefix=     adds this value as prefix to filename on save (not used if targetfile is specified in argument) [$TARGET_PREFIX]
       --target.suffix=     adds this value as suffix to filename on save (not used if targetfile is specified in argument) [$TARGET_SUFFIX]
+      --target.fileext=    replaces file extension (or adds if empty) with this value (eg. '.yaml') [$TARGET_FILEEXT]
 
 Help Options:
   -h, --help               Show this help message
@@ -52,6 +58,7 @@ Help Options:
 Arguments:
   Command:                 specifies what to do (help, version, lint, apply)
   Files:                   list of files to process (will overwrite files, different target file can be specified as sourcefile:targetfile)
+
 ```
 
 ## Template functions

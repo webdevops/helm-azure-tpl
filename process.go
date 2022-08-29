@@ -81,20 +81,32 @@ func buildSourceTargetList() (list []TemplateFile) {
 	ctx := context.Background()
 
 	for _, filePath := range opts.Args.Files {
+		var targetPath string
 		sourcePath := filePath
-		// automatic target path
-		targetPath := fmt.Sprintf(
-			"%s%v%s",
-			opts.Target.Prefix,
-			sourcePath,
-			opts.Target.Suffix,
-		)
 
 		if strings.Contains(sourcePath, ":") {
 			// explicit target path set in argument (source:target)
 			parts := strings.SplitN(sourcePath, ":", 2)
 			sourcePath = parts[0]
 			targetPath = parts[1]
+		} else {
+			targetPath = sourcePath
+
+			// target not set explicit
+			if opts.Target.FileExt != nil {
+				// remove file extension
+				targetPath = strings.TrimSuffix(targetPath, filepath.Ext(targetPath))
+				// adds new file extension
+				targetPath = fmt.Sprintf("%s%s", targetPath, *opts.Target.FileExt)
+			}
+
+			// automatic target path
+			targetPath = fmt.Sprintf(
+				"%s%s%s",
+				opts.Target.Prefix,
+				targetPath,
+				opts.Target.Suffix,
+			)
 		}
 
 		sourcePath = filepath.Clean(sourcePath)
@@ -104,6 +116,10 @@ func buildSourceTargetList() (list []TemplateFile) {
 			`sourcePath`: sourcePath,
 			`targetPath`: targetPath,
 		})
+
+		if targetPath == "" || targetPath == "." || targetPath == "/" {
+			contextLogger.Fatalf(`invalid path '%v' detected`, targetPath)
+		}
 
 		if _, err := os.Stat(sourcePath); errors.Is(err, os.ErrNotExist) {
 			log.Fatalf(err.Error())

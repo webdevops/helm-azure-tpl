@@ -28,8 +28,9 @@ type (
 		}
 
 		Target struct {
-			Prefix string `long:"target.prefix"  env:"TARGET_PREFIX"  description:"adds this value as prefix to filename on save (not used if targetfile is specified in argument)"`
-			Suffix string `long:"target.suffix"  env:"TARGET_SUFFIX"  description:"adds this value as suffix to filename on save (not used if targetfile is specified in argument)"`
+			Prefix  string  `long:"target.prefix"   env:"TARGET_PREFIX"   description:"adds this value as prefix to filename on save (not used if targetfile is specified in argument)"`
+			Suffix  string  `long:"target.suffix"   env:"TARGET_SUFFIX"   description:"adds this value as suffix to filename on save (not used if targetfile is specified in argument)"`
+			FileExt *string `long:"target.fileext"  env:"TARGET_FILEEXT"  description:"replaces file extension (or adds if empty) with this value (eg. '.yaml')"`
 		}
 
 		Args struct {
