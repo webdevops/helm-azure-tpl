@@ -79,7 +79,6 @@ clean-release-assets:
 	rm -rf ./release-assets
 	mkdir -p ./release-assets
 
-.PHONY: $(RELEASE_ASSETS)
 release-assets/windows.%: $(SOURCE)
 	echo 'build release-assets for windows/$(call word-dot,$*,2)'
 	GOOS=windows \
