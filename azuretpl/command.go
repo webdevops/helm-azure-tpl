@@ -16,14 +16,14 @@ import (
 	cache "github.com/patrickmn/go-cache"
 	log "github.com/sirupsen/logrus"
 	"github.com/webdevops/go-common/azuresdk/armclient"
-	"github.com/webdevops/go-common/msgraphsdk/hamiltonclient"
+	"github.com/webdevops/go-common/msgraphsdk/msgraphclient"
 )
 
 type (
 	AzureTemplateExecutor struct {
 		ctx           context.Context
 		azureClient   *armclient.ArmClient
-		msGraphClient *hamiltonclient.MsGraphClient
+		msGraphClient *msgraphclient.MsGraphClient
 		logger        *log.Entry
 
 		cache    *cache.Cache
@@ -37,7 +37,7 @@ type (
 	}
 )
 
-func New(ctx context.Context, azureClient *armclient.ArmClient, msGraphClient *hamiltonclient.MsGraphClient, logger *log.Entry) *AzureTemplateExecutor {
+func New(ctx context.Context, azureClient *armclient.ArmClient, msGraphClient *msgraphclient.MsGraphClient, logger *log.Entry) *AzureTemplateExecutor {
 	e := &AzureTemplateExecutor{
 		ctx:           ctx,
 		azureClient:   azureClient,

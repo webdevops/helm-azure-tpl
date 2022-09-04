@@ -3,8 +3,10 @@ package azuretpl
 import (
 	"fmt"
 
-	"github.com/manicminer/hamilton/msgraph"
-	"github.com/manicminer/hamilton/odata"
+	msgraphcore "github.com/microsoftgraph/msgraph-sdk-go-core"
+	"github.com/microsoftgraph/msgraph-sdk-go/models"
+	"github.com/microsoftgraph/msgraph-sdk-go/serviceprincipals"
+	"github.com/webdevops/go-common/utils/to"
 )
 
 // msGraphServicePrincipalByDisplayName fetches one servicePrincipal from MsGraph API using displayName
@@ -17,27 +19,28 @@ func (e *AzureTemplateExecutor) msGraphServicePrincipalByDisplayName(displayName
 
 	cacheKey := generateCacheKey(`msGraphServicePrincipalByDisplayName`, displayName)
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
-		client := msgraph.NewGroupsClient(e.msGraphClient.GetTenantID())
-		client.BaseClient.Authorizer = e.msGraphClient.Authorizer()
-
-		queryOpts := odata.Query{
-			Filter: fmt.Sprintf(
-				`displayName eq '%v'`,
-				escapeMsGraphFilter(displayName),
-			),
+		requestOpts := &serviceprincipals.ServicePrincipalsRequestBuilderGetRequestConfiguration{
+			QueryParameters: &serviceprincipals.ServicePrincipalsRequestBuilderGetQueryParameters{
+				Filter: to.StringPtr(fmt.Sprintf(`displayName eq '%v'`,
+					escapeMsGraphFilter(displayName))),
+			},
 		}
-		list, _, err := client.List(e.ctx, queryOpts)
+		result, err := e.msGraphClient.ServiceClient().ServicePrincipals().Get(e.ctx, requestOpts)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to query MsGraph servicePrincipal: %v`, err.Error())
 		}
 
-		if list == nil {
-			return nil, fmt.Errorf(`servicePrincipal '%v' was not found in AzureAD`, displayName)
+		list, err := e.msGraphServicePrincipalCreateListFromResult(result)
+		if err != nil {
+			return nil, fmt.Errorf(`failed to query MsGraph servicePrincipal: %v`, err.Error())
 		}
 
-		if len(*list) == 1 {
-			return (*list)[0], nil
-		} else {
+		switch len(list) {
+		case 0:
+			return nil, nil
+		case 1:
+			return list[0], nil
+		default:
 			return nil, fmt.Errorf(`found more then one servicePrincipal '%v'`, displayName)
 		}
 	})
@@ -53,18 +56,41 @@ func (e *AzureTemplateExecutor) msGraphServicePrincipalList(filter string) (inte
 
 	cacheKey := generateCacheKey(`msGraphServicePrincipalList`, filter)
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
-		client := msgraph.NewServicePrincipalsClient(e.msGraphClient.GetTenantID())
-		client.BaseClient.Authorizer = e.msGraphClient.Authorizer()
-
-		queryOpts := odata.Query{
-			Filter: filter,
-		}
-		list, _, err := client.List(e.ctx, queryOpts)
+		result, err := e.msGraphClient.ServiceClient().ServicePrincipals().Get(e.ctx, nil)
 		if err != nil {
-			return nil, fmt.Errorf(`failed to query MsGraph group: %v`, err.Error())
+			return nil, fmt.Errorf(`failed to query MsGraph servicePrincipal: %v`, err.Error())
+		}
+
+		list, err := e.msGraphServicePrincipalCreateListFromResult(result)
+		if err != nil {
+			return nil, fmt.Errorf(`failed to query MsGraph servicePrincipal: %v`, err.Error())
 		}
 
 		return list, nil
 	})
+}
 
+func (e *AzureTemplateExecutor) msGraphServicePrincipalCreateListFromResult(result models.ServicePrincipalCollectionResponseable) (list []interface{}, err error) {
+	pageIterator, pageIteratorErr := msgraphcore.NewPageIterator(result, e.msGraphClient.RequestAdapter(), models.CreateServicePrincipalCollectionResponseFromDiscriminatorValue)
+	if pageIteratorErr != nil {
+		return list, pageIteratorErr
+	}
+
+	iterateErr := pageIterator.Iterate(e.ctx, func(pageItem interface{}) bool {
+		servicePrincipal := pageItem.(models.ServicePrincipalable)
+
+		obj, serializeErr := e.msGraphSerializeObject(servicePrincipal)
+		if serializeErr != nil {
+			err = serializeErr
+			return false
+		}
+
+		list = append(list, obj)
+		return true
+	})
+	if iterateErr != nil {
+		return list, iterateErr
+	}
+
+	return
 }

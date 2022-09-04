@@ -12,7 +12,7 @@ import (
 	"github.com/jessevdk/go-flags"
 	log "github.com/sirupsen/logrus"
 	"github.com/webdevops/go-common/azuresdk/armclient"
-	"github.com/webdevops/go-common/msgraphsdk/hamiltonclient"
+	"github.com/webdevops/go-common/msgraphsdk/msgraphclient"
 
 	"github.com/webdevops/helm-azure-tpl/config"
 )
@@ -28,7 +28,7 @@ var (
 	argparser *flags.Parser
 
 	AzureClient   *armclient.ArmClient
-	MsGraphClient *hamiltonclient.MsGraphClient
+	MsGraphClient *msgraphclient.MsGraphClient
 
 	azAccountInfo map[string]interface{}
 
@@ -153,7 +153,7 @@ func initMsGraphConnection() {
 	}
 
 	if MsGraphClient == nil {
-		MsGraphClient, err = hamiltonclient.NewMsGraphClientWithCloudName(*opts.Azure.Environment, *opts.Azure.Tenant, log.StandardLogger())
+		MsGraphClient, err = msgraphclient.NewMsGraphClientWithCloudName(*opts.Azure.Environment, *opts.Azure.Tenant, log.StandardLogger())
 		if err != nil {
 			log.Panic(err.Error())
 		}

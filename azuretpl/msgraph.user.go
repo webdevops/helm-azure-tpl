@@ -3,8 +3,10 @@ package azuretpl
 import (
 	"fmt"
 
-	"github.com/manicminer/hamilton/msgraph"
-	"github.com/manicminer/hamilton/odata"
+	msgraphcore "github.com/microsoftgraph/msgraph-sdk-go-core"
+	"github.com/microsoftgraph/msgraph-sdk-go/models"
+	"github.com/microsoftgraph/msgraph-sdk-go/users"
+	"github.com/webdevops/go-common/utils/to"
 )
 
 // msGraphUserByUserPrincipalName fetches one user from MsGraph API using userPrincipalName
@@ -17,27 +19,30 @@ func (e *AzureTemplateExecutor) msGraphUserByUserPrincipalName(userPrincipalName
 
 	cacheKey := generateCacheKey(`msGraphUserByUserPrincipalName`, userPrincipalName)
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
-		client := msgraph.NewUsersClient(e.msGraphClient.GetTenantID())
-		client.BaseClient.Authorizer = e.msGraphClient.Authorizer()
-
-		queryOpts := odata.Query{
-			Filter: fmt.Sprintf(
-				`userPrincipalName eq '%v'`,
-				escapeMsGraphFilter(userPrincipalName),
-			),
+		requestOpts := &users.UsersRequestBuilderGetRequestConfiguration{
+			QueryParameters: &users.UsersRequestBuilderGetQueryParameters{
+				Filter: to.StringPtr(fmt.Sprintf(
+					`userPrincipalName eq '%v'`,
+					escapeMsGraphFilter(userPrincipalName),
+				)),
+			},
 		}
-		list, _, err := client.List(e.ctx, queryOpts)
+		result, err := e.msGraphClient.ServiceClient().Users().Get(e.ctx, requestOpts)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to query MsGraph user: %v`, err.Error())
 		}
 
-		if list == nil {
-			return nil, fmt.Errorf(`user '%v' was not found in AzureAD`, userPrincipalName)
+		list, err := e.msGraphUserCreateListFromResult(result)
+		if err != nil {
+			return nil, fmt.Errorf(`failed to query MsGraph user: %v`, err.Error())
 		}
 
-		if len(*list) == 1 {
-			return (*list)[0], nil
-		} else {
+		switch len(list) {
+		case 0:
+			return nil, nil
+		case 1:
+			return list[0], nil
+		default:
 			return nil, fmt.Errorf(`found more then one user '%v'`, userPrincipalName)
 		}
 	})
@@ -53,17 +58,41 @@ func (e *AzureTemplateExecutor) msGraphUserList(filter string) (interface{}, err
 
 	cacheKey := generateCacheKey(`msGraphUserList`, filter)
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
-		client := msgraph.NewUsersClient(e.msGraphClient.GetTenantID())
-		client.BaseClient.Authorizer = e.msGraphClient.Authorizer()
-
-		queryOpts := odata.Query{
-			Filter: filter,
-		}
-		list, _, err := client.List(e.ctx, queryOpts)
+		result, err := e.msGraphClient.ServiceClient().Users().Get(e.ctx, nil)
 		if err != nil {
-			return nil, fmt.Errorf(`failed to query MsGraph group: %v`, err.Error())
+			return nil, fmt.Errorf(`failed to query MsGraph users: %v`, err.Error())
+		}
+
+		list, err := e.msGraphUserCreateListFromResult(result)
+		if err != nil {
+			return nil, fmt.Errorf(`failed to query MsGraph users: %v`, err.Error())
 		}
 
 		return list, nil
 	})
+}
+
+func (e *AzureTemplateExecutor) msGraphUserCreateListFromResult(result models.UserCollectionResponseable) (list []interface{}, err error) {
+	pageIterator, pageIteratorErr := msgraphcore.NewPageIterator(result, e.msGraphClient.RequestAdapter(), models.CreateUserCollectionResponseFromDiscriminatorValue)
+	if pageIteratorErr != nil {
+		return list, pageIteratorErr
+	}
+
+	iterateErr := pageIterator.Iterate(e.ctx, func(pageItem interface{}) bool {
+		user := pageItem.(models.Userable)
+
+		obj, serializeErr := e.msGraphSerializeObject(user)
+		if serializeErr != nil {
+			err = serializeErr
+			return false
+		}
+
+		list = append(list, obj)
+		return true
+	})
+	if iterateErr != nil {
+		return list, iterateErr
+	}
+
+	return
 }
