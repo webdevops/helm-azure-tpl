@@ -21,7 +21,7 @@ func (e *AzureTemplateExecutor) azurePublicIpAddress(resourceID string) (interfa
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
 		resourceInfo, err := armclient.ParseResourceId(resourceID)
 		if err != nil {
-			return nil, fmt.Errorf(`unable to parse Azure resourceID '%v': %v`, resourceID, err.Error())
+			return nil, fmt.Errorf(`unable to parse Azure resourceID '%v': %w`, resourceID, err)
 		}
 
 		client, err := armnetwork.NewPublicIPAddressesClient(resourceInfo.Subscription, e.azureClient.GetCred(), e.azureClient.NewArmClientOptions())
@@ -31,7 +31,7 @@ func (e *AzureTemplateExecutor) azurePublicIpAddress(resourceID string) (interfa
 
 		pipAddress, err := client.Get(e.ctx, resourceInfo.ResourceGroup, resourceInfo.ResourceName, nil)
 		if err != nil {
-			return nil, fmt.Errorf(`unable to fetch Azure resource '%v': %v`, resourceID, err.Error())
+			return nil, fmt.Errorf(`unable to fetch Azure resource '%v': %w`, resourceID, err)
 		}
 
 		return to.String(pipAddress.Properties.IPAddress), nil
@@ -50,7 +50,7 @@ func (e *AzureTemplateExecutor) azurePublicIpPrefixAddressPrefix(resourceID stri
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
 		resourceInfo, err := armclient.ParseResourceId(resourceID)
 		if err != nil {
-			return nil, fmt.Errorf(`unable to parse Azure resourceID '%v': %v`, resourceID, err.Error())
+			return nil, fmt.Errorf(`unable to parse Azure resourceID '%v': %w`, resourceID, err)
 		}
 
 		client, err := armnetwork.NewPublicIPPrefixesClient(resourceInfo.Subscription, e.azureClient.GetCred(), e.azureClient.NewArmClientOptions())
@@ -60,7 +60,7 @@ func (e *AzureTemplateExecutor) azurePublicIpPrefixAddressPrefix(resourceID stri
 
 		pipAddress, err := client.Get(e.ctx, resourceInfo.ResourceGroup, resourceInfo.ResourceName, nil)
 		if err != nil {
-			return nil, fmt.Errorf(`unable to fetch Azure resource '%v': %v`, resourceID, err.Error())
+			return nil, fmt.Errorf(`unable to fetch Azure resource '%v': %w`, resourceID, err)
 		}
 
 		return to.String(pipAddress.Properties.IPPrefix), nil
@@ -79,7 +79,7 @@ func (e *AzureTemplateExecutor) azureVirtualNetworkAddressPrefixes(resourceID st
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
 		resourceInfo, err := armclient.ParseResourceId(resourceID)
 		if err != nil {
-			return nil, fmt.Errorf(`unable to parse Azure resourceID '%v': %v`, resourceID, err.Error())
+			return nil, fmt.Errorf(`unable to parse Azure resourceID '%v': %w`, resourceID, err)
 		}
 
 		client, err := armnetwork.NewVirtualNetworksClient(resourceInfo.Subscription, e.azureClient.GetCred(), e.azureClient.NewArmClientOptions())
@@ -89,7 +89,7 @@ func (e *AzureTemplateExecutor) azureVirtualNetworkAddressPrefixes(resourceID st
 
 		vnet, err := client.Get(e.ctx, resourceInfo.ResourceGroup, resourceInfo.ResourceName, nil)
 		if err != nil {
-			return nil, fmt.Errorf(`unable to fetch Azure resource '%v': %v`, resourceID, err.Error())
+			return nil, fmt.Errorf(`unable to fetch Azure resource '%v': %w`, resourceID, err)
 		}
 
 		if vnet.Properties.AddressSpace != nil {
@@ -111,7 +111,7 @@ func (e *AzureTemplateExecutor) azureVirtualNetworkSubnetAddressPrefixes(resourc
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
 		resourceInfo, err := armclient.ParseResourceId(resourceID)
 		if err != nil {
-			return nil, fmt.Errorf(`unable to parse Azure resourceID '%v': %v`, resourceID, err.Error())
+			return nil, fmt.Errorf(`unable to parse Azure resourceID '%v': %w`, resourceID, err)
 		}
 
 		client, err := armnetwork.NewVirtualNetworksClient(resourceInfo.Subscription, e.azureClient.GetCred(), e.azureClient.NewArmClientOptions())
@@ -121,7 +121,7 @@ func (e *AzureTemplateExecutor) azureVirtualNetworkSubnetAddressPrefixes(resourc
 
 		vnet, err := client.Get(e.ctx, resourceInfo.ResourceGroup, resourceInfo.ResourceName, nil)
 		if err != nil {
-			return nil, fmt.Errorf(`unable to fetch Azure resource '%v': %v`, resourceID, err.Error())
+			return nil, fmt.Errorf(`unable to fetch Azure resource '%v': %w`, resourceID, err)
 		}
 
 		if vnet.Properties.Subnets != nil {

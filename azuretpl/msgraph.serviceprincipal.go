@@ -27,12 +27,12 @@ func (e *AzureTemplateExecutor) msGraphServicePrincipalByDisplayName(displayName
 		}
 		result, err := e.msGraphClient.ServiceClient().ServicePrincipals().Get(e.ctx, requestOpts)
 		if err != nil {
-			return nil, fmt.Errorf(`failed to query MsGraph servicePrincipal: %v`, err.Error())
+			return nil, fmt.Errorf(`failed to query MsGraph servicePrincipal: %w`, err)
 		}
 
 		list, err := e.msGraphServicePrincipalCreateListFromResult(result)
 		if err != nil {
-			return nil, fmt.Errorf(`failed to query MsGraph servicePrincipal: %v`, err.Error())
+			return nil, fmt.Errorf(`failed to query MsGraph servicePrincipal: %w`, err)
 		}
 
 		switch len(list) {
@@ -58,12 +58,12 @@ func (e *AzureTemplateExecutor) msGraphServicePrincipalList(filter string) (inte
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
 		result, err := e.msGraphClient.ServiceClient().ServicePrincipals().Get(e.ctx, nil)
 		if err != nil {
-			return nil, fmt.Errorf(`failed to query MsGraph servicePrincipal: %v`, err.Error())
+			return nil, fmt.Errorf(`failed to query MsGraph servicePrincipal: %w`, err)
 		}
 
 		list, err := e.msGraphServicePrincipalCreateListFromResult(result)
 		if err != nil {
-			return nil, fmt.Errorf(`failed to query MsGraph servicePrincipal: %v`, err.Error())
+			return nil, fmt.Errorf(`failed to query MsGraph servicePrincipal: %w`, err)
 		}
 
 		return list, nil

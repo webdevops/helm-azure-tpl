@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -66,7 +67,8 @@ func initArgparser() {
 
 	// check if there is a parse error
 	if err != nil {
-		if flagsErr, ok := err.(*flags.Error); ok && flagsErr.Type == flags.ErrHelp {
+		var flagsErr *flags.Error
+		if ok := errors.As(err, &flagsErr); ok && flagsErr.Type == flags.ErrHelp {
 			os.Exit(0)
 		} else {
 			fmt.Println()
@@ -113,12 +115,12 @@ func fetchAzAccountInfo() {
 
 	accountInfo, err := cmd.Output()
 	if err != nil {
-		log.Fatalf(`unable to detect Azure TenantID via 'az account show': %v`, err.Error())
+		log.Fatalf(`unable to detect Azure TenantID via 'az account show': %v`, err)
 	}
 
 	err = json.Unmarshal(accountInfo, &azAccountInfo)
 	if err != nil {
-		log.Fatalf(`unable to parse 'az account show' output: %v`, err.Error())
+		log.Fatalf(`unable to parse 'az account show' output: %v`, err)
 	}
 }
 

@@ -26,12 +26,12 @@ func (e *AzureTemplateExecutor) msGraphGroupByDisplayName(displayName string) (i
 		}
 		result, err := e.msGraphClient.ServiceClient().Groups().Get(e.ctx, requestOpts)
 		if err != nil {
-			return nil, fmt.Errorf(`failed to query MsGraph group: %v`, err.Error())
+			return nil, fmt.Errorf(`failed to query MsGraph group: %w`, err)
 		}
 
 		list, err := e.msGraphGroupCreateListFromResult(result)
 		if err != nil {
-			return nil, fmt.Errorf(`failed to query MsGraph group: %v`, err.Error())
+			return nil, fmt.Errorf(`failed to query MsGraph group: %w`, err)
 		}
 
 		switch len(list) {
@@ -56,12 +56,12 @@ func (e *AzureTemplateExecutor) msGraphGroupList(filter string) (interface{}, er
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
 		result, err := e.msGraphClient.ServiceClient().Groups().Get(e.ctx, nil)
 		if err != nil {
-			return nil, fmt.Errorf(`failed to query MsGraph group: %v`, err.Error())
+			return nil, fmt.Errorf(`failed to query MsGraph group: %w`, err)
 		}
 
 		list, err := e.msGraphGroupCreateListFromResult(result)
 		if err != nil {
-			return nil, fmt.Errorf(`failed to query MsGraph groups: %v`, err.Error())
+			return nil, fmt.Errorf(`failed to query MsGraph groups: %w`, err)
 		}
 
 		return list, nil

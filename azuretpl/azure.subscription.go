@@ -41,12 +41,12 @@ func (e *AzureTemplateExecutor) azureSubscription(subscriptionID ...string) (int
 
 		resource, err := client.Get(e.ctx, selectedSubscriptionId, nil)
 		if err != nil {
-			return nil, fmt.Errorf(`unable to fetch Azure subscription '%v': %v`, selectedSubscriptionId, err.Error())
+			return nil, fmt.Errorf(`unable to fetch Azure subscription '%v': %w`, selectedSubscriptionId, err)
 		}
 
 		subscriptionData, err := transformToInterface(resource)
 		if err != nil {
-			return nil, fmt.Errorf(`unable to transform Azure subscription '%v': %v`, selectedSubscriptionId, err.Error())
+			return nil, fmt.Errorf(`unable to transform Azure subscription '%v': %w`, selectedSubscriptionId, err)
 		}
 		return subscriptionData, nil
 	})
@@ -78,7 +78,7 @@ func (e *AzureTemplateExecutor) azureSubscriptionList() (interface{}, error) {
 			for _, subscription := range result.Value {
 				subscriptionData, err := transformToInterface(subscription)
 				if err != nil {
-					return nil, fmt.Errorf(`unable to transform Azure subscription '%v': %v`, to.String(subscription.SubscriptionID), err.Error())
+					return nil, fmt.Errorf(`unable to transform Azure subscription '%v': %w`, to.String(subscription.SubscriptionID), err)
 				}
 				ret = append(ret, subscriptionData)
 			}

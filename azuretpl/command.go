@@ -103,7 +103,6 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *template.Template) template.Fun
 		"fromJsonArray": fromJSONArray,
 
 		"include": func(path string, data interface{}) (string, error) {
-			// security checks
 			sourcePath := filepath.Clean(path)
 			if val, err := filepath.Abs(sourcePath); err == nil {
 				sourcePath = val
@@ -129,7 +128,7 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *template.Template) template.Fun
 				includedNames[sourcePath] = 1
 			}
 
-			content, err := os.ReadFile(sourcePath) // #nosec G304 passed as parameter
+			content, err := os.ReadFile(sourcePath)
 			if err != nil {
 				e.logger.Fatalf(`unable to read file: %v`, err.Error())
 			}
@@ -211,7 +210,7 @@ func (e *AzureTemplateExecutor) cacheResult(cacheKey string, callback func() (in
 func (e *AzureTemplateExecutor) fetchAzureResource(resourceID string, apiVersion string) (interface{}, error) {
 	resourceInfo, err := armclient.ParseResourceId(resourceID)
 	if err != nil {
-		return nil, fmt.Errorf(`unable to parse Azure resourceID '%v': %v`, resourceID, err.Error())
+		return nil, fmt.Errorf(`unable to parse Azure resourceID '%v': %w`, resourceID, err)
 	}
 
 	if val, enabled := e.lintResult(); enabled {
@@ -225,18 +224,18 @@ func (e *AzureTemplateExecutor) fetchAzureResource(resourceID string, apiVersion
 
 	resource, err := client.GetByID(e.ctx, resourceID, apiVersion, nil)
 	if err != nil {
-		return nil, fmt.Errorf(`unable to fetch Azure resource '%v': %v`, resourceID, err.Error())
+		return nil, fmt.Errorf(`unable to fetch Azure resource '%v': %w`, resourceID, err)
 	}
 
 	data, err := resource.MarshalJSON()
 	if err != nil {
-		return nil, fmt.Errorf(`unable to marshal Azure resource '%v': %v`, resourceID, err.Error())
+		return nil, fmt.Errorf(`unable to marshal Azure resource '%v': %w`, resourceID, err)
 	}
 
 	var resourceRawInfo map[string]interface{}
 	err = json.Unmarshal(data, &resourceRawInfo)
 	if err != nil {
-		return nil, fmt.Errorf(`unable to unmarshal Azure resource '%v': %v`, resourceID, err.Error())
+		return nil, fmt.Errorf(`unable to unmarshal Azure resource '%v': %w`, resourceID, err)
 	}
 
 	return resourceRawInfo, nil

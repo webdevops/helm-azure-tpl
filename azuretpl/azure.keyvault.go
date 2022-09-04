@@ -20,7 +20,7 @@ func (e *AzureTemplateExecutor) azureKeyVaultSecret(vaultUrl string, secretName 
 
 		secret, err := secretClient.GetSecret(e.ctx, secretName, "", nil)
 		if err != nil {
-			return nil, fmt.Errorf(`unable to fetch secret "%[2]v" from vault "%[1]v": %[3]v`, vaultUrl, secretName, err.Error())
+			return nil, fmt.Errorf(`unable to fetch secret "%[2]v" from vault "%[1]v": %[3]w`, vaultUrl, secretName, err)
 		}
 
 		if !*secret.Attributes.Enabled {

@@ -27,12 +27,12 @@ func (e *AzureTemplateExecutor) msGraphApplicationByDisplayName(displayName stri
 		}
 		result, err := e.msGraphClient.ServiceClient().Applications().Get(e.ctx, requestOpts)
 		if err != nil {
-			return nil, fmt.Errorf(`failed to query MsGraph application: %v`, err.Error())
+			return nil, fmt.Errorf(`failed to query MsGraph application: %w`, err)
 		}
 
 		list, err := e.msGraphApplicationCreateListFromResult(result)
 		if err != nil {
-			return nil, fmt.Errorf(`failed to query MsGraph application: %v`, err.Error())
+			return nil, fmt.Errorf(`failed to query MsGraph application: %w`, err)
 		}
 
 		switch len(list) {
@@ -58,12 +58,12 @@ func (e *AzureTemplateExecutor) msGraphApplicationList(filter string) (interface
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
 		result, err := e.msGraphClient.ServiceClient().Applications().Get(e.ctx, nil)
 		if err != nil {
-			return nil, fmt.Errorf(`failed to query MsGraph applications: %v`, err.Error())
+			return nil, fmt.Errorf(`failed to query MsGraph applications: %w`, err)
 		}
 
 		list, err := e.msGraphApplicationCreateListFromResult(result)
 		if err != nil {
-			return nil, fmt.Errorf(`failed to query MsGraph applications: %v`, err.Error())
+			return nil, fmt.Errorf(`failed to query MsGraph applications: %w`, err)
 		}
 
 		return list, nil

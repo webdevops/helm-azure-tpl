@@ -62,7 +62,7 @@ func (f *TemplateFile) parse(buf *strings.Builder) {
 	tmpl := template.New(f.SourceFile).Funcs(sprig.TxtFuncMap())
 	tmpl = tmpl.Funcs(azureTemplate.TxtFuncMap(tmpl))
 
-	content, err := os.ReadFile(f.SourceFile) // #nosec G304 passed as parameter
+	content, err := os.ReadFile(f.SourceFile)
 	if err != nil {
 		contextLogger.Fatalf(`unable to read file: '%v'`, err.Error())
 	}

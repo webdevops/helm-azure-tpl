@@ -17,7 +17,7 @@ func (e *AzureTemplateExecutor) jsonPath(jsonPath string, v interface{}) (interf
 
 	ret, err := jsonpath.Get(jsonPath, v)
 	if err != nil {
-		return nil, fmt.Errorf(`unable to execute jsonpath '%v': %v`, jsonPath, err.Error())
+		return nil, fmt.Errorf(`unable to execute jsonpath '%v': %w`, jsonPath, err)
 	}
 
 	return ret, nil

@@ -1,0 +1,29 @@
+run:
+  timeout: 120m
+
+linters:
+  enable:
+    - asciicheck
+    - bidichk
+    - bodyclose
+    - errorlint
+    - exportloopref
+    - gofmt
+    - goimports
+    - gosec
+
+linters-settings:
+  gosec:
+    excludes: []
+    confidence: low
+    config:
+      global:
+        nosec: true
+        "#nosec": "#my-custom-nosec"
+        show-ignored: true
+        audit: true
+
+issues: {}
+
+output:
+  sort-results: true

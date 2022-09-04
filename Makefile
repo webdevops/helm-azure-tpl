@@ -5,7 +5,6 @@ LDFLAGS				:= -X "main.gitTag=$(GIT_TAG)" -X "main.gitCommit=$(GIT_COMMIT)" -ext
 
 FIRST_GOPATH			:= $(firstword $(subst :, ,$(shell go env GOPATH)))
 GOLANGCI_LINT_BIN		:= $(FIRST_GOPATH)/bin/golangci-lint
-GOSEC_BIN				:= $(FIRST_GOPATH)/bin/gosec
 
 .PHONY: all
 all: build
@@ -45,7 +44,7 @@ dependencies:
 #######################################
 
 .PHONY: check
-check: vendor lint gosec test
+check: vendor lint test
 
 .PHONY: test
 test:
@@ -53,17 +52,10 @@ test:
 
 .PHONY: lint
 lint: $(GOLANGCI_LINT_BIN)
-	time $(GOLANGCI_LINT_BIN) run -E exportloopref,gofmt --timeout=30m
-
-.PHONY: gosec
-gosec: $(GOSEC_BIN)
-	time $(GOSEC_BIN) ./...
+	time $(GOLANGCI_LINT_BIN) run --verbose --print-resources-usage
 
 $(GOLANGCI_LINT_BIN):
 	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(FIRST_GOPATH)/bin
-
-$(GOSEC_BIN):
-	curl -sfL https://raw.githubusercontent.com/securego/gosec/master/install.sh | sh -s -- -b $(FIRST_GOPATH)/bin
 
 #######################################
 # release assets

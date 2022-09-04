@@ -29,12 +29,12 @@ func (e *AzureTemplateExecutor) msGraphUserByUserPrincipalName(userPrincipalName
 		}
 		result, err := e.msGraphClient.ServiceClient().Users().Get(e.ctx, requestOpts)
 		if err != nil {
-			return nil, fmt.Errorf(`failed to query MsGraph user: %v`, err.Error())
+			return nil, fmt.Errorf(`failed to query MsGraph user: %w`, err)
 		}
 
 		list, err := e.msGraphUserCreateListFromResult(result)
 		if err != nil {
-			return nil, fmt.Errorf(`failed to query MsGraph user: %v`, err.Error())
+			return nil, fmt.Errorf(`failed to query MsGraph user: %w`, err)
 		}
 
 		switch len(list) {
@@ -60,12 +60,12 @@ func (e *AzureTemplateExecutor) msGraphUserList(filter string) (interface{}, err
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
 		result, err := e.msGraphClient.ServiceClient().Users().Get(e.ctx, nil)
 		if err != nil {
-			return nil, fmt.Errorf(`failed to query MsGraph users: %v`, err.Error())
+			return nil, fmt.Errorf(`failed to query MsGraph users: %w`, err)
 		}
 
 		list, err := e.msGraphUserCreateListFromResult(result)
 		if err != nil {
-			return nil, fmt.Errorf(`failed to query MsGraph users: %v`, err.Error())
+			return nil, fmt.Errorf(`failed to query MsGraph users: %w`, err)
 		}
 
 		return list, nil
