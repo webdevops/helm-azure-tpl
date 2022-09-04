@@ -49,15 +49,15 @@ check: vendor lint gosec test
 
 .PHONY: test
 test:
-	go test ./...
+	time go test ./...
 
 .PHONY: lint
 lint: $(GOLANGCI_LINT_BIN)
-	$(GOLANGCI_LINT_BIN) run -E exportloopref,gofmt --timeout=30m
+	time $(GOLANGCI_LINT_BIN) run -E exportloopref,gofmt --timeout=30m
 
 .PHONY: gosec
 gosec: $(GOSEC_BIN)
-	$(GOSEC_BIN) ./...
+	time $(GOSEC_BIN) ./...
 
 $(GOLANGCI_LINT_BIN):
 	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(FIRST_GOPATH)/bin
@@ -88,14 +88,14 @@ release-assets/windows.%: $(SOURCE)
 	GOOS=windows \
  	GOARCH=$(call word-dot,$*,1) \
 	CGO_ENABLED=0 \
-	go build -ldflags '$(LDFLAGS)' -o './release-assets/$(PROJECT_NAME).windows.$(call word-dot,$*,1).exe' .
+	time go build -ldflags '$(LDFLAGS)' -o './release-assets/$(PROJECT_NAME).windows.$(call word-dot,$*,1).exe' .
 
 release-assets/%: $(SOURCE)
 	echo 'build release-assets for $(call word-dot,$*,1)/$(call word-dot,$*,2)'
 	GOOS=$(call word-dot,$*,1) \
  	GOARCH=$(call word-dot,$*,2) \
 	CGO_ENABLED=0 \
-	go build -ldflags '$(LDFLAGS)' -o './release-assets/$(PROJECT_NAME).$(call word-dot,$*,1).$(call word-dot,$*,2)' .
+	time go build -ldflags '$(LDFLAGS)' -o './release-assets/$(PROJECT_NAME).$(call word-dot,$*,1).$(call word-dot,$*,2)' .
 
 .PHONY: release-assets/helm-plugin
 release-assets/helm-plugin:
