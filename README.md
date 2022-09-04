@@ -87,8 +87,10 @@ Arguments:
 | `msGraphGroupList`                     | `filter` (string)      | Fetches list of groups based on [`$filter`](https://docs.microsoft.com/en-us/graph/filter-query-parameter#examples-using-the-filter-query-operator) query            |
 | `msGraphServicePrincipalByDisplayName` | `displayName` (string) | Fetches one serviceprincipal by displayName                                                                                                                          |
 | `msGraphServicePrincipalList`          | `filter` (string)      | Fetches list of servicePrincipals based on [`$filter`](https://docs.microsoft.com/en-us/graph/filter-query-parameter#examples-using-the-filter-query-operator) query |
+| `msGraphApplicationByDisplayName`      | `displayName` (string) | Fetches one application by displayName                                                                                                                               |
+| `msGraphApplicationList`               | `filter` (string)      | Fetches list of applications based on [`$filter`](https://docs.microsoft.com/en-us/graph/filter-query-parameter#examples-using-the-filter-query-operator) query      |
 
-### Misc template functions
+## Misc template functions
 
 | Function   | Parameters          | Description                                                                          |
 |------------|---------------------|--------------------------------------------------------------------------------------|

@@ -88,6 +88,8 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *template.Template) template.Fun
 		`msGraphGroupList`:                     e.msGraphGroupList,
 		`msGraphServicePrincipalByDisplayName`: e.msGraphServicePrincipalByDisplayName,
 		`msGraphServicePrincipalList`:          e.msGraphServicePrincipalList,
+		`msGraphApplicationByDisplayName`:      e.msGraphApplicationByDisplayName,
+		`msGraphApplicationList`:               e.msGraphApplicationList,
 
 		// misc
 		`jsonPath`: e.jsonPath,
