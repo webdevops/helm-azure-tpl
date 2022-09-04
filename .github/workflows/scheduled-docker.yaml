@@ -19,7 +19,7 @@ jobs:
         uses: golangci/golangci-lint-action@v2
         with:
           version: latest
-          args: -E exportloopref,gofmt --timeout=120m
+          args: --print-resources-usage
 
   build:
     needs: lint
