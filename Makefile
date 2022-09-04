@@ -7,7 +7,7 @@ FIRST_GOPATH			:= $(firstword $(subst :, ,$(shell go env GOPATH)))
 GOLANGCI_LINT_BIN		:= $(FIRST_GOPATH)/bin/golangci-lint
 
 .PHONY: all
-all: build
+all: vendor build
 
 .PHONY: clean
 clean:
@@ -17,27 +17,30 @@ clean:
 # builds
 #######################################
 
-.PHONY: build
-build:
-	GOOS=${GOOS} GOARCH=${GOARCH} CGO_ENABLED=0 go build -ldflags '$(LDFLAGS)' -o $(PROJECT_NAME) .
-
 .PHONY: vendor
 vendor:
 	go mod tidy
 	go mod vendor
 	go mod verify
 
+.PHONY: build-all
+build-all:
+	GOOS=linux   GOARCH=${GOARCH} CGO_ENABLED=0 go build -ldflags '$(LDFLAGS)' -o '$(PROJECT_NAME)' .
+	GOOS=darwin  GOARCH=${GOARCH} CGO_ENABLED=0 go build -ldflags '$(LDFLAGS)' -o '$(PROJECT_NAME).darwin' .
+	GOOS=windows GOARCH=${GOARCH} CGO_ENABLED=0 go build -ldflags '$(LDFLAGS)' -o '$(PROJECT_NAME).exe' .
+
+.PHONY: build
+build:
+	GOOS=${GOOS} GOARCH=${GOARCH} CGO_ENABLED=0 go build -ldflags '$(LDFLAGS)' -o $(PROJECT_NAME) .
+
 .PHONY: image
-image: build
+image: image
 	docker build -t $(PROJECT_NAME):$(GIT_TAG) .
 
+.PHONY: build-push-development
 build-push-development:
 	docker buildx create --use
 	docker buildx build -t webdevops/$(PROJECT_NAME):development --platform linux/amd64,linux/arm,linux/arm64 --push .
-
-.PHONY: dependencies
-dependencies:
-	go mod vendor
 
 #######################################
 # quality checks
@@ -71,10 +74,12 @@ word-dot = $(word $2,$(subst ., ,$1))
 .PHONY: release-assets
 release-assets: clean-release-assets vendor $(RELEASE_ASSETS) release-assets/helm-plugin
 
+.PHONY: clean-release-assets
 clean-release-assets:
 	rm -rf ./release-assets
 	mkdir -p ./release-assets
 
+.PHONY: $(RELEASE_ASSETS)
 release-assets/windows.%: $(SOURCE)
 	echo 'build release-assets for windows/$(call word-dot,$*,2)'
 	GOOS=windows \
