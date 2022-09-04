@@ -7,13 +7,6 @@ FIRST_GOPATH			:= $(firstword $(subst :, ,$(shell go env GOPATH)))
 GOLANGCI_LINT_BIN		:= $(FIRST_GOPATH)/bin/golangci-lint
 GOSEC_BIN				:= $(FIRST_GOPATH)/bin/gosec
 
-RELEASE_ASSETS = \
-	$(foreach GOARCH,amd64 arm64,\
-	$(foreach GOOS,linux darwin windows,\
-		release-assets/helm-azure-tpl.$(GOOS).$(GOARCH))) \
-
-word-dot = $(word $2,$(subst ., ,$1))
-
 .PHONY: all
 all: build
 
@@ -21,42 +14,9 @@ all: build
 clean:
 	git clean -Xfd .
 
-.PHONY: build-all
-build-all:
-	GOOS=linux   GOARCH=${GOARCH} CGO_ENABLED=0 go build -ldflags '$(LDFLAGS)' -o '$(PROJECT_NAME)' .
-	GOOS=darwin  GOARCH=${GOARCH} CGO_ENABLED=0 go build -ldflags '$(LDFLAGS)' -o '$(PROJECT_NAME).darwin' .
-	GOOS=windows GOARCH=${GOARCH} CGO_ENABLED=0 go build -ldflags '$(LDFLAGS)' -o '$(PROJECT_NAME).exe' .
-
-.PHONY: release-assets
-release-assets: clean-release-assets vendor $(RELEASE_ASSETS) release-assets/helm-plugin
-
-clean-release-assets:
-	rm -rf ./release-assets
-	mkdir -p ./release-assets
-
-release-assets/helm-azure-tpl.windows.%: $(SOURCE)
-	echo 'build release-assets for windows/$(call word-dot,$*,2)'
-	GOOS=windows \
- 	GOARCH=$(call word-dot,$*,1) \
-	CGO_ENABLED=0 \
-	go build -ldflags '$(LDFLAGS)' -o './release-assets/$(PROJECT_NAME).windows.$(call word-dot,$*,1).exe' .
-
-release-assets/helm-azure-tpl.%: $(SOURCE)
-	echo 'build release-assets for $(call word-dot,$*,1)/$(call word-dot,$*,2)'
-	GOOS=$(call word-dot,$*,1) \
- 	GOARCH=$(call word-dot,$*,2) \
-	CGO_ENABLED=0 \
-	go build -ldflags '$(LDFLAGS)' -o './release-assets/$(PROJECT_NAME).$(call word-dot,$*,1).$(call word-dot,$*,2)' .
-
-.PHONY: release-assets/helm-plugin
-release-assets/helm-plugin:
-	echo 'build helm plugin'
-	rm -rf    ./tmp
-	mkdir -p  ./tmp/helm-azure-tpl
-	cp -- plugin.yaml  ./tmp/helm-azure-tpl
-	cp -a ./release-assets/* ./tmp/helm-azure-tpl
-	bash -c 'cd ./tmp/helm-azure-tpl/ && tar --exclude *.tgz -czvf ../../release-assets/helm-plugin.tgz *'
-	rm -rf ./tmp
+#######################################
+# builds
+#######################################
 
 .PHONY: build
 build:
@@ -76,16 +36,20 @@ build-push-development:
 	docker buildx create --use
 	docker buildx build -t webdevops/$(PROJECT_NAME):development --platform linux/amd64,linux/arm,linux/arm64 --push .
 
-.PHONY: test
-test:
-	go test ./...
-
 .PHONY: dependencies
 dependencies:
 	go mod vendor
 
-.PHONY: check-release
-check-release: vendor lint gosec test
+#######################################
+# quality checks
+#######################################
+
+.PHONY: check
+check: vendor lint gosec test
+
+.PHONY: test
+test:
+	go test ./...
 
 .PHONY: lint
 lint: $(GOLANGCI_LINT_BIN)
@@ -100,3 +64,45 @@ $(GOLANGCI_LINT_BIN):
 
 $(GOSEC_BIN):
 	curl -sfL https://raw.githubusercontent.com/securego/gosec/master/install.sh | sh -s -- -b $(FIRST_GOPATH)/bin
+
+#######################################
+# release assets
+#######################################
+
+RELEASE_ASSETS = \
+	$(foreach GOARCH,amd64 arm64,\
+	$(foreach GOOS,linux darwin windows,\
+		release-assets/$(GOOS).$(GOARCH))) \
+
+word-dot = $(word $2,$(subst ., ,$1))
+
+.PHONY: release-assets
+release-assets: clean-release-assets vendor $(RELEASE_ASSETS) release-assets/helm-plugin
+
+clean-release-assets:
+	rm -rf ./release-assets
+	mkdir -p ./release-assets
+
+release-assets/windows.%: $(SOURCE)
+	echo 'build release-assets for windows/$(call word-dot,$*,2)'
+	GOOS=windows \
+ 	GOARCH=$(call word-dot,$*,1) \
+	CGO_ENABLED=0 \
+	go build -ldflags '$(LDFLAGS)' -o './release-assets/$(PROJECT_NAME).windows.$(call word-dot,$*,1).exe' .
+
+release-assets/%: $(SOURCE)
+	echo 'build release-assets for $(call word-dot,$*,1)/$(call word-dot,$*,2)'
+	GOOS=$(call word-dot,$*,1) \
+ 	GOARCH=$(call word-dot,$*,2) \
+	CGO_ENABLED=0 \
+	go build -ldflags '$(LDFLAGS)' -o './release-assets/$(PROJECT_NAME).$(call word-dot,$*,1).$(call word-dot,$*,2)' .
+
+.PHONY: release-assets/helm-plugin
+release-assets/helm-plugin:
+	echo 'build helm plugin'
+	rm -rf    ./tmp
+	mkdir -p  ./tmp/helm-azure-tpl
+	cp -- plugin.yaml  ./tmp/helm-azure-tpl
+	cp -a ./release-assets/* ./tmp/helm-azure-tpl
+	bash -c 'cd ./tmp/helm-azure-tpl/ && tar --exclude *.tgz -czvf ../../release-assets/helm-plugin.tgz *'
+	rm -rf ./tmp
