@@ -5,18 +5,7 @@ on:
     types: [created]
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Run Golangci lint
-        uses: golangci/golangci-lint-action@v2
-        with:
-          version: latest
-          args: --print-resources-usage
-
-  build:
+  release:
     needs: lint
     runs-on: ubuntu-latest
     steps:
