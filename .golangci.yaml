@@ -18,9 +18,6 @@ linters-settings:
     confidence: low
     config:
       global:
-        nosec: true
-        "#nosec": "#my-custom-nosec"
-        show-ignored: true
         audit: true
 
 issues: {}
