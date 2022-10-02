@@ -15,7 +15,7 @@ require (
 	github.com/microsoftgraph/msgraph-sdk-go-core v0.29.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/sirupsen/logrus v1.9.0
-	github.com/webdevops/go-common v0.0.0-20221001221718-fcbb69a1daa7
+	github.com/webdevops/go-common v0.0.0-20221002152253-aae21ae9030a
 	sigs.k8s.io/yaml v1.3.0
 )
 
