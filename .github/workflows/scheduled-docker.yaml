@@ -29,7 +29,10 @@ jobs:
         Dockerfile: [Dockerfile]
         suffix: [""]
         latest: ["auto"]
-        include: []
+        include:
+          - Dockerfile: Dockerfile.azcli
+            suffix: -azcli
+            latest: false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
