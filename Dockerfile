@@ -27,14 +27,15 @@ FROM gcr.io/distroless/static as test
 USER 0:0
 WORKDIR /app
 COPY --from=build /go/src/github.com/webdevops/helm-azure-tpl/helm-azure-tpl .
+COPY --from=build /go/src/github.com/webdevops/helm-azure-tpl/entrypoint.sh .
 RUN ["./helm-azure-tpl", "--help"]
 
 #############################################
 # Final
 #############################################
-FROM ubuntu:22.04
+FROM mcr.microsoft.com/azure-cli:latest
 ENV LOG_JSON=1
 WORKDIR /
 COPY --from=test /app .
 USER 1000:1000
-ENTRYPOINT ["/helm-azure-tpl"]
+ENTRYPOINT ["/entrypoint.sh"]
