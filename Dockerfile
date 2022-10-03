@@ -17,7 +17,7 @@ RUN make test
 
 # Compile
 ARG TARGETARCH
-RUN GOARCH=${TARGETARCH} make build-all
+RUN GOARCH=${TARGETARCH} make build
 RUN chmod +x entrypoint.sh
 
 #############################################
@@ -26,8 +26,7 @@ RUN chmod +x entrypoint.sh
 FROM gcr.io/distroless/static as test
 USER 0:0
 WORKDIR /app
-COPY --from=build /go/src/github.com/webdevops/helm-azure-tpl/helm-azure-tpl* .
-COPY --from=build /go/src/github.com/webdevops/helm-azure-tpl/entrypoint.sh .
+COPY --from=build /go/src/github.com/webdevops/helm-azure-tpl/helm-azure-tpl .
 RUN ["./helm-azure-tpl", "--help"]
 
 #############################################
@@ -38,4 +37,4 @@ ENV LOG_JSON=1
 WORKDIR /
 COPY --from=test /app .
 USER 1000:1000
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/helm-azure-tpl"]
