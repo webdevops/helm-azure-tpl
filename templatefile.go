@@ -72,7 +72,7 @@ func (f *TemplateFile) parse(buf *strings.Builder) {
 		contextLogger.Fatalf(`unable to parse file: %v`, err.Error())
 	}
 
-	err = parsedContent.Execute(buf, nil)
+	err = parsedContent.Execute(buf, templateData)
 	if err != nil {
 		contextLogger.Fatalf(`unable to process template: '%v'`, err.Error())
 	}

@@ -33,6 +33,8 @@ type (
 			FileExt *string `long:"target.fileext"  env:"TARGET_FILEEXT"  description:"replaces file extension (or adds if empty) with this value (eg. '.yaml')"`
 		}
 
+		ValuesFiles []string `long:"values"  env:"VALUES" env-delim:":" description:"path to yaml files for .Values"`
+
 		Args struct {
 			Command string   `description:"specifies what to do (help, version, lint, apply)" choice:"help" choice:"version" choice:"lint" choice:"apply" required:"yes"` // nolint:staticcheck
 			Files   []string `description:"list of files to process (will overwrite files, different target file can be specified as sourcefile:targetfile)"`

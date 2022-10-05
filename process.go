@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	log "github.com/sirupsen/logrus"
+	yaml "gopkg.in/yaml.v3"
 )
 
 const (
@@ -19,8 +20,15 @@ const (
 	CommandProcess = "apply"
 )
 
+type (
+	TemplatePayload struct {
+		Values interface{}
+	}
+)
+
 var (
-	lintMode = false
+	templateData TemplatePayload
+	lintMode     = false
 )
 
 func run() {
@@ -42,6 +50,7 @@ func run() {
 			log.Fatal(`no files specified as arguments`)
 		}
 
+		readValuesFiles()
 		templateFileList := buildSourceTargetList()
 
 		if !lintMode {
@@ -75,6 +84,32 @@ func run() {
 func printAppHeader() {
 	log.Infof("%v v%s (%s; %s; by %v)", argparser.Command.Name, gitTag, gitCommit, runtime.Version(), Author)
 	log.Info(string(opts.GetJson()))
+}
+
+func readValuesFiles() {
+	for _, filePath := range opts.ValuesFiles {
+		contextLogger := log.WithFields(log.Fields{
+			`valuesPath`: filePath,
+		})
+
+		data, err := os.ReadFile(filePath)
+		if err != nil {
+			contextLogger.Fatalf(`unable to read values file: %v`, err)
+		}
+		err = yaml.Unmarshal(data, &templateData.Values)
+		if err != nil {
+			log.Fatalf("error: %v", err)
+		}
+	}
+
+	if opts.Debug {
+		fmt.Println()
+		fmt.Println(strings.Repeat("-", TermColumns))
+		fmt.Printf("--- VALUES")
+		fmt.Println(strings.Repeat("-", TermColumns))
+		values, _ := yaml.Marshal(templateData)
+		fmt.Println(string(values))
+	}
 }
 
 func buildSourceTargetList() (list []TemplateFile) {

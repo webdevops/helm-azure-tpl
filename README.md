@@ -47,19 +47,29 @@ Application Options:
       --azure.environment= Azure environment name [$AZURE_ENVIRONMENT]
       --dry-run            dry run, do not write any files [$DRY_RUN]
       --debug              debug run, print generated content to stdout (WARNING: can expose secrets!)
-      --template.basepath= sets custom base path (if empty, base path is set by base directory for each file) [$TEMPLATE_BASEPATH]
-      --target.prefix=     adds this value as prefix to filename on save (not used if targetfile is specified in argument) [$TARGET_PREFIX]
-      --target.suffix=     adds this value as suffix to filename on save (not used if targetfile is specified in argument) [$TARGET_SUFFIX]
+      --template.basepath= sets custom base path (if empty, base path is set by base directory for each file)
+                           [$TEMPLATE_BASEPATH]
+      --target.prefix=     adds this value as prefix to filename on save (not used if targetfile is specified in argument)
+                           [$TARGET_PREFIX]
+      --target.suffix=     adds this value as suffix to filename on save (not used if targetfile is specified in argument)
+                           [$TARGET_SUFFIX]
       --target.fileext=    replaces file extension (or adds if empty) with this value (eg. '.yaml') [$TARGET_FILEEXT]
+      --values=            path to yaml files for .Values [$VALUES]
 
 Help Options:
   -h, --help               Show this help message
 
 Arguments:
   Command:                 specifies what to do (help, version, lint, apply)
-  Files:                   list of files to process (will overwrite files, different target file can be specified as sourcefile:targetfile)
-
+  Files:                   list of files to process (will overwrite files, different target file can be specified as
+                           sourcefile:targetfile)
 ```
+
+## Build-in objects
+
+| Object                                     | Description                                                                                                   |
+|--------------------------------------------|---------------------------------------------------------------------------------------------------------------|
+| `.Values`                                  | Additional data can be passed via `--values=values.yaml` files which is available under `.Values` (like Helm) |
 
 ## Template functions
 
