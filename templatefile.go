@@ -61,6 +61,11 @@ func (f *TemplateFile) parse(buf *strings.Builder) {
 
 	tmpl := template.New(f.SourceFile).Funcs(sprig.TxtFuncMap())
 	tmpl = tmpl.Funcs(azureTemplate.TxtFuncMap(tmpl))
+	if !lintMode {
+		tmpl.Option("missingkey=error")
+	} else {
+		tmpl.Option("missingkey=zero")
+	}
 
 	content, err := os.ReadFile(f.SourceFile)
 	if err != nil {
