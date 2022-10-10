@@ -20,8 +20,8 @@ type (
 			Environment *string `long:"azure.environment"              env:"AZURE_ENVIRONMENT"         description:"Azure environment name"`
 		}
 
-		DryRun bool `long:"dry-run"      env:"DRY_RUN"  description:"dry run, do not write any files"`
-		Debug  bool `long:"debug"                       description:"debug run, print generated content to stdout (WARNING: can expose secrets!)"`
+		DryRun bool `long:"dry-run" env:"DRY_RUN"    description:"dry run, do not write any files"`
+		Debug  bool `long:"debug"   env:"HELM_DEBUG" description:"debug run, print generated content to stdout (WARNING: can expose secrets!)"`
 
 		Template struct {
 			BasePath *string `long:"template.basepath"  env:"TEMPLATE_BASEPATH"  description:"sets custom base path (if empty, base path is set by base directory for each file)"`
