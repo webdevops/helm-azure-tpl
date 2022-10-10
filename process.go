@@ -153,7 +153,7 @@ func readValuesFiles() error {
 	if opts.Debug {
 		fmt.Println()
 		fmt.Println(strings.Repeat("-", TermColumns))
-		fmt.Printf("--- VALUES")
+		fmt.Println("--- VALUES")
 		fmt.Println(strings.Repeat("-", TermColumns))
 		values, _ := yaml.Marshal(templateData)
 		fmt.Println(string(values))
