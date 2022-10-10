@@ -90,6 +90,9 @@ func printAppHeader() {
 	log.Info(string(opts.GetJson()))
 }
 
+// borrowed from helm/helm
+// https://github.com/helm/helm/blob/main/pkg/cli/values/options.go
+// Apache License, Version 2.0
 func readValuesFiles() error {
 	templateData.Values = map[string]interface{}{}
 	for _, filePath := range opts.ValuesFiles {
@@ -159,6 +162,9 @@ func readValuesFiles() error {
 	return nil
 }
 
+// borrowed from helm/helm
+// https://github.com/helm/helm/blob/main/pkg/cli/values/options.go
+// Apache License, Version 2.0
 func mergeMaps(a, b map[string]interface{}) map[string]interface{} {
 	out := make(map[string]interface{}, len(a))
 	for k, v := range a {
