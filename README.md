@@ -68,8 +68,8 @@ Help Options:
   -h, --help               Show this help message
 
 Arguments:
-  Command:                 specifies what to do (help, version, lint, apply)
-  Files:                   list of files to process (will overwrite files, different target file can be specified as
+  command:                 specifies what to do (help, version, lint, apply)
+  files:                   list of files to process (will overwrite files, different target file can be specified as
                            sourcefile:targetfile)
 ```
 
