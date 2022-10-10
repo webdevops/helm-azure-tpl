@@ -46,7 +46,7 @@ Application Options:
       --azure.tenant=      Azure tenant id [$AZURE_TENANT_ID]
       --azure.environment= Azure environment name [$AZURE_ENVIRONMENT]
       --dry-run            dry run, do not write any files [$DRY_RUN]
-      --debug              debug run, print generated content to stdout (WARNING: can expose secrets!)
+      --debug              debug run, print generated content to stdout (WARNING: can expose secrets!) [$HELM_DEBUG]
       --template.basepath= sets custom base path (if empty, base path is set by base directory for each file)
                            [$TEMPLATE_BASEPATH]
       --target.prefix=     adds this value as prefix to filename on save (not used if targetfile is specified in argument)
@@ -55,6 +55,14 @@ Application Options:
                            [$TARGET_SUFFIX]
       --target.fileext=    replaces file extension (or adds if empty) with this value (eg. '.yaml') [$TARGET_FILEEXT]
       --values=            path to yaml files for .Values [$VALUES]
+      --set-json=          set JSON values on the command line (can specify multiple or separate values with commas:
+                           key1=jsonval1,key2=jsonval2)
+      --set=               set values on the command line (can specify multiple or separate values with commas:
+                           key1=val1,key2=val2)
+      --set-string=        set STRING values on the command line (can specify multiple or separate values with commas:
+                           key1=val1,key2=val2)
+      --set-file=          set values from respective files specified via the command line (can specify multiple or separate
+                           values with commas: key1=path1,key2=path2)
 
 Help Options:
   -h, --help               Show this help message
