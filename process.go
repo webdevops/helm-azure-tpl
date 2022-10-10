@@ -11,6 +11,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	yaml "gopkg.in/yaml.v3"
+	"helm.sh/helm/v3/pkg/strvals"
 )
 
 const (
@@ -22,7 +23,7 @@ const (
 
 type (
 	TemplatePayload struct {
-		Values interface{}
+		Values map[string]interface{}
 	}
 )
 
@@ -50,7 +51,10 @@ func run() {
 			log.Fatal(`no files specified as arguments`)
 		}
 
-		readValuesFiles()
+		if err := readValuesFiles(); err != nil {
+			log.Fatal(err)
+			os.Exit(1)
+		}
 		templateFileList := buildSourceTargetList()
 
 		if !lintMode {
@@ -86,19 +90,60 @@ func printAppHeader() {
 	log.Info(string(opts.GetJson()))
 }
 
-func readValuesFiles() {
+func readValuesFiles() error {
+	templateData.Values = map[string]interface{}{}
 	for _, filePath := range opts.ValuesFiles {
+		currentMap := map[string]interface{}{}
+
 		contextLogger := log.WithFields(log.Fields{
 			`valuesPath`: filePath,
 		})
 
+		contextLogger.Info("using .Values file")
 		data, err := os.ReadFile(filePath)
 		if err != nil {
 			contextLogger.Fatalf(`unable to read values file: %v`, err)
 		}
-		err = yaml.Unmarshal(data, &templateData.Values)
+		err = yaml.Unmarshal(data, &currentMap)
 		if err != nil {
 			log.Fatalf("error: %v", err)
+		}
+		// Merge with the previous map
+		templateData.Values = mergeMaps(templateData.Values, currentMap)
+	}
+
+	// User specified a value via --set-json
+	for _, value := range opts.JSONValues {
+		if err := strvals.ParseJSON(value, templateData.Values); err != nil {
+			return fmt.Errorf(`failed parsing --set-json data %s`, value)
+		}
+	}
+
+	// User specified a value via --set
+	for _, value := range opts.Values {
+		if err := strvals.ParseInto(value, templateData.Values); err != nil {
+			return fmt.Errorf(`failed parsing --set data: %w`, err)
+		}
+	}
+
+	// User specified a value via --set-string
+	for _, value := range opts.StringValues {
+		if err := strvals.ParseIntoString(value, templateData.Values); err != nil {
+			return fmt.Errorf(`failed parsing --set-string data: %w`, err)
+		}
+	}
+
+	// User specified a value via --set-file
+	for _, value := range opts.FileValues {
+		reader := func(rs []rune) (interface{}, error) {
+			bytes, err := os.ReadFile(string(rs))
+			if err != nil {
+				return nil, err
+			}
+			return string(bytes), err
+		}
+		if err := strvals.ParseIntoFile(value, templateData.Values, reader); err != nil {
+			return fmt.Errorf(`failed parsing --set-file data: %w`, err)
 		}
 	}
 
@@ -110,6 +155,27 @@ func readValuesFiles() {
 		values, _ := yaml.Marshal(templateData)
 		fmt.Println(string(values))
 	}
+
+	return nil
+}
+
+func mergeMaps(a, b map[string]interface{}) map[string]interface{} {
+	out := make(map[string]interface{}, len(a))
+	for k, v := range a {
+		out[k] = v
+	}
+	for k, v := range b {
+		if v, ok := v.(map[string]interface{}); ok {
+			if bv, ok := out[k]; ok {
+				if bv, ok := bv.(map[string]interface{}); ok {
+					out[k] = mergeMaps(bv, v)
+					continue
+				}
+			}
+		}
+		out[k] = v
+	}
+	return out
 }
 
 func buildSourceTargetList() (list []TemplateFile) {

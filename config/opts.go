@@ -33,7 +33,11 @@ type (
 			FileExt *string `long:"target.fileext"  env:"TARGET_FILEEXT"  description:"replaces file extension (or adds if empty) with this value (eg. '.yaml')"`
 		}
 
-		ValuesFiles []string `long:"values"  env:"VALUES" env-delim:":" description:"path to yaml files for .Values"`
+		ValuesFiles  []string `long:"values"  env:"VALUES" env-delim:":" description:"path to yaml files for .Values"`
+		JSONValues   []string `long:"set-json"                           description:"set JSON values on the command line (can specify multiple or separate values with commas: key1=jsonval1,key2=jsonval2)"`
+		Values       []string `long:"set"                                description:"set values on the command line (can specify multiple or separate values with commas: key1=val1,key2=val2)"`
+		StringValues []string `long:"set-string"                         description:"set STRING values on the command line (can specify multiple or separate values with commas: key1=val1,key2=val2)"`
+		FileValues   []string `long:"set-file"                           description:"set values from respective files specified via the command line (can specify multiple or separate values with commas: key1=path1,key2=path2)"`
 
 		Args struct {
 			Command string   `description:"specifies what to do (help, version, lint, apply)" choice:"help" choice:"version" choice:"lint" choice:"apply" required:"yes"` // nolint:staticcheck
