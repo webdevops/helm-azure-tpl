@@ -6,6 +6,10 @@ on:
 
 jobs:
   release:
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [linux, windows, darwin]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -22,7 +26,7 @@ jobs:
 
       - name: Build
         run: |
-          make release-assets
+          make release-assets-${{ matrix.latest }}
 
       - name: Upload assets to release
         uses: svenstaro/upload-release-action@v2

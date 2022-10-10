@@ -64,15 +64,31 @@ $(GOLANGCI_LINT_BIN):
 # release assets
 #######################################
 
-RELEASE_ASSETS = \
+RELEASE_ASSETS_LINUX = \
 	$(foreach GOARCH,amd64 arm64,\
-	$(foreach GOOS,linux darwin windows,\
-		release-assets/$(GOOS).$(GOARCH))) \
+		release-assets/linux.$(GOARCH)) \
+
+RELEASE_ASSETS_WINDOWS = \
+	$(foreach GOARCH,amd64 arm64,\
+		release-assets/windows.$(GOARCH)) \
+
+RELEASE_ASSETS_DARWIN = \
+	$(foreach GOARCH,amd64 arm64,\
+		release-assets/darwin.$(GOARCH)) \
 
 word-dot = $(word $2,$(subst ., ,$1))
 
 .PHONY: release-assets
-release-assets: clean-release-assets vendor $(RELEASE_ASSETS) release-assets/helm-plugin
+release-assets: clean-release-assets vendor $(RELEASE_ASSETS_LINUX) $(RELEASE_ASSETS_DARWIN) $(RELEASE_ASSETS_WINDOWS) release-assets/helm-plugin
+
+.PHONY: release-assets-linux
+release-assets-linux: clean-release-assets vendor $(RELEASE_ASSETS_LINUX) release-assets/helm-plugin
+
+.PHONY: release-assets-darwin
+release-assets-darwin: clean-release-assets vendor $(RELEASE_ASSETS_DARWIN) release-assets/helm-plugin
+
+.PHONY: release-assets-windows
+release-assets-windows: clean-release-assets vendor $(RELEASE_ASSETS_WINDOWS) release-assets/helm-plugin
 
 .PHONY: clean-release-assets
 clean-release-assets:
