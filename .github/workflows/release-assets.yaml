@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        target: [linux, windows, darwin]
+        os: [linux, windows, darwin]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -26,7 +26,7 @@ jobs:
 
       - name: Build
         run: |
-          make release-assets-${{ matrix.latest }}
+          make release-assets-${{ matrix.os }}
 
       - name: Upload assets to release
         uses: svenstaro/upload-release-action@v2
