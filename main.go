@@ -77,6 +77,12 @@ func initArgparser() {
 		}
 	}
 
+	log.SetReportCaller(false)
+	log.SetFormatter(&log.TextFormatter{
+		DisableTimestamp: true,
+		DisableQuote:     true,
+	})
+
 	// verbose level
 	if opts.Logger.Verbose {
 		log.SetLevel(log.DebugLevel)
