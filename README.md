@@ -180,7 +180,7 @@ Arguments:
 }}
 
 ## Fetch secret value from Azure KeyVault
-{{ (azureKeyVaultSecret "https://examplevault.vault.azure.net/" "secretname").Value }}
+{{ (azureKeyVaultSecret "https://examplevault.vault.azure.net/" "secretname").value }}
 
 ## Fetch current environmentName
 {{ azureAccountInfo.environmentName }}
