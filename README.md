@@ -20,7 +20,17 @@ helm plugin install https://github.com/webdevops/helm-azure-tpl
 
 ### Helm (downloader mode)
 
+you can use helm in "downloader" mode to process files eg:
 
+```gotemplate
+helm upgrade foobar123 -f azuretpl://config/values.yaml .
+```
+
+for additional values files for azure-tpl you can use environment variabels:
+
+```gotemplate
+AZURETPL_VALUES=./path/to/azuretpl.yaml helm upgrade foobar123 -f azuretpl://config/values.yaml .
+```
 
 ### File processing
 
