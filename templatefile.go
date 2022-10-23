@@ -36,11 +36,18 @@ func (f *TemplateFile) Apply() {
 	f.parse(&buf)
 
 	if opts.Debug {
-		fmt.Println()
-		fmt.Println(strings.Repeat("-", TermColumns))
-		fmt.Printf("--- %v\n", f.TargetFile)
-		fmt.Println(strings.Repeat("-", TermColumns))
+		fmt.Fprintln(os.Stderr)
+		fmt.Fprintln(os.Stderr, strings.Repeat("-", TermColumns))
+		fmt.Fprintf(os.Stderr, "--- %v\n", f.TargetFile)
+		fmt.Fprintln(os.Stderr, strings.Repeat("-", TermColumns))
+		fmt.Fprintln(os.Stderr, buf.String())
+	}
+
+	if opts.Stdout {
+		fmt.Println("--- # src: " + f.SourceFile)
 		fmt.Println(buf.String())
+		fmt.Println()
+		return
 	}
 
 	if !opts.DryRun {

@@ -33,3 +33,9 @@ platformCommand:
 hooks:
   install: "bash $HELM_PLUGIN_DIR/plugin/hooks/helm-plugin-install.sh"
   update: "bash $HELM_PLUGIN_DIR/plugin/hooks/helm-plugin-install.sh"
+
+downloaders:
+  - command: "plugin/hooks/helm-downloader.sh"
+    protocols:
+      - "azuretpl"
+      - "azure-tpl"

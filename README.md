@@ -18,6 +18,12 @@ helm plugin install https://github.com/webdevops/helm-azure-tpl
 
 ## Usage
 
+### Helm (downloader mode)
+
+
+
+### File processing
+
 `helm azure-tpl` uses AzureCLI authentication to talk to Azure
 
 Process one file and overwrite it:
@@ -41,20 +47,21 @@ Usage:
   helm azure-tpl [OPTIONS] [Command] [Files...]
 
 Application Options:
-  -v, --verbose            verbose mode [$VERBOSE]
-      --log.json           Switch log output to json format [$LOG_JSON]
+  -v, --verbose            verbose mode [$AZURETPL_VERBOSE]
+      --log.json           Switch log output to json format [$AZURETPL_LOG_JSON]
       --azure.tenant=      Azure tenant id [$AZURE_TENANT_ID]
       --azure.environment= Azure environment name [$AZURE_ENVIRONMENT]
-      --dry-run            dry run, do not write any files [$DRY_RUN]
+      --dry-run            dry run, do not write any files [$AZURETPL_DRY_RUN]
       --debug              debug run, print generated content to stdout (WARNING: can expose secrets!) [$HELM_DEBUG]
+      --stdout             Print parsed content to stdout instead of file (logs will be written to stderr) [$AZURETPL_STDOUT]
       --template.basepath= sets custom base path (if empty, base path is set by base directory for each file)
-                           [$TEMPLATE_BASEPATH]
+                           [$AZURETPL_TEMPLATE_BASEPATH]
       --target.prefix=     adds this value as prefix to filename on save (not used if targetfile is specified in argument)
-                           [$TARGET_PREFIX]
+                           [$AZURETPL_TARGET_PREFIX]
       --target.suffix=     adds this value as suffix to filename on save (not used if targetfile is specified in argument)
-                           [$TARGET_SUFFIX]
-      --target.fileext=    replaces file extension (or adds if empty) with this value (eg. '.yaml') [$TARGET_FILEEXT]
-      --values=            path to yaml files for .Values [$VALUES]
+                           [$AZURETPL_TARGET_SUFFIX]
+      --target.fileext=    replaces file extension (or adds if empty) with this value (eg. '.yaml') [$AZURETPL_TARGET_FILEEXT]
+      --values=            path to yaml files for .Values [$AZURETPL_VALUES]
       --set-json=          set JSON values on the command line (can specify multiple or separate values with commas:
                            key1=jsonval1,key2=jsonval2)
       --set=               set values on the command line (can specify multiple or separate values with commas:
@@ -71,6 +78,7 @@ Arguments:
   command:                 specifies what to do (help, version, lint, apply)
   files:                   list of files to process (will overwrite files, different target file can be specified as
                            sourcefile:targetfile)
+
 ```
 
 ## Build-in objects

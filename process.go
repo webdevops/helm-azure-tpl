@@ -151,12 +151,12 @@ func readValuesFiles() error {
 	}
 
 	if opts.Debug {
-		fmt.Println()
-		fmt.Println(strings.Repeat("-", TermColumns))
-		fmt.Println("--- VALUES")
-		fmt.Println(strings.Repeat("-", TermColumns))
+		fmt.Fprintln(os.Stderr)
+		fmt.Fprintln(os.Stderr, strings.Repeat("-", TermColumns))
+		fmt.Fprintln(os.Stderr, "--- VALUES")
+		fmt.Fprintln(os.Stderr, strings.Repeat("-", TermColumns))
 		values, _ := yaml.Marshal(templateData)
-		fmt.Println(string(values))
+		fmt.Fprintln(os.Stderr, string(values))
 	}
 
 	return nil
@@ -191,6 +191,10 @@ func buildSourceTargetList() (list []TemplateFile) {
 		var targetPath string
 		sourcePath := filePath
 
+		// remove protocol prefix (when using helm downloader)
+		sourcePath = strings.TrimPrefix(sourcePath, "azuretpl://")
+		sourcePath = strings.TrimPrefix(sourcePath, "azure-tpl://")
+
 		if strings.Contains(sourcePath, ":") {
 			// explicit target path set in argument (source:target)
 			parts := strings.SplitN(sourcePath, ":", 2)
@@ -221,11 +225,16 @@ func buildSourceTargetList() (list []TemplateFile) {
 
 		contextLogger := log.WithFields(log.Fields{
 			`sourcePath`: sourcePath,
-			`targetPath`: targetPath,
 		})
 
-		if targetPath == "" || targetPath == "." || targetPath == "/" {
-			contextLogger.Fatalf(`invalid path '%v' detected`, targetPath)
+		if !opts.Stdout {
+			contextLogger = contextLogger.WithFields(log.Fields{
+				`targetPath`: targetPath,
+			})
+
+			if targetPath == "" || targetPath == "." || targetPath == "/" {
+				contextLogger.Fatalf(`invalid path '%v' detected`, targetPath)
+			}
 		}
 
 		if _, err := os.Stat(sourcePath); errors.Is(err, os.ErrNotExist) {

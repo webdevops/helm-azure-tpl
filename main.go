@@ -77,6 +77,11 @@ func initArgparser() {
 		}
 	}
 
+	if opts.Stdout {
+		// send all logs to stderr if we're using stdout output
+		log.SetOutput(os.Stderr)
+	}
+
 	log.SetReportCaller(false)
 	log.SetFormatter(&log.TextFormatter{
 		DisableTimestamp: true,
