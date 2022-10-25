@@ -102,12 +102,15 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *template.Template) template.Fun
 		"fromJson":      fromJSON,
 		"fromJsonArray": fromJSONArray,
 
+		// files
+		"filesGet": e.filesGet,
+
 		"include": func(path string, data interface{}) (string, error) {
 			sourcePath := filepath.Clean(path)
 			if val, err := filepath.Abs(sourcePath); err == nil {
 				sourcePath = val
 			} else {
-				e.logger.Fatalf(`unable to resolve include referance: %v`, err)
+				return "", fmt.Errorf(`unable to resolve include referance: %w`, err)
 			}
 
 			if !strings.HasPrefix(sourcePath, e.TemplateBasePath) {
@@ -130,22 +133,22 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *template.Template) template.Fun
 
 			content, err := os.ReadFile(sourcePath)
 			if err != nil {
-				e.logger.Fatalf(`unable to read file: %v`, err.Error())
+				return "", fmt.Errorf(`unable to read file: %w`, err)
 			}
 
 			parsedContent, err := tmpl.Parse(string(content))
 			if err != nil {
-				e.logger.Fatalf(`unable to parse file: %v`, err.Error())
+				return "", fmt.Errorf(`unable to parse file: %w`, err)
 			}
 
 			var buf bytes.Buffer
 			err = parsedContent.Execute(&buf, nil)
 			if err != nil {
-				e.logger.Fatalf("unable to process template:\n%v", err.Error())
+				return "", fmt.Errorf("unable to process template:\n%w", err)
 			}
 
 			includedNames[sourcePath]--
-			return buf.String(), err
+			return buf.String(), nil
 		},
 
 		"required": func(message string, val interface{}) (interface{}, error) {
