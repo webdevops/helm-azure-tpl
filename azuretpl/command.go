@@ -106,7 +106,13 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *template.Template) template.Fun
 		"filesGet": e.filesGet,
 
 		"include": func(path string, data interface{}) (string, error) {
-			sourcePath := filepath.Clean(path)
+			var sourcePath string
+			if !filepath.IsAbs(path) {
+				sourcePath = filepath.Clean(fmt.Sprintf("%s/%s", e.TemplateBasePath, path))
+			} else {
+				sourcePath = filepath.Clean(path)
+			}
+
 			if val, err := filepath.Abs(sourcePath); err == nil {
 				sourcePath = val
 			} else {
