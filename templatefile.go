@@ -5,9 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	"text/template"
 
-	"github.com/Masterminds/sprig/v3"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/webdevops/helm-azure-tpl/azuretpl"
@@ -65,28 +63,9 @@ func (f *TemplateFile) parse(buf *strings.Builder) {
 	azureTemplate.SetAzureCliAccountInfo(azAccountInfo)
 	azureTemplate.SetLintMode(lintMode)
 	azureTemplate.SetTemplateBasePath(f.TemplateBaseDir)
-
-	tmpl := template.New(f.SourceFile).Funcs(sprig.TxtFuncMap())
-	tmpl = tmpl.Funcs(azureTemplate.TxtFuncMap(tmpl))
-	if !lintMode {
-		tmpl.Option("missingkey=error")
-	} else {
-		tmpl.Option("missingkey=zero")
-	}
-
-	content, err := os.ReadFile(f.SourceFile)
+	err := azureTemplate.Parse(f.SourceFile, templateData, buf)
 	if err != nil {
-		contextLogger.Fatalf(`unable to read file: '%v'`, err.Error())
-	}
-
-	parsedContent, err := tmpl.Parse(string(content))
-	if err != nil {
-		contextLogger.Fatalf(`unable to parse file: %v`, err.Error())
-	}
-
-	err = parsedContent.Execute(buf, templateData)
-	if err != nil {
-		contextLogger.Fatalf(`unable to process template: '%v'`, err.Error())
+		contextLogger.Fatalf(err.Error())
 	}
 }
 

@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resources/armresources"
+	"github.com/Masterminds/sprig/v3"
 	cache "github.com/patrickmn/go-cache"
 	log "github.com/sirupsen/logrus"
 	"github.com/webdevops/go-common/azuresdk/armclient"
@@ -59,7 +60,11 @@ func (e *AzureTemplateExecutor) SetAzureCliAccountInfo(accountInfo map[string]in
 }
 
 func (e *AzureTemplateExecutor) SetTemplateBasePath(val string) {
-	e.TemplateBasePath = val
+	basepath, err := filepath.Abs(val)
+	if err != nil {
+		e.logger.Fatalf(`invalid base path '%v': %v`, val, err.Error())
+	}
+	e.TemplateBasePath = basepath
 }
 
 func (e *AzureTemplateExecutor) SetLintMode(val bool) {
@@ -103,7 +108,8 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *template.Template) template.Fun
 		"fromJsonArray": fromJSONArray,
 
 		// files
-		"filesGet": e.filesGet,
+		"filesGet":  e.filesGet,
+		"filesGlob": e.filesGlob,
 
 		"include": func(path string, data interface{}) (string, error) {
 			var sourcePath string
@@ -189,6 +195,46 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *template.Template) template.Fun
 	}
 
 	return funcMap
+}
+
+func (e *AzureTemplateExecutor) Parse(path string, templateData interface{}, buf *strings.Builder) error {
+	tmpl := template.New(path).Funcs(sprig.TxtFuncMap())
+	tmpl = tmpl.Funcs(e.TxtFuncMap(tmpl))
+
+	if !e.LintMode {
+		tmpl.Option("missingkey=error")
+	} else {
+		tmpl.Option("missingkey=zero")
+	}
+
+	content, err := os.ReadFile(path)
+	if err != nil {
+		return fmt.Errorf(`unable to read file: '%w'`, err)
+	}
+
+	parsedContent, err := tmpl.Parse(string(content))
+	if err != nil {
+		return fmt.Errorf(`unable to parse file: %w`, err)
+	}
+
+	oldPwd, err := os.Getwd()
+	if err != nil {
+		return err
+	}
+
+	if err = os.Chdir(e.TemplateBasePath); err != nil {
+		return err
+	}
+
+	if err = parsedContent.Execute(buf, templateData); err != nil {
+		return fmt.Errorf(`unable to process template: '%w'`, err)
+	}
+
+	if err = os.Chdir(oldPwd); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // lintResult checks if lint mode is active and returns example value

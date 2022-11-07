@@ -37,3 +37,28 @@ func (e *AzureTemplateExecutor) filesGet(path string) (string, error) {
 
 	return string(content), nil
 }
+
+func (e *AzureTemplateExecutor) filesGlob(pattern string) (interface{}, error) {
+	matches, err := filepath.Glob(pattern)
+	if err != nil {
+		return nil, fmt.Errorf(
+			`failed to parse glob pattern '%v': %w`,
+			pattern,
+			err,
+		)
+	}
+
+	ret := []string{}
+	for _, path := range matches {
+		fileInfo, err := os.Stat(path)
+		if err != nil {
+			return nil, err
+		}
+
+		if !fileInfo.IsDir() {
+			ret = append(ret, path)
+		}
+	}
+
+	return ret, err
+}

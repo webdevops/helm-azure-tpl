@@ -128,10 +128,11 @@ Arguments:
 
 ## Misc template functions
 
-| Function   | Parameters          | Description                                                                          |
-|------------|---------------------|--------------------------------------------------------------------------------------|
-| `jsonPath` | `jsonPath` (string) | Fetches object information using jsonPath (useful to process `azureResource` output) |
-| `filesGet` | `path` (string)     | Fetches content of file and returns content as string                                |
+| Function    | Parameters          | Description                                                                          |
+|-------------|---------------------|--------------------------------------------------------------------------------------|
+| `jsonPath`  | `jsonPath` (string) | Fetches object information using jsonPath (useful to process `azureResource` output) |
+| `filesGet`  | `path` (string)     | Fetches content of file and returns content as string                                |
+| `filesGlob` | `pattern` (string)  | Lists files using glob pattern                                                       |
 
 ```gotemplate
 
