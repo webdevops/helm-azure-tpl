@@ -148,7 +148,7 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *template.Template) template.Fun
 			}
 
 			var buf bytes.Buffer
-			err = parsedContent.Execute(&buf, nil)
+			err = parsedContent.Execute(&buf, data)
 			if err != nil {
 				return "", fmt.Errorf("unable to process template:\n%w", err)
 			}
