@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
 	log "github.com/sirupsen/logrus"
@@ -62,7 +63,8 @@ func (f *TemplateFile) parse(buf *strings.Builder) {
 	azureTemplate := azuretpl.New(ctx, AzureClient, MsGraphClient, contextLogger)
 	azureTemplate.SetAzureCliAccountInfo(azAccountInfo)
 	azureTemplate.SetLintMode(lintMode)
-	azureTemplate.SetTemplateBasePath(f.TemplateBaseDir)
+	azureTemplate.SetTemplateRootPath(f.TemplateBaseDir)
+	azureTemplate.SetTemplateRelPath(filepath.Dir(f.SourceFile))
 	err := azureTemplate.Parse(f.SourceFile, templateData, buf)
 	if err != nil {
 		contextLogger.Fatalf(err.Error())

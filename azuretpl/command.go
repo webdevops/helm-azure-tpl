@@ -30,7 +30,8 @@ type (
 		cache    *cache.Cache
 		cacheTtl time.Duration
 
-		TemplateBasePath string
+		TemplateRootPath string
+		TemplateRelPath  string
 
 		LintMode bool
 
@@ -59,12 +60,20 @@ func (e *AzureTemplateExecutor) SetAzureCliAccountInfo(accountInfo map[string]in
 	e.azureCliAccountInfo = accountInfo
 }
 
-func (e *AzureTemplateExecutor) SetTemplateBasePath(val string) {
-	basepath, err := filepath.Abs(val)
+func (e *AzureTemplateExecutor) SetTemplateRootPath(val string) {
+	path, err := filepath.Abs(filepath.Clean(val))
 	if err != nil {
 		e.logger.Fatalf(`invalid base path '%v': %v`, val, err.Error())
 	}
-	e.TemplateBasePath = basepath
+	e.TemplateRootPath = path
+}
+
+func (e *AzureTemplateExecutor) SetTemplateRelPath(val string) {
+	path, err := filepath.Abs(filepath.Clean(val))
+	if err != nil {
+		e.logger.Fatalf(`invalid base path '%v': %v`, val, err.Error())
+	}
+	e.TemplateRelPath = path
 }
 
 func (e *AzureTemplateExecutor) SetLintMode(val bool) {
@@ -112,27 +121,7 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *template.Template) template.Fun
 		"filesGlob": e.filesGlob,
 
 		"include": func(path string, data interface{}) (string, error) {
-			var sourcePath string
-			if !filepath.IsAbs(path) {
-				sourcePath = filepath.Clean(fmt.Sprintf("%s/%s", e.TemplateBasePath, path))
-			} else {
-				sourcePath = filepath.Clean(path)
-			}
-
-			if val, err := filepath.Abs(sourcePath); err == nil {
-				sourcePath = val
-			} else {
-				return "", fmt.Errorf(`unable to resolve include referance: %w`, err)
-			}
-
-			if !strings.HasPrefix(sourcePath, e.TemplateBasePath) {
-				return "", fmt.Errorf(
-					`'%v' must be in same directory or below (expected prefix: %v, got: %v)`,
-					path,
-					e.TemplateBasePath,
-					filepath.Dir(sourcePath),
-				)
-			}
+			sourcePath := e.fileMakePathAbs(path)
 
 			if v, ok := includedNames[sourcePath]; ok {
 				if v > recursionMaxNums {
@@ -222,7 +211,7 @@ func (e *AzureTemplateExecutor) Parse(path string, templateData interface{}, buf
 		return err
 	}
 
-	if err = os.Chdir(e.TemplateBasePath); err != nil {
+	if err = os.Chdir(e.TemplateRootPath); err != nil {
 		return err
 	}
 

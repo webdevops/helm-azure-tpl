@@ -25,7 +25,7 @@ type (
 		Stdout bool `long:"stdout"  env:"AZURETPL_STDOUT"     description:"Print parsed content to stdout instead of file (logs will be written to stderr)"`
 
 		Template struct {
-			BasePath *string `long:"template.basepath"  env:"AZURETPL_TEMPLATE_BASEPATH"  description:"sets custom base path (if empty, base path is set by base directory for each file)"`
+			BasePath *string `long:"template.basepath"  env:"AZURETPL_TEMPLATE_BASEPATH"  description:"sets custom base path (if empty, base path is set by base directory for each file. will be appended to all root paths inside templates)"`
 		}
 
 		Target struct {

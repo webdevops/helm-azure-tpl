@@ -7,28 +7,28 @@ import (
 	"strings"
 )
 
-func (e *AzureTemplateExecutor) filesGet(path string) (string, error) {
-	var sourcePath string
-	if !filepath.IsAbs(path) {
-		sourcePath = filepath.Clean(fmt.Sprintf("%s/%s", e.TemplateBasePath, path))
-	} else {
-		sourcePath = filepath.Clean(path)
-	}
+func (e *AzureTemplateExecutor) fileMakePathAbs(path string) string {
+	path = filepath.Clean(path)
 
-	if val, err := filepath.Abs(sourcePath); err == nil {
-		sourcePath = val
+	if filepath.IsAbs(path) {
+		path = fmt.Sprintf(
+			"%s/%s",
+			e.TemplateRootPath,
+			strings.TrimLeft(path, string(os.PathSeparator)),
+		)
 	} else {
-		return "", fmt.Errorf(`unable to resolve include referance: %w`, err)
-	}
-
-	if !strings.HasPrefix(sourcePath, e.TemplateBasePath) {
-		return "", fmt.Errorf(
-			`'%v' must be in same directory or below (expected prefix: %v, got: %v)`,
-			path,
-			e.TemplateBasePath,
-			filepath.Dir(sourcePath),
+		path = fmt.Sprintf(
+			"%s/%s",
+			e.TemplateRelPath,
+			strings.TrimLeft(path, string(os.PathSeparator)),
 		)
 	}
+
+	return path
+}
+
+func (e *AzureTemplateExecutor) filesGet(path string) (string, error) {
+	sourcePath := e.fileMakePathAbs(path)
 
 	content, err := os.ReadFile(sourcePath)
 	if err != nil {
@@ -39,6 +39,7 @@ func (e *AzureTemplateExecutor) filesGet(path string) (string, error) {
 }
 
 func (e *AzureTemplateExecutor) filesGlob(pattern string) (interface{}, error) {
+	pattern = e.fileMakePathAbs(pattern)
 	matches, err := filepath.Glob(pattern)
 	if err != nil {
 		return nil, fmt.Errorf(
@@ -48,7 +49,7 @@ func (e *AzureTemplateExecutor) filesGlob(pattern string) (interface{}, error) {
 		)
 	}
 
-	ret := []string{}
+	var ret []string
 	for _, path := range matches {
 		fileInfo, err := os.Stat(path)
 		if err != nil {
@@ -56,6 +57,8 @@ func (e *AzureTemplateExecutor) filesGlob(pattern string) (interface{}, error) {
 		}
 
 		if !fileInfo.IsDir() {
+			// make path relative
+			path = fmt.Sprintf(".%s%s", string(os.PathSeparator), strings.TrimLeft(strings.TrimPrefix(path, e.TemplateRootPath), string(os.PathSeparator)))
 			ret = append(ret, path)
 		}
 	}
