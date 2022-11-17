@@ -85,7 +85,6 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *template.Template) template.Fun
 
 	funcMap := map[string]interface{}{
 		// azure
-		`azureKeyVaultSecret`:                      e.azureKeyVaultSecret,
 		`azureResource`:                            e.azureResource,
 		`azureSubscription`:                        e.azureSubscription,
 		`azureSubscriptionList`:                    e.azureSubscriptionList,
@@ -94,6 +93,10 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *template.Template) template.Fun
 		`azureVirtualNetworkAddressPrefixes`:       e.azureVirtualNetworkAddressPrefixes,
 		`azureVirtualNetworkSubnetAddressPrefixes`: e.azureVirtualNetworkSubnetAddressPrefixes,
 		`azureAccountInfo`:                         e.azureAccountInfo,
+
+		// azure keyvault
+		`azureKeyVaultSecret`:     e.azureKeyVaultSecret,
+		`azureKeyVaultSecretList`: e.azureKeyVaultSecretList,
 
 		// msGraph
 		`msGraphUserByUserPrincipalName`:       e.msGraphUserByUserPrincipalName,

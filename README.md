@@ -106,12 +106,17 @@ Arguments:
 | `azureAccountInfo`                         |                                              | Output of `az account show`                                                    |
 | `azureSubscription`                        | `subscriptionID` (string, optional)          | Fetches Azure subscription (current selected one if `subscriptionID` is empty) |
 | `azureSubscriptionList`                    |                                              | Fetches list of all visible azure subscriptions                                |
-| `azureKeyVaultSecret`                      | `vaultUrl` (string), `secretName` (string)   | Fetches secret object from Azure KeyVault                                      |
 | `azureResource`                            | `resourceID` (string), `apiVersion` (string) | Fetches Azure resource information (interface object)                          |
 | `azurePublicIpAddress`                     | `resourceID` (string)                        | Fetches ip address from Azure Public IP                                        |
 | `azurePublicIpPrefixAddressPrefix`         | `resourceID` (string)                        | Fetches ip address prefix from Azure Public IP prefix                          |
 | `azureVirtualNetworkAddressPrefixes`       | `resourceID` (string)                        | Fetches address prefix (string array) from Azure VirtualNetwork                |
 | `azureVirtualNetworkSubnetAddressPrefixes` | `resourceID` (string), `subnetName` (string) | Fetches address prefix (string array) from Azure VirtualNetwork subnet         |
+
+### Azure Keyvault functions
+| Function                                   | Parameters                                                | Description                                                                                                                           |
+|--------------------------------------------|-----------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
+| `azureKeyVaultSecret`                      | `vaultUrl` (string), `secretName` (string)                | Fetches secret object from Azure KeyVault                                                                                             |
+| `azureKeyVaultSecretList`                  | `vaultUrl` (string), `secretNamePattern` (string, regexp) | Fetche the list of secret objects (without secret value) from Azure KeyVault and filters list by regular expression secretNamePattern |
 
 ### MsGraph (AzureAD) functions
 
