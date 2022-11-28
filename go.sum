@@ -31,7 +31,6 @@ cloud.google.com/go/storage v1.6.0/go.mod h1:N7U0C8pVQ/+NIKOBQyamJIeKQKkZ+mxpohl
 cloud.google.com/go/storage v1.8.0/go.mod h1:Wv1Oy7z6Yz3DshWRJFhqM/UCfaWIRTdp0RXyy7KQOVs=
 cloud.google.com/go/storage v1.10.0/go.mod h1:FLPqc6j+Ki4BU591ie1oL6qBQGu2Bl/tZ9ullr3+Kg0=
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
-github.com/Azure/azure-sdk-for-go v67.0.0+incompatible h1:SVBwznSETB0Sipd0uyGJr7khLhJOFRUEUb+0JgkCvDo=
 github.com/Azure/azure-sdk-for-go/sdk/azcore v1.2.0 h1:sVW/AFBTGyJxDaMYlq0ct3jUXTtj12tQ6zE2GZUgVQw=
 github.com/Azure/azure-sdk-for-go/sdk/azcore v1.2.0/go.mod h1:uGG2W01BaETf0Ozp+QxxKJdMBNRWPdstHG0Fmdwn1/U=
 github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.2.0 h1:t/W5MYAuQy81cvM8VUNfRLzhtKpXhVUAN7Cd7KVbTyc=
@@ -81,8 +80,8 @@ github.com/cespare/xxhash/v2 v2.1.2/go.mod h1:VGX0DQ3Q6kWi7AoAeZDth3/j3BFtOZR5XL
 github.com/chzyer/logex v1.1.10/go.mod h1:+Ywpsq7O8HXn0nuIou7OrIPyXbp3wmkHB+jjWRnGsAI=
 github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e/go.mod h1:nSuG5e5PlCu98SY8svDHJxuZscDgtXS6KTTbou5AhLI=
 github.com/chzyer/test v0.0.0-20180213035817-a1ea475d72b1/go.mod h1:Q3SI9o4m/ZMnBNeIyt5eFwwo7qiLfzFZmjNmxjkiQlU=
-github.com/cjlapao/common-go v0.0.29 h1:SOiTEEmA/YWOaP37U8beyqbxjvTtWcUAuvQAchGOQLE=
-github.com/cjlapao/common-go v0.0.29/go.mod h1:OyTAY388jfEj8uaRzx0uYneFghKDLL5KP+ewSydlQ5g=
+github.com/cjlapao/common-go v0.0.35 h1:GElDHYC9qAAMDozfDOArl1ayn+W+X90mogcS38Y8d3k=
+github.com/cjlapao/common-go v0.0.35/go.mod h1:WkUjw+hVbUDfzcnRymlU5VT/HBzv5xPs9tIJJ1XrQCU=
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
 github.com/cncf/udpa/go v0.0.0-20191209042840-269d4d468f6f/go.mod h1:M8M6+tZqaGXZJjfX53e64911xZQV5JYwmTeXPW+k8Sc=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
@@ -215,8 +214,8 @@ github.com/microsoft/kiota-serialization-json-go v0.7.2 h1:DSb4fNDi5O+DqJwrHo+vR
 github.com/microsoft/kiota-serialization-json-go v0.7.2/go.mod h1:Ojum5prlijopyCOZ2XctRcVlE2pU8h+43r3tMdiWoDU=
 github.com/microsoft/kiota-serialization-text-go v0.6.0 h1:3N2vftYZlwKdog69AN7ha+FZT0QxPG7xp/hLv0/W2OQ=
 github.com/microsoft/kiota-serialization-text-go v0.6.0/go.mod h1:OUA4dNH+f6afiJUs+rQAatJos7QVF5PJkyrqoD89lx4=
-github.com/microsoftgraph/msgraph-sdk-go v0.46.0 h1:czhbXS6Wwh8X2HsP+6WnfJQ8jWqYBIOtFl4pgI+wW/U=
-github.com/microsoftgraph/msgraph-sdk-go v0.46.0/go.mod h1:I2iR+gJmKiZZ8ebE8mKQEiKXpePAahAIazx3F1kL6og=
+github.com/microsoftgraph/msgraph-sdk-go v0.47.0 h1:gfh2KT8l+04XRa2lkAh6ug+oTa37RL7kATQTdx1ihtc=
+github.com/microsoftgraph/msgraph-sdk-go v0.47.0/go.mod h1:I2iR+gJmKiZZ8ebE8mKQEiKXpePAahAIazx3F1kL6og=
 github.com/microsoftgraph/msgraph-sdk-go-core v0.30.1 h1:jBuYexMqKnjsnQpyICfdu0RhZr7RFkEcKWRm3hf/jMM=
 github.com/microsoftgraph/msgraph-sdk-go-core v0.30.1/go.mod h1:RyqsMRKmZADSA/feLQMcynQJRENMzKM/Wg4dgQ/lW+s=
 github.com/mitchellh/copystructure v1.0.0/go.mod h1:SNtv71yrdKgLRyLFxmLdkAbkKEFWgYaq1OVrnRcwhnw=
@@ -296,8 +295,8 @@ github.com/stretchr/testify v1.7.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/
 github.com/stretchr/testify v1.8.0/go.mod h1:yNjHg4UonilssWZ8iaSj1OCr/vHnekPRkoO+kdMU+MU=
 github.com/stretchr/testify v1.8.1 h1:w7B6lhMri9wdJUVmEZPGGhZzrYTPvgJArz7wNPgYKsk=
 github.com/stretchr/testify v1.8.1/go.mod h1:w2LPCIKwWwSfY2zedu0+kehJoqGctiVI29o6fzry7u4=
-github.com/webdevops/go-common v0.0.0-20221115123001-5d56ab6aa901 h1:aIb54cwgsaOOxqyAAI6H28uj0TQq46W8ezn0/iUXZGw=
-github.com/webdevops/go-common v0.0.0-20221115123001-5d56ab6aa901/go.mod h1:nxFG6K4aVOr9cdwKxMVyWDNvntm+QaUBDY8XXh7PP6w=
+github.com/webdevops/go-common v0.0.0-20221125145325-44a9fe05be2c h1:jXWuai6coeZauj8mbAMNPM154J1HPuuQ7scRCyZHmKk=
+github.com/webdevops/go-common v0.0.0-20221125145325-44a9fe05be2c/go.mod h1:vTCAASkjRF22ah+M3vqAlr+AWS/PDPDC0v0KXKRtdgY=
 github.com/yosida95/uritemplate/v3 v3.0.2 h1:Ed3Oyj9yrmi9087+NczuL5BwkIc4wvTb5zIM+UJPGz4=
 github.com/yosida95/uritemplate/v3 v3.0.2/go.mod h1:ILOh0sOhIJR3+L/8afwt/kE++YT040gmv5BQTMR2HP4=
 github.com/yuin/goldmark v1.1.25/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=

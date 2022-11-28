@@ -11,11 +11,11 @@ require (
 	github.com/PaesslerAG/jsonpath v0.1.1
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/microsoft/kiota-abstractions-go v0.14.0
-	github.com/microsoftgraph/msgraph-sdk-go v0.46.0
+	github.com/microsoftgraph/msgraph-sdk-go v0.47.0
 	github.com/microsoftgraph/msgraph-sdk-go-core v0.30.1
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/sirupsen/logrus v1.9.0
-	github.com/webdevops/go-common v0.0.0-20221115123001-5d56ab6aa901
+	github.com/webdevops/go-common v0.0.0-20221125145325-44a9fe05be2c
 	gopkg.in/yaml.v3 v3.0.1
 	helm.sh/helm/v3 v3.10.2
 	sigs.k8s.io/yaml v1.3.0
@@ -32,7 +32,7 @@ require (
 	github.com/PaesslerAG/gval v1.2.1 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
-	github.com/cjlapao/common-go v0.0.29 // indirect
+	github.com/cjlapao/common-go v0.0.35 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
