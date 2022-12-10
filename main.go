@@ -44,12 +44,6 @@ var (
 
 func main() {
 	initArgparser()
-
-	// we're going to use az cli auth here
-	if err := os.Setenv("AZURE_AUTH", "az"); err != nil {
-		log.Panic(err.Error())
-	}
-
 	run()
 }
 
