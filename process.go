@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -60,6 +61,11 @@ func run() {
 		if !lintMode {
 			log.Infof("detecting Azure account information")
 			fetchAzAccountInfo()
+
+			azAccountInfoJson, err := json.Marshal(azAccountInfo)
+			if err == nil {
+				log.Infof(string(azAccountInfoJson))
+			}
 
 			log.Infof("connecting to Azure")
 			initAzureConnection()
