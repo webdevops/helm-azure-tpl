@@ -127,6 +127,20 @@ func fetchAzAccountInfo() {
 	if err != nil {
 		log.Fatalf(`unable to parse 'az account show' output: %v`, err)
 	}
+
+	// auto set azure tenant id
+	if opts.Azure.Tenant == nil || *opts.Azure.Tenant == "" {
+		// autodetect tenant
+		if val, ok := azAccountInfo["tenantId"].(string); ok {
+			log.Infof(`use Azure TenantID '%v' from 'az account show'`, val)
+			opts.Azure.Tenant = &val
+
+			// ensure that tenant id is also populated in env settings
+			if err := os.Setenv("AZURE_TENANT_ID", val); err != nil {
+				log.Fatalf(`unable to set AZURE_TENANT_ID: %v`, err.Error())
+			}
+		}
+	}
 }
 
 func initAzureConnection() {
@@ -150,14 +164,6 @@ func initAzureConnection() {
 
 func initMsGraphConnection() {
 	var err error
-
-	if opts.Azure.Tenant == nil || *opts.Azure.Tenant == "" {
-		// autodetect tenant
-		if val, ok := azAccountInfo["tenantId"].(string); ok {
-			log.Infof(`use Azure TenantID '%v' from 'az account show'`, val)
-			opts.Azure.Tenant = &val
-		}
-	}
 
 	if MsGraphClient == nil {
 		MsGraphClient, err = msgraphclient.NewMsGraphClientWithCloudName(*opts.Azure.Environment, *opts.Azure.Tenant, log.StandardLogger())
