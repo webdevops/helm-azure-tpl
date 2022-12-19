@@ -115,6 +115,11 @@ func initArgparser() {
 }
 
 func fetchAzAccountInfo() {
+	// enforce Azure AZ auth
+	if err := os.Setenv("AZURE_AUTH", "az"); err != nil {
+		log.Fatalf(`unable to set AZURE_AUTH: %v`, err.Error())
+	}
+
 	cmd := exec.Command("az", "account", "show", "-o", "json")
 	cmd.Stderr = os.Stderr
 
