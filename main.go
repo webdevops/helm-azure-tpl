@@ -115,11 +115,6 @@ func initArgparser() {
 }
 
 func fetchAzAccountInfo() {
-	// enforce Azure AZ auth
-	if err := os.Setenv("AZURE_AUTH", "az"); err != nil {
-		log.Fatalf(`unable to set AZURE_AUTH: %v`, err.Error())
-	}
-
 	cmd := exec.Command("az", "account", "show", "-o", "json")
 	cmd.Stderr = os.Stderr
 
@@ -139,11 +134,6 @@ func fetchAzAccountInfo() {
 		if val, ok := azAccountInfo["tenantId"].(string); ok {
 			log.Infof(`use Azure TenantID '%v' from 'az account show'`, val)
 			opts.Azure.Tenant = &val
-
-			// ensure that tenant id is also populated in env settings
-			if err := os.Setenv("AZURE_TENANT_ID", val); err != nil {
-				log.Fatalf(`unable to set AZURE_TENANT_ID: %v`, err.Error())
-			}
 		}
 	}
 }
@@ -165,6 +155,7 @@ func initAzureConnection() {
 	}
 
 	AzureClient.SetUserAgent(UserAgent + gitTag)
+	AzureClient.UseAzCliAuth()
 }
 
 func initMsGraphConnection() {
@@ -177,5 +168,6 @@ func initMsGraphConnection() {
 		}
 
 		MsGraphClient.SetUserAgent(UserAgent + gitTag)
+		MsGraphClient.UseAzCliAuth()
 	}
 }
