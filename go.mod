@@ -11,11 +11,11 @@ require (
 	github.com/PaesslerAG/jsonpath v0.1.1
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/microsoft/kiota-abstractions-go v0.15.1
-	github.com/microsoftgraph/msgraph-sdk-go v0.49.0
+	github.com/microsoftgraph/msgraph-sdk-go v0.50.0
 	github.com/microsoftgraph/msgraph-sdk-go-core v0.31.1
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/sirupsen/logrus v1.9.0
-	github.com/webdevops/go-common v0.0.0-20221220200411-41b4bede8950
+	github.com/webdevops/go-common v0.0.0-20221228200424-0f2faa8d4bee
 	gopkg.in/yaml.v3 v3.0.1
 	helm.sh/helm/v3 v3.10.3
 	sigs.k8s.io/yaml v1.3.0
@@ -44,7 +44,8 @@ require (
 	github.com/kylelemons/godebug v1.1.0 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
 	github.com/microsoft/kiota-authentication-azure-go v0.5.0 // indirect
-	github.com/microsoft/kiota-http-go v0.10.0 // indirect
+	github.com/microsoft/kiota-http-go v0.11.0 // indirect
+	github.com/microsoft/kiota-serialization-form-go v0.2.0 // indirect
 	github.com/microsoft/kiota-serialization-json-go v0.7.2 // indirect
 	github.com/microsoft/kiota-serialization-text-go v0.6.0 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
@@ -55,7 +56,7 @@ require (
 	github.com/prometheus/client_golang v1.14.0 // indirect
 	github.com/prometheus/client_model v0.3.0 // indirect
 	github.com/prometheus/common v0.39.0 // indirect
-	github.com/prometheus/procfs v0.8.0 // indirect
+	github.com/prometheus/procfs v0.9.0 // indirect
 	github.com/remeh/sizedwaitgroup v1.0.0 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
