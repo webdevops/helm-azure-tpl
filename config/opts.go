@@ -16,8 +16,8 @@ type (
 
 		// Api option
 		Azure struct {
-			Tenant      *string `long:"azure.tenant"                   env:"AZURE_TENANT_ID"           description:"Azure tenant id"`
-			Environment *string `long:"azure.environment"              env:"AZURE_ENVIRONMENT"         description:"Azure environment name"`
+			Tenant      *string `env:"AZURE_TENANT_ID"           description:"Azure tenant id"`
+			Environment *string `env:"AZURE_ENVIRONMENT"         description:"Azure environment name"`
 		}
 
 		DryRun bool `long:"dry-run" env:"AZURETPL_DRY_RUN"    description:"dry run, do not write any files"`

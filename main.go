@@ -129,6 +129,15 @@ func fetchAzAccountInfo() {
 	}
 
 	// auto set azure tenant id
+	if opts.Azure.Environment == nil || *opts.Azure.Environment == "" {
+		// autodetect tenant
+		if val, ok := azAccountInfo["environmentName"].(string); ok {
+			log.Infof(`use Azure Environment '%v' from 'az account show'`, val)
+			opts.Azure.Environment = &val
+		}
+	}
+
+	// auto set azure tenant id
 	if opts.Azure.Tenant == nil || *opts.Azure.Tenant == "" {
 		// autodetect tenant
 		if val, ok := azAccountInfo["tenantId"].(string); ok {
@@ -136,6 +145,9 @@ func fetchAzAccountInfo() {
 			opts.Azure.Tenant = &val
 		}
 	}
+
+	setOsEnvIfUnset("AZURE_ENVIRONMENT", *opts.Azure.Environment)
+	setOsEnvIfUnset("AZURE_TENANT_ID", *opts.Azure.Tenant)
 }
 
 func initAzureConnection() {
@@ -149,7 +161,7 @@ func initAzureConnection() {
 		}
 	}
 
-	AzureClient, err = armclient.NewArmClientWithCloudName(*opts.Azure.Environment, log.StandardLogger())
+	AzureClient, err = armclient.NewArmClientFromEnvironment(log.StandardLogger())
 	if err != nil {
 		log.Panic(err.Error())
 	}
@@ -162,12 +174,20 @@ func initMsGraphConnection() {
 	var err error
 
 	if MsGraphClient == nil {
-		MsGraphClient, err = msgraphclient.NewMsGraphClientWithCloudName(*opts.Azure.Environment, *opts.Azure.Tenant, log.StandardLogger())
+		MsGraphClient, err = msgraphclient.NewMsGraphClientFromEnvironment(log.StandardLogger())
 		if err != nil {
 			log.Panic(err.Error())
 		}
 
 		MsGraphClient.SetUserAgent(UserAgent + gitTag)
 		MsGraphClient.UseAzCliAuth()
+	}
+}
+
+func setOsEnvIfUnset(name, value string) {
+	if envVal := os.Getenv(name); envVal == "" {
+		if err := os.Setenv(name, value); err != nil {
+			panic(err)
+		}
 	}
 }
