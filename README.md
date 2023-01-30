@@ -118,6 +118,11 @@ Arguments:
 | `azureKeyVaultSecret`                      | `vaultUrl` (string), `secretName` (string)                | Fetches secret object from Azure KeyVault                                                                                             |
 | `azureKeyVaultSecretList`                  | `vaultUrl` (string), `secretNamePattern` (string, regexp) | Fetche the list of secret objects (without secret value) from Azure KeyVault and filters list by regular expression secretNamePattern |
 
+### Azure StorageAccount functions
+| Function                            | Parameters                     | Description                                        |
+|-------------------------------------|--------------------------------|----------------------------------------------------|
+| `azureStorageAccountContainerBlob`  | `containerBlobUrl` (string)    | Fetches container blob from Azure StorageAccount   |
+
 ### MsGraph (AzureAD) functions
 
 | Function                               | Parameters             | Description                                                                                                                                                          |

@@ -98,6 +98,9 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *template.Template) template.Fun
 		`azureKeyVaultSecret`:     e.azureKeyVaultSecret,
 		`azureKeyVaultSecretList`: e.azureKeyVaultSecretList,
 
+		// azure storageAccount
+		`azureStorageAccountContainerBlob`: e.azureStorageAccountContainerBlob,
+
 		// msGraph
 		`msGraphUserByUserPrincipalName`:       e.msGraphUserByUserPrincipalName,
 		`msGraphUserList`:                      e.msGraphUserList,
