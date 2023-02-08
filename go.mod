@@ -18,7 +18,7 @@ require (
 	github.com/sirupsen/logrus v1.9.0
 	github.com/webdevops/go-common v0.0.0-20230123214010-eedc073b90d4
 	gopkg.in/yaml.v3 v3.0.1
-	helm.sh/helm/v3 v3.11.0
+	helm.sh/helm/v3 v3.11.1
 	sigs.k8s.io/yaml v1.3.0
 )
 
