@@ -161,6 +161,12 @@ func initAzureConnection() {
 		}
 	}
 
+	if opts.Azure.Environment != nil {
+		if err := os.Setenv("AZURE_ENVIRONMENT", *opts.Azure.Environment); err != nil {
+			log.Warnf(`unable to set envvar AZURE_ENVIRONMENT: %v`, err.Error())
+		}
+	}
+
 	AzureClient, err = armclient.NewArmClientFromEnvironment(log.StandardLogger())
 	if err != nil {
 		log.Panic(err.Error())
@@ -168,6 +174,9 @@ func initAzureConnection() {
 
 	AzureClient.SetUserAgent(UserAgent + gitTag)
 	AzureClient.UseAzCliAuth()
+	if err := AzureClient.Connect(); err != nil {
+		log.Panic(err.Error())
+	}
 }
 
 func initMsGraphConnection() {
