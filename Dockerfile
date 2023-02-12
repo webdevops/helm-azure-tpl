@@ -34,7 +34,6 @@ RUN ["./helm-azure-tpl", "--help"]
 # Final
 #############################################
 FROM mcr.microsoft.com/azure-cli:latest
-ENV LOG_JSON=1
 WORKDIR /
 COPY --from=test /app .
 USER 1000:1000
