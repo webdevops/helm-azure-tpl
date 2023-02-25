@@ -16,6 +16,12 @@ requires `sed` and `curl` for installation
 helm plugin install https://github.com/webdevops/helm-azure-tpl
 ```
 
+## Update
+
+```
+helm plugin update azure-tpl
+```
+
 ## Usage
 
 ### Helm (downloader mode)
