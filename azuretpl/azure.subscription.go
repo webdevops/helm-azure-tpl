@@ -34,7 +34,7 @@ func (e *AzureTemplateExecutor) azureSubscription(subscriptionID ...string) (int
 
 	cacheKey := generateCacheKey(`azureSubscription`, selectedSubscriptionId)
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
-		client, err := armsubscriptions.NewClient(e.azureClient.GetCred(), e.azureClient.NewArmClientOptions())
+		client, err := armsubscriptions.NewClient(e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
 		if err != nil {
 			return nil, fmt.Errorf(err.Error())
 		}
@@ -62,7 +62,7 @@ func (e *AzureTemplateExecutor) azureSubscriptionList() (interface{}, error) {
 
 	cacheKey := generateCacheKey(`azureSubscriptionList`)
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
-		client, err := armsubscriptions.NewClient(e.azureClient.GetCred(), e.azureClient.NewArmClientOptions())
+		client, err := armsubscriptions.NewClient(e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
 		if err != nil {
 			e.logger.Panic(err.Error())
 		}

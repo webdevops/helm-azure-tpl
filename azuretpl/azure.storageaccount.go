@@ -22,10 +22,10 @@ func (e *AzureTemplateExecutor) azureStorageAccountContainerBlob(containerBlobUr
 
 	cacheKey := generateCacheKey(`azureStorageAccountContainerBlob`, containerBlobUrl)
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
-		azblobOpts := azblob.ClientOptions{ClientOptions: *e.azureClient.NewAzCoreClientOptions()}
+		azblobOpts := azblob.ClientOptions{ClientOptions: *e.azureClient().NewAzCoreClientOptions()}
 
 		storageAccountUrl := fmt.Sprintf("%s://%s", pathUrl.Scheme, pathUrl.Host)
-		client, err := azblob.NewClient(storageAccountUrl, e.azureClient.GetCred(), &azblobOpts)
+		client, err := azblob.NewClient(storageAccountUrl, e.azureClient().GetCred(), &azblobOpts)
 		if err != nil {
 			return nil, err
 		}

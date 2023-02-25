@@ -13,6 +13,7 @@ import (
 	"github.com/jessevdk/go-flags"
 	log "github.com/sirupsen/logrus"
 	"github.com/webdevops/go-common/azuresdk/armclient"
+	"github.com/webdevops/go-common/azuresdk/azidentity"
 	"github.com/webdevops/go-common/msgraphsdk/msgraphclient"
 
 	"github.com/webdevops/helm-azure-tpl/config"
@@ -44,6 +45,7 @@ var (
 
 func main() {
 	initArgparser()
+	initAzureEnvironment()
 	run()
 }
 
@@ -146,13 +148,11 @@ func fetchAzAccountInfo() {
 		}
 	}
 
-	setOsEnvIfUnset("AZURE_ENVIRONMENT", *opts.Azure.Environment)
-	setOsEnvIfUnset("AZURE_TENANT_ID", *opts.Azure.Tenant)
+	setOsEnvIfUnset(azidentity.EnvAzureEnvironment, *opts.Azure.Environment)
+	setOsEnvIfUnset(azidentity.EnvAzureTenantID, *opts.Azure.Tenant)
 }
 
-func initAzureConnection() {
-	var err error
-
+func initAzureEnvironment() {
 	if opts.Azure.Environment == nil || *opts.Azure.Environment == "" {
 		// autodetect tenant
 		if val, ok := azAccountInfo["environmentName"].(string); ok {
@@ -162,34 +162,9 @@ func initAzureConnection() {
 	}
 
 	if opts.Azure.Environment != nil {
-		if err := os.Setenv("AZURE_ENVIRONMENT", *opts.Azure.Environment); err != nil {
+		if err := os.Setenv(azidentity.EnvAzureEnvironment, *opts.Azure.Environment); err != nil {
 			log.Warnf(`unable to set envvar AZURE_ENVIRONMENT: %v`, err.Error())
 		}
-	}
-
-	AzureClient, err = armclient.NewArmClientFromEnvironment(log.StandardLogger())
-	if err != nil {
-		log.Panic(err.Error())
-	}
-
-	AzureClient.SetUserAgent(UserAgent + gitTag)
-	AzureClient.UseAzCliAuth()
-	if err := AzureClient.Connect(); err != nil {
-		log.Panic(err.Error())
-	}
-}
-
-func initMsGraphConnection() {
-	var err error
-
-	if MsGraphClient == nil {
-		MsGraphClient, err = msgraphclient.NewMsGraphClientFromEnvironment(log.StandardLogger())
-		if err != nil {
-			log.Panic(err.Error())
-		}
-
-		MsGraphClient.SetUserAgent(UserAgent + gitTag)
-		MsGraphClient.UseAzCliAuth()
 	}
 }
 

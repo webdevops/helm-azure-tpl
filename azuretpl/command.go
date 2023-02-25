@@ -22,13 +22,13 @@ import (
 
 type (
 	AzureTemplateExecutor struct {
-		ctx           context.Context
-		azureClient   *armclient.ArmClient
-		msGraphClient *msgraphclient.MsGraphClient
-		logger        *log.Entry
+		ctx    context.Context
+		logger *log.Entry
 
 		cache    *cache.Cache
 		cacheTtl time.Duration
+
+		UserAgent string
 
 		TemplateRootPath string
 		TemplateRelPath  string
@@ -39,12 +39,15 @@ type (
 	}
 )
 
-func New(ctx context.Context, azureClient *armclient.ArmClient, msGraphClient *msgraphclient.MsGraphClient, logger *log.Entry) *AzureTemplateExecutor {
+var (
+	azureClient   *armclient.ArmClient
+	msGraphClient *msgraphclient.MsGraphClient
+)
+
+func New(ctx context.Context, logger *log.Entry) *AzureTemplateExecutor {
 	e := &AzureTemplateExecutor{
-		ctx:           ctx,
-		azureClient:   azureClient,
-		msGraphClient: msGraphClient,
-		logger:        logger,
+		ctx:    ctx,
+		logger: logger,
 
 		cacheTtl: 15 * time.Minute,
 	}
@@ -54,6 +57,46 @@ func New(ctx context.Context, azureClient *armclient.ArmClient, msGraphClient *m
 
 func (e *AzureTemplateExecutor) init() {
 	e.cache = globalCache
+}
+
+func (e *AzureTemplateExecutor) azureClient() *armclient.ArmClient {
+	var err error
+	if azureClient == nil {
+		azureClient, err = armclient.NewArmClientFromEnvironment(log.StandardLogger())
+		if err != nil {
+			e.logger.Panic(err.Error())
+		}
+
+		azureClient.SetUserAgent(e.UserAgent)
+		azureClient.UseAzCliAuth()
+		if err := azureClient.Connect(); err != nil {
+			e.logger.Panic(err.Error())
+		}
+	}
+	return azureClient
+}
+
+func (e *AzureTemplateExecutor) msGraphClient() *msgraphclient.MsGraphClient {
+	var err error
+	if msGraphClient == nil {
+		// ensure azureclient init
+		if azureClient == nil {
+			e.azureClient()
+		}
+
+		msGraphClient, err = msgraphclient.NewMsGraphClientFromEnvironment(log.StandardLogger())
+		if err != nil {
+			e.logger.Panic(err.Error())
+		}
+
+		msGraphClient.SetUserAgent(e.UserAgent)
+		msGraphClient.UseAzCliAuth()
+	}
+	return msGraphClient
+}
+
+func (e *AzureTemplateExecutor) SetUserAgent(val string) {
+	e.UserAgent = val
 }
 
 func (e *AzureTemplateExecutor) SetAzureCliAccountInfo(accountInfo map[string]interface{}) {
@@ -267,7 +310,7 @@ func (e *AzureTemplateExecutor) fetchAzureResource(resourceID string, apiVersion
 		return val, nil
 	}
 
-	client, err := armresources.NewClient(resourceInfo.Subscription, e.azureClient.GetCred(), e.azureClient.NewArmClientOptions())
+	client, err := armresources.NewClient(resourceInfo.Subscription, e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
 	if err != nil {
 		return nil, err
 	}

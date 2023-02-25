@@ -24,7 +24,7 @@ func (e *AzureTemplateExecutor) azurePublicIpAddress(resourceID string) (interfa
 			return nil, fmt.Errorf(`unable to parse Azure resourceID '%v': %w`, resourceID, err)
 		}
 
-		client, err := armnetwork.NewPublicIPAddressesClient(resourceInfo.Subscription, e.azureClient.GetCred(), e.azureClient.NewArmClientOptions())
+		client, err := armnetwork.NewPublicIPAddressesClient(resourceInfo.Subscription, e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
 		if err != nil {
 			return nil, fmt.Errorf(err.Error())
 		}
@@ -53,7 +53,7 @@ func (e *AzureTemplateExecutor) azurePublicIpPrefixAddressPrefix(resourceID stri
 			return nil, fmt.Errorf(`unable to parse Azure resourceID '%v': %w`, resourceID, err)
 		}
 
-		client, err := armnetwork.NewPublicIPPrefixesClient(resourceInfo.Subscription, e.azureClient.GetCred(), e.azureClient.NewArmClientOptions())
+		client, err := armnetwork.NewPublicIPPrefixesClient(resourceInfo.Subscription, e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
 		if err != nil {
 			return nil, fmt.Errorf(err.Error())
 		}
@@ -82,7 +82,7 @@ func (e *AzureTemplateExecutor) azureVirtualNetworkAddressPrefixes(resourceID st
 			return nil, fmt.Errorf(`unable to parse Azure resourceID '%v': %w`, resourceID, err)
 		}
 
-		client, err := armnetwork.NewVirtualNetworksClient(resourceInfo.Subscription, e.azureClient.GetCred(), e.azureClient.NewArmClientOptions())
+		client, err := armnetwork.NewVirtualNetworksClient(resourceInfo.Subscription, e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
 		if err != nil {
 			return nil, fmt.Errorf(err.Error())
 		}
@@ -114,7 +114,7 @@ func (e *AzureTemplateExecutor) azureVirtualNetworkSubnetAddressPrefixes(resourc
 			return nil, fmt.Errorf(`unable to parse Azure resourceID '%v': %w`, resourceID, err)
 		}
 
-		client, err := armnetwork.NewVirtualNetworksClient(resourceInfo.Subscription, e.azureClient.GetCred(), e.azureClient.NewArmClientOptions())
+		client, err := armnetwork.NewVirtualNetworksClient(resourceInfo.Subscription, e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
 		if err != nil {
 			return nil, fmt.Errorf(err.Error())
 		}

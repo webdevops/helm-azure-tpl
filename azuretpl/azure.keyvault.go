@@ -17,7 +17,7 @@ func (e *AzureTemplateExecutor) azureKeyVaultSecret(vaultUrl string, secretName 
 	}
 	cacheKey := generateCacheKey(`azureKeyVaultSecret`, vaultUrl, secretName)
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
-		secretClient, err := azsecrets.NewClient(vaultUrl, e.azureClient.GetCred(), nil)
+		secretClient, err := azsecrets.NewClient(vaultUrl, e.azureClient().GetCred(), nil)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to create keyvault client for vault "%v": %w`, vaultUrl, err)
 		}
@@ -57,7 +57,7 @@ func (e *AzureTemplateExecutor) azureKeyVaultSecretList(vaultUrl string, secretN
 	}
 	cacheKey := generateCacheKey(`azureKeyVaultSecretList`, vaultUrl)
 	list, err := e.cacheResult(cacheKey, func() (interface{}, error) {
-		secretClient, err := azsecrets.NewClient(vaultUrl, e.azureClient.GetCred(), nil)
+		secretClient, err := azsecrets.NewClient(vaultUrl, e.azureClient().GetCred(), nil)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to create keyvault client for vault "%v": %w`, vaultUrl, err)
 		}

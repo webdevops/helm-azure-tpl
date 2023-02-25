@@ -7,7 +7,7 @@ import (
 )
 
 func (e *AzureTemplateExecutor) msGraphSerializeObject(resultObj serialization.Parsable) (obj interface{}, err error) {
-	writer, err := e.msGraphClient.RequestAdapter().GetSerializationWriterFactory().GetSerializationWriter("application/json")
+	writer, err := e.msGraphClient().RequestAdapter().GetSerializationWriterFactory().GetSerializationWriter("application/json")
 	if err != nil {
 		return nil, err
 	}

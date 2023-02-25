@@ -66,12 +66,6 @@ func run() {
 			if err == nil {
 				log.Infof(string(azAccountInfoJson))
 			}
-
-			log.Infof("connecting to Azure")
-			initAzureConnection()
-
-			log.Infof("connecting to MsGraph")
-			initMsGraphConnection()
 		}
 
 		for _, templateFile := range templateFileList {

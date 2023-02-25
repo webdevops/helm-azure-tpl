@@ -25,7 +25,7 @@ func (e *AzureTemplateExecutor) msGraphServicePrincipalByDisplayName(displayName
 					escapeMsGraphFilter(displayName))),
 			},
 		}
-		result, err := e.msGraphClient.ServiceClient().ServicePrincipals().Get(e.ctx, requestOpts)
+		result, err := e.msGraphClient().ServiceClient().ServicePrincipals().Get(e.ctx, requestOpts)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to query MsGraph servicePrincipal: %w`, err)
 		}
@@ -56,7 +56,7 @@ func (e *AzureTemplateExecutor) msGraphServicePrincipalList(filter string) (inte
 
 	cacheKey := generateCacheKey(`msGraphServicePrincipalList`, filter)
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
-		result, err := e.msGraphClient.ServiceClient().ServicePrincipals().Get(e.ctx, nil)
+		result, err := e.msGraphClient().ServiceClient().ServicePrincipals().Get(e.ctx, nil)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to query MsGraph servicePrincipal: %w`, err)
 		}
@@ -71,7 +71,7 @@ func (e *AzureTemplateExecutor) msGraphServicePrincipalList(filter string) (inte
 }
 
 func (e *AzureTemplateExecutor) msGraphServicePrincipalCreateListFromResult(result models.ServicePrincipalCollectionResponseable) (list []interface{}, err error) {
-	pageIterator, pageIteratorErr := msgraphcore.NewPageIterator(result, e.msGraphClient.RequestAdapter(), models.CreateServicePrincipalCollectionResponseFromDiscriminatorValue)
+	pageIterator, pageIteratorErr := msgraphcore.NewPageIterator(result, e.msGraphClient().RequestAdapter(), models.CreateServicePrincipalCollectionResponseFromDiscriminatorValue)
 	if pageIteratorErr != nil {
 		return list, pageIteratorErr
 	}

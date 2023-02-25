@@ -27,7 +27,7 @@ func (e *AzureTemplateExecutor) msGraphUserByUserPrincipalName(userPrincipalName
 				)),
 			},
 		}
-		result, err := e.msGraphClient.ServiceClient().Users().Get(e.ctx, requestOpts)
+		result, err := e.msGraphClient().ServiceClient().Users().Get(e.ctx, requestOpts)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to query MsGraph user: %w`, err)
 		}
@@ -58,7 +58,7 @@ func (e *AzureTemplateExecutor) msGraphUserList(filter string) (interface{}, err
 
 	cacheKey := generateCacheKey(`msGraphUserList`, filter)
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
-		result, err := e.msGraphClient.ServiceClient().Users().Get(e.ctx, nil)
+		result, err := e.msGraphClient().ServiceClient().Users().Get(e.ctx, nil)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to query MsGraph users: %w`, err)
 		}
@@ -73,7 +73,7 @@ func (e *AzureTemplateExecutor) msGraphUserList(filter string) (interface{}, err
 }
 
 func (e *AzureTemplateExecutor) msGraphUserCreateListFromResult(result models.UserCollectionResponseable) (list []interface{}, err error) {
-	pageIterator, pageIteratorErr := msgraphcore.NewPageIterator(result, e.msGraphClient.RequestAdapter(), models.CreateUserCollectionResponseFromDiscriminatorValue)
+	pageIterator, pageIteratorErr := msgraphcore.NewPageIterator(result, e.msGraphClient().RequestAdapter(), models.CreateUserCollectionResponseFromDiscriminatorValue)
 	if pageIteratorErr != nil {
 		return list, pageIteratorErr
 	}
