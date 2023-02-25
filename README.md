@@ -209,7 +209,10 @@ Arguments:
    | join ","
 }}
 
-## Fetch secret value from Azure KeyVault
+## Fetch secret value from Azure KeyVault (using only name; only AzurePublicCloud, AzureChinaCloud and AzureGovernmentCloud)
+{{ (azureKeyVaultSecret "examplevault" "secretname").value }}
+
+## Fetch secret value from Azure KeyVault (using full url)
 {{ (azureKeyVaultSecret "https://examplevault.vault.azure.net/" "secretname").value }}
 
 ## Fetch current environmentName

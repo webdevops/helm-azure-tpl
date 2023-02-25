@@ -3,13 +3,49 @@ package azuretpl
 import (
 	"fmt"
 	"regexp"
+	"strings"
 	"time"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/keyvault/azsecrets"
+	"github.com/webdevops/go-common/azuresdk/cloudconfig"
 )
+
+// buildAzureKeyVaulUrl builds Azure KeyVault url in case value is supplied as KeyVault name only
+func (e *AzureTemplateExecutor) buildAzureKeyVaulUrl(vaultUrl string) (string, error) {
+	// do not build keyvault url in lint mode
+	if e.LintMode {
+		return vaultUrl, nil
+	}
+
+	// vault url generation (if only vault name is specified)
+	if !strings.HasPrefix(strings.ToLower(vaultUrl), "https://") {
+		switch cloudName := e.azureClient().GetCloudName(); cloudName {
+		case cloudconfig.AzurePublicCloud:
+			vaultUrl = fmt.Sprintf(`https://%s.vault.azure.net`, vaultUrl)
+		case cloudconfig.AzureChinaCloud:
+			vaultUrl = fmt.Sprintf(`https://%s.vault.azure.cn`, vaultUrl)
+		case cloudconfig.AzureGovernmentCloud:
+			vaultUrl = fmt.Sprintf(`https://%s.vault.usgovcloudapi.net`, vaultUrl)
+		default:
+			return vaultUrl, fmt.Errorf(`cannot build Azure KeyVault url for "%s" and Azure cloud "%s", please use full url`, vaultUrl, cloudName)
+		}
+	}
+
+	// improve caching by removing trailing slash
+	vaultUrl = strings.TrimSuffix(vaultUrl, "/")
+
+	return vaultUrl, nil
+}
 
 // azureKeyVaultSecret fetches secret object from Azure KeyVault
 func (e *AzureTemplateExecutor) azureKeyVaultSecret(vaultUrl string, secretName string) (interface{}, error) {
+	// azure keyvault url detection
+	if val, err := e.buildAzureKeyVaulUrl(vaultUrl); err == nil {
+		vaultUrl = val
+	} else {
+		return nil, err
+	}
+
 	e.logger.Infof(`fetching Azure KeyVault secret '%v' -> '%v'`, vaultUrl, secretName)
 
 	if val, enabled := e.lintResult(); enabled {
@@ -45,6 +81,13 @@ func (e *AzureTemplateExecutor) azureKeyVaultSecret(vaultUrl string, secretName 
 
 // azureKeyVaultSecretList fetches secrets from Azure KeyVault
 func (e *AzureTemplateExecutor) azureKeyVaultSecretList(vaultUrl string, secretNamePattern string) (interface{}, error) {
+	// azure keyvault url detection
+	if val, err := e.buildAzureKeyVaulUrl(vaultUrl); err == nil {
+		vaultUrl = val
+	} else {
+		return nil, err
+	}
+
 	e.logger.Infof(`fetching Azure KeyVault secret list from vault '%v'`, vaultUrl)
 
 	secretNamePatternRegExp, err := regexp.Compile(secretNamePattern)
