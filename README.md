@@ -12,14 +12,18 @@ Also works as standalone executable outside of Helm.
 
 requires `sed` and `curl` for installation
 
-```
+```bash
+# Installation of latest version
 helm plugin install https://github.com/webdevops/helm-azure-tpl
-```
 
-## Update
+# Installation of specific version
+helm plugin install https://github.com/webdevops/helm-azure-tpl --version=0.31.0
 
-```
+# Update to latest version
 helm plugin update azure-tpl
+
+# Deinstallation
+helm plugin uninstall azure-tpl
 ```
 
 ## Usage
