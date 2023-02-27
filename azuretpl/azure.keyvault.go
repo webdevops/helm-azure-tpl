@@ -38,7 +38,7 @@ func (e *AzureTemplateExecutor) buildAzKeyVaulUrl(vaultUrl string) (string, erro
 }
 
 // azKeyVaultSecret fetches secret object from Azure KeyVault
-func (e *AzureTemplateExecutor) azKeyVaultSecret(vaultUrl string, secretName string) (interface{}, error) {
+func (e *AzureTemplateExecutor) azKeyVaultSecret(vaultUrl string, secretName string, opts ...string) (interface{}, error) {
 	// azure keyvault url detection
 	if val, err := e.buildAzKeyVaulUrl(vaultUrl); err == nil {
 		vaultUrl = val
@@ -51,14 +51,19 @@ func (e *AzureTemplateExecutor) azKeyVaultSecret(vaultUrl string, secretName str
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil
 	}
-	cacheKey := generateCacheKey(`azKeyVaultSecret`, vaultUrl, secretName)
+	cacheKey := generateCacheKey(`azKeyVaultSecret`, vaultUrl, secretName, strings.Join(opts, ";"))
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
 		secretClient, err := azsecrets.NewClient(vaultUrl, e.azureClient().GetCred(), nil)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to create keyvault client for vault "%v": %w`, vaultUrl, err)
 		}
 
-		secret, err := secretClient.GetSecret(e.ctx, secretName, "", nil)
+		version := ""
+		if len(opts) == 1 {
+			version = opts[0]
+		}
+
+		secret, err := secretClient.GetSecret(e.ctx, secretName, version, nil)
 		if err != nil {
 			return nil, fmt.Errorf(`unable to fetch secret "%[2]v" from vault "%[1]v": %[3]w`, vaultUrl, secretName, err)
 		}

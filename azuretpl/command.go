@@ -144,6 +144,9 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *template.Template) template.Fun
 		// azure storageAccount
 		`azStorageAccountContainerBlob`: e.azStorageAccountContainerBlob,
 
+		// azure app config
+		`azAppConfigSetting`: e.azAppConfigSetting,
+
 		// msGraph
 		`mgUserByUserPrincipalName`:       e.mgUserByUserPrincipalName,
 		`mgUserList`:                      e.mgUserList,

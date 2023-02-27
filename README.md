@@ -125,10 +125,10 @@ Arguments:
 | `azVirtualNetworkSubnetAddressPrefixes` | `resourceID` (string), `subnetName` (string) | Fetches address prefix (string array) from Azure VirtualNetwork subnet         |
 
 ### Azure Keyvault functions
-| Function               | Parameters                                                | Description                                                                                                                           |
-|------------------------|-----------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
-| `azKeyVaultSecret`     | `vaultUrl` (string), `secretName` (string)                | Fetches secret object from Azure KeyVault                                                                                             |
-| `azKeyVaultSecretList` | `vaultUrl` (string), `secretNamePattern` (string, regexp) | Fetche the list of secret objects (without secret value) from Azure KeyVault and filters list by regular expression secretNamePattern |
+| Function               | Parameters                                                               | Description                                                                                                                           |
+|------------------------|--------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
+| `azKeyVaultSecret`     | `vaultUrl` (string), `secretName` (string), `version` (string, optional) | Fetches secret object from Azure KeyVault                                                                                             |
+| `azKeyVaultSecretList` | `vaultUrl` (string), `secretNamePattern` (string, regexp)                | Fetche the list of secret objects (without secret value) from Azure KeyVault and filters list by regular expression secretNamePattern |
 
 response format:
 ```json
@@ -153,6 +153,27 @@ response format:
 | Function                          | Parameters                     | Description                                                |
 |-----------------------------------|--------------------------------|------------------------------------------------------------|
 | `azStorageAccountContainerBlob`   | `containerBlobUrl` (string)    | Fetches container blob from Azure StorageAccount as string |
+
+### Azure AppConfig functions
+| Function               | Parameters                                                         | Description                                                                          |
+|------------------------|--------------------------------------------------------------------|--------------------------------------------------------------------------------------|
+| `azAppConfigSetting`   | `appConfigUrl` (string), `settingName` (string), `label` (string)  | Fetches setting value from app configuration instance (resolves keyvault references) |
+
+response format:
+```json
+{
+  "ContentType": "...",
+  "ETag": "...",
+  "IsReadOnly": false,
+  "Key":" ...",
+  "Label": null,
+  "LastModified": null,
+  "SyncToken": "...",
+  "Tags": {},
+  "Value": "..."
+}
+
+```
 
 ### MsGraph (AzureAD) functions
 
