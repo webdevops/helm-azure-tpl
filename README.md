@@ -103,48 +103,52 @@ Arguments:
 
 ## Build-in objects
 
-| Object                                     | Description                                                                                                   |
-|--------------------------------------------|---------------------------------------------------------------------------------------------------------------|
-| `.Values`                                  | Additional data can be passed via `--values=values.yaml` files which is available under `.Values` (like Helm) |
+| Object    | Description                                                                                                   |
+|-----------|---------------------------------------------------------------------------------------------------------------|
+| `.Values` | Additional data can be passed via `--values=values.yaml` files which is available under `.Values` (like Helm) |
 
 ## Template functions
 
 ### Azure template functions
 
-| Function                                   | Parameters                                   | Description                                                                    |
-|--------------------------------------------|----------------------------------------------|--------------------------------------------------------------------------------|
-| `azureAccountInfo`                         |                                              | Output of `az account show`                                                    |
-| `azureSubscription`                        | `subscriptionID` (string, optional)          | Fetches Azure subscription (current selected one if `subscriptionID` is empty) |
-| `azureSubscriptionList`                    |                                              | Fetches list of all visible azure subscriptions                                |
-| `azureResource`                            | `resourceID` (string), `apiVersion` (string) | Fetches Azure resource information (interface object)                          |
-| `azurePublicIpAddress`                     | `resourceID` (string)                        | Fetches ip address from Azure Public IP                                        |
-| `azurePublicIpPrefixAddressPrefix`         | `resourceID` (string)                        | Fetches ip address prefix from Azure Public IP prefix                          |
-| `azureVirtualNetworkAddressPrefixes`       | `resourceID` (string)                        | Fetches address prefix (string array) from Azure VirtualNetwork                |
-| `azureVirtualNetworkSubnetAddressPrefixes` | `resourceID` (string), `subnetName` (string) | Fetches address prefix (string array) from Azure VirtualNetwork subnet         |
+:information_source: Functions can also be used starting with `azure` prefix instead of `az`
+
+| Function                                | Parameters                                   | Description                                                                    |
+|-----------------------------------------|----------------------------------------------|--------------------------------------------------------------------------------|
+| `azAccountInfo`                         |                                              | Output of `az account show`                                                    |
+| `azSubscription`                        | `subscriptionID` (string, optional)          | Fetches Azure subscription (current selected one if `subscriptionID` is empty) |
+| `azSubscriptionList`                    |                                              | Fetches list of all visible azure subscriptions                                |
+| `azResource`                            | `resourceID` (string), `apiVersion` (string) | Fetches Azure resource information (interface object)                          |
+| `azPublicIpAddress`                     | `resourceID` (string)                        | Fetches ip address from Azure Public IP                                        |
+| `azPublicIpPrefixAddressPrefix`         | `resourceID` (string)                        | Fetches ip address prefix from Azure Public IP prefix                          |
+| `azVirtualNetworkAddressPrefixes`       | `resourceID` (string)                        | Fetches address prefix (string array) from Azure VirtualNetwork                |
+| `azVirtualNetworkSubnetAddressPrefixes` | `resourceID` (string), `subnetName` (string) | Fetches address prefix (string array) from Azure VirtualNetwork subnet         |
 
 ### Azure Keyvault functions
-| Function                                   | Parameters                                                | Description                                                                                                                           |
-|--------------------------------------------|-----------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
-| `azureKeyVaultSecret`                      | `vaultUrl` (string), `secretName` (string)                | Fetches secret object from Azure KeyVault                                                                                             |
-| `azureKeyVaultSecretList`                  | `vaultUrl` (string), `secretNamePattern` (string, regexp) | Fetche the list of secret objects (without secret value) from Azure KeyVault and filters list by regular expression secretNamePattern |
+| Function               | Parameters                                                | Description                                                                                                                           |
+|------------------------|-----------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
+| `azKeyVaultSecret`     | `vaultUrl` (string), `secretName` (string)                | Fetches secret object from Azure KeyVault                                                                                             |
+| `azKeyVaultSecretList` | `vaultUrl` (string), `secretNamePattern` (string, regexp) | Fetche the list of secret objects (without secret value) from Azure KeyVault and filters list by regular expression secretNamePattern |
 
 ### Azure StorageAccount functions
-| Function                            | Parameters                     | Description                                        |
-|-------------------------------------|--------------------------------|----------------------------------------------------|
-| `azureStorageAccountContainerBlob`  | `containerBlobUrl` (string)    | Fetches container blob from Azure StorageAccount   |
+| Function                          | Parameters                     | Description                                                |
+|-----------------------------------|--------------------------------|------------------------------------------------------------|
+| `azStorageAccountContainerBlob`   | `containerBlobUrl` (string)    | Fetches container blob from Azure StorageAccount as string |
 
 ### MsGraph (AzureAD) functions
 
-| Function                               | Parameters             | Description                                                                                                                                                          |
-|----------------------------------------|------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `msGraphUserByUserPrincipalName`       | `userPrincipalName`    | Fetches one user by UserPrincipalName                                                                                                                                |
-| `msGraphUserList`                      | `filter` (string)      | Fetches list of users based on [`$filter`](https://docs.microsoft.com/en-us/graph/filter-query-parameter#examples-using-the-filter-query-operator) query             |
-| `msGraphGroupByDisplayName`            | `displayName` (string) | Fetches one group by displayName                                                                                                                                     |
-| `msGraphGroupList`                     | `filter` (string)      | Fetches list of groups based on [`$filter`](https://docs.microsoft.com/en-us/graph/filter-query-parameter#examples-using-the-filter-query-operator) query            |
-| `msGraphServicePrincipalByDisplayName` | `displayName` (string) | Fetches one serviceprincipal by displayName                                                                                                                          |
-| `msGraphServicePrincipalList`          | `filter` (string)      | Fetches list of servicePrincipals based on [`$filter`](https://docs.microsoft.com/en-us/graph/filter-query-parameter#examples-using-the-filter-query-operator) query |
-| `msGraphApplicationByDisplayName`      | `displayName` (string) | Fetches one application by displayName                                                                                                                               |
-| `msGraphApplicationList`               | `filter` (string)      | Fetches list of applications based on [`$filter`](https://docs.microsoft.com/en-us/graph/filter-query-parameter#examples-using-the-filter-query-operator) query      |
+:information_source: Functions can also be used starting with `msGraph` prefix instead of `ms`
+
+| Function                          | Parameters             | Description                                                                                                                                                          |
+|-----------------------------------|------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `mgUserByUserPrincipalName`       | `userPrincipalName`    | Fetches one user by UserPrincipalName                                                                                                                                |
+| `mgUserList`                      | `filter` (string)      | Fetches list of users based on [`$filter`](https://docs.microsoft.com/en-us/graph/filter-query-parameter#examples-using-the-filter-query-operator) query             |
+| `mgGroupByDisplayName`            | `displayName` (string) | Fetches one group by displayName                                                                                                                                     |
+| `mgGroupList`                     | `filter` (string)      | Fetches list of groups based on [`$filter`](https://docs.microsoft.com/en-us/graph/filter-query-parameter#examples-using-the-filter-query-operator) query            |
+| `mgServicePrincipalByDisplayName` | `displayName` (string) | Fetches one serviceprincipal by displayName                                                                                                                          |
+| `mgServicePrincipalList`          | `filter` (string)      | Fetches list of servicePrincipals based on [`$filter`](https://docs.microsoft.com/en-us/graph/filter-query-parameter#examples-using-the-filter-query-operator) query |
+| `mgApplicationByDisplayName`      | `displayName` (string) | Fetches one application by displayName                                                                                                                               |
+| `mgApplicationList`               | `filter` (string)      | Fetches list of applications based on [`$filter`](https://docs.microsoft.com/en-us/graph/filter-query-parameter#examples-using-the-filter-query-operator) query      |
 
 ## Misc template functions
 
@@ -191,7 +195,7 @@ Arguments:
 ```gotemplate
 
 ## Fetch resource as object and convert to yaml
-{{ azureResource
+{{ azResource
    "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx/resourcegroups/example-rg/providers/Microsoft.ContainerService/managedClusters/k8scluster"
    "2022-01-01"
    | toYaml
@@ -199,7 +203,7 @@ Arguments:
 
 
 ## Fetch resource as object, select .properties.aadProfile via jsonPath and convert to yaml
-{{ azureResource
+{{ azResource
    "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx/resourcegroups/example-rg/providers/Microsoft.ContainerService/managedClusters/k8scluster"
    "2022-01-01"
    | jsonPath "$.properties.aadProfile"
@@ -207,32 +211,32 @@ Arguments:
 }}
 
 ## Fetch Azure VirtualNetwork address prefixes
-{{ azureVirtualNetworkAddressPrefixes
+{{ azVirtualNetworkAddressPrefixes
     "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx/resourcegroups/example-rg/providers/Microsoft.Network/virtualNetworks/k8s-vnet"
 }}
 
 
 ## Fetch Azure VirtualNetwork subnet address prefixes and join them to a string list
-{{ azureVirtualNetworkSubnetAddressPrefixes
+{{ azVirtualNetworkSubnetAddressPrefixes
    "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx/resourcegroups/example-rg/providers/Microsoft.Network/virtualNetworks/k8s-vnet"
    "default2"
    | join ","
 }}
 
 ## Fetch secret value from Azure KeyVault (using only name; only AzurePublicCloud, AzureChinaCloud and AzureGovernmentCloud)
-{{ (azureKeyVaultSecret "examplevault" "secretname").value }}
+{{ (azKeyVaultSecret "examplevault" "secretname").value }}
 
 ## Fetch secret value from Azure KeyVault (using full url)
-{{ (azureKeyVaultSecret "https://examplevault.vault.azure.net/" "secretname").value }}
+{{ (azKeyVaultSecret "https://examplevault.vault.azure.net/" "secretname").value }}
 
 ## Fetch current environmentName
-{{ azureAccountInfo.environmentName }}
+{{ azAccountInfo.environmentName }}
 
 ## Fetch current tenantId
-{{ azureAccountInfo.tenantId }}
+{{ azAccountInfo.tenantId }}
 
 ## Fetch current selected subscription displayName
-{{ azureSubscription.displayName }}
+{{ azSubscription.displayName }}
 
 ```
 

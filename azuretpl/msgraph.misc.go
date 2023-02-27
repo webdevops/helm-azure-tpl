@@ -6,7 +6,7 @@ import (
 	"github.com/microsoft/kiota-abstractions-go/serialization"
 )
 
-func (e *AzureTemplateExecutor) msGraphSerializeObject(resultObj serialization.Parsable) (obj interface{}, err error) {
+func (e *AzureTemplateExecutor) mgSerializeObject(resultObj serialization.Parsable) (obj interface{}, err error) {
 	writer, err := e.msGraphClient().RequestAdapter().GetSerializationWriterFactory().GetSerializationWriter("application/json")
 	if err != nil {
 		return nil, err

@@ -9,15 +9,15 @@ import (
 	"github.com/webdevops/go-common/utils/to"
 )
 
-// msGraphServicePrincipalByDisplayName fetches one servicePrincipal from MsGraph API using displayName
-func (e *AzureTemplateExecutor) msGraphServicePrincipalByDisplayName(displayName string) (interface{}, error) {
+// mgServicePrincipalByDisplayName fetches one servicePrincipal from MsGraph API using displayName
+func (e *AzureTemplateExecutor) mgServicePrincipalByDisplayName(displayName string) (interface{}, error) {
 	e.logger.Infof(`fetching MsGraph servicePrincipal by displayName '%v'`, displayName)
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil
 	}
 
-	cacheKey := generateCacheKey(`msGraphServicePrincipalByDisplayName`, displayName)
+	cacheKey := generateCacheKey(`mgServicePrincipalByDisplayName`, displayName)
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
 		requestOpts := &serviceprincipals.ServicePrincipalsRequestBuilderGetRequestConfiguration{
 			QueryParameters: &serviceprincipals.ServicePrincipalsRequestBuilderGetQueryParameters{
@@ -30,7 +30,7 @@ func (e *AzureTemplateExecutor) msGraphServicePrincipalByDisplayName(displayName
 			return nil, fmt.Errorf(`failed to query MsGraph servicePrincipal: %w`, err)
 		}
 
-		list, err := e.msGraphServicePrincipalCreateListFromResult(result)
+		list, err := e.mgServicePrincipalCreateListFromResult(result)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to query MsGraph servicePrincipal: %w`, err)
 		}
@@ -46,22 +46,22 @@ func (e *AzureTemplateExecutor) msGraphServicePrincipalByDisplayName(displayName
 	})
 }
 
-// msGraphServicePrincipalList fetches list of servicePrincipals from MsGraph API using $filter query
-func (e *AzureTemplateExecutor) msGraphServicePrincipalList(filter string) (interface{}, error) {
+// mgServicePrincipalList fetches list of servicePrincipals from MsGraph API using $filter query
+func (e *AzureTemplateExecutor) mgServicePrincipalList(filter string) (interface{}, error) {
 	e.logger.Infof(`fetching MsGraph servicePrincipal list with $filter '%v'`, filter)
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil
 	}
 
-	cacheKey := generateCacheKey(`msGraphServicePrincipalList`, filter)
+	cacheKey := generateCacheKey(`mgServicePrincipalList`, filter)
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
 		result, err := e.msGraphClient().ServiceClient().ServicePrincipals().Get(e.ctx, nil)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to query MsGraph servicePrincipal: %w`, err)
 		}
 
-		list, err := e.msGraphServicePrincipalCreateListFromResult(result)
+		list, err := e.mgServicePrincipalCreateListFromResult(result)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to query MsGraph servicePrincipal: %w`, err)
 		}
@@ -70,7 +70,7 @@ func (e *AzureTemplateExecutor) msGraphServicePrincipalList(filter string) (inte
 	})
 }
 
-func (e *AzureTemplateExecutor) msGraphServicePrincipalCreateListFromResult(result models.ServicePrincipalCollectionResponseable) (list []interface{}, err error) {
+func (e *AzureTemplateExecutor) mgServicePrincipalCreateListFromResult(result models.ServicePrincipalCollectionResponseable) (list []interface{}, err error) {
 	pageIterator, pageIteratorErr := msgraphcore.NewPageIterator(result, e.msGraphClient().RequestAdapter(), models.CreateServicePrincipalCollectionResponseFromDiscriminatorValue)
 	if pageIteratorErr != nil {
 		return list, pageIteratorErr
@@ -79,7 +79,7 @@ func (e *AzureTemplateExecutor) msGraphServicePrincipalCreateListFromResult(resu
 	iterateErr := pageIterator.Iterate(e.ctx, func(pageItem interface{}) bool {
 		servicePrincipal := pageItem.(models.ServicePrincipalable)
 
-		obj, serializeErr := e.msGraphSerializeObject(servicePrincipal)
+		obj, serializeErr := e.mgSerializeObject(servicePrincipal)
 		if serializeErr != nil {
 			err = serializeErr
 			return false

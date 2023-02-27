@@ -9,14 +9,14 @@ import (
 	"github.com/webdevops/go-common/utils/to"
 )
 
-// msGraphGroupByDisplayName fetches one group from MsGraph API using displayName
-func (e *AzureTemplateExecutor) msGraphGroupByDisplayName(displayName string) (interface{}, error) {
+// mgGroupByDisplayName fetches one group from MsGraph API using displayName
+func (e *AzureTemplateExecutor) mgGroupByDisplayName(displayName string) (interface{}, error) {
 	e.logger.Infof(`fetching MsGraph group by displayName '%v'`, displayName)
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil
 	}
-	cacheKey := generateCacheKey(`msGraphGroupByDisplayName`, displayName)
+	cacheKey := generateCacheKey(`mgGroupByDisplayName`, displayName)
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
 		requestOpts := &groups.GroupsRequestBuilderGetRequestConfiguration{
 			QueryParameters: &groups.GroupsRequestBuilderGetQueryParameters{
@@ -29,7 +29,7 @@ func (e *AzureTemplateExecutor) msGraphGroupByDisplayName(displayName string) (i
 			return nil, fmt.Errorf(`failed to query MsGraph group: %w`, err)
 		}
 
-		list, err := e.msGraphGroupCreateListFromResult(result)
+		list, err := e.mgGroupCreateListFromResult(result)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to query MsGraph group: %w`, err)
 		}
@@ -45,21 +45,21 @@ func (e *AzureTemplateExecutor) msGraphGroupByDisplayName(displayName string) (i
 	})
 }
 
-// msGraphGroupList fetches list of groups from MsGraph API using $filter query
-func (e *AzureTemplateExecutor) msGraphGroupList(filter string) (interface{}, error) {
+// mgGroupList fetches list of groups from MsGraph API using $filter query
+func (e *AzureTemplateExecutor) mgGroupList(filter string) (interface{}, error) {
 	e.logger.Infof(`fetching MsGraph group list with $filter '%v'`, filter)
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil
 	}
-	cacheKey := generateCacheKey(`msGraphGroupList`, filter)
+	cacheKey := generateCacheKey(`mgGroupList`, filter)
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
 		result, err := e.msGraphClient().ServiceClient().Groups().Get(e.ctx, nil)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to query MsGraph group: %w`, err)
 		}
 
-		list, err := e.msGraphGroupCreateListFromResult(result)
+		list, err := e.mgGroupCreateListFromResult(result)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to query MsGraph groups: %w`, err)
 		}
@@ -69,7 +69,7 @@ func (e *AzureTemplateExecutor) msGraphGroupList(filter string) (interface{}, er
 
 }
 
-func (e *AzureTemplateExecutor) msGraphGroupCreateListFromResult(result models.GroupCollectionResponseable) (list []interface{}, err error) {
+func (e *AzureTemplateExecutor) mgGroupCreateListFromResult(result models.GroupCollectionResponseable) (list []interface{}, err error) {
 	pageIterator, pageIteratorErr := msgraphcore.NewPageIterator(result, e.msGraphClient().RequestAdapter(), models.CreateGroupCollectionResponseFromDiscriminatorValue)
 	if pageIteratorErr != nil {
 		return list, pageIteratorErr
@@ -78,7 +78,7 @@ func (e *AzureTemplateExecutor) msGraphGroupCreateListFromResult(result models.G
 	iterateErr := pageIterator.Iterate(e.ctx, func(pageItem interface{}) bool {
 		group := pageItem.(models.Groupable)
 
-		obj, serializeErr := e.msGraphSerializeObject(group)
+		obj, serializeErr := e.mgSerializeObject(group)
 		if serializeErr != nil {
 			err = serializeErr
 			return false

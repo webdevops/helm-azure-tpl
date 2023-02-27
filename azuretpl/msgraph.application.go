@@ -9,15 +9,15 @@ import (
 	"github.com/webdevops/go-common/utils/to"
 )
 
-// msGraphApplicationByDisplayName fetches one application from MsGraph API using displayName
-func (e *AzureTemplateExecutor) msGraphApplicationByDisplayName(displayName string) (interface{}, error) {
+// mgApplicationByDisplayName fetches one application from MsGraph API using displayName
+func (e *AzureTemplateExecutor) mgApplicationByDisplayName(displayName string) (interface{}, error) {
 	e.logger.Infof(`fetching MsGraph application by displayName '%v'`, displayName)
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil
 	}
 
-	cacheKey := generateCacheKey(`msGraphApplicationByDisplayName`, displayName)
+	cacheKey := generateCacheKey(`mgApplicationByDisplayName`, displayName)
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
 		requestOpts := &applications.ApplicationsRequestBuilderGetRequestConfiguration{
 			QueryParameters: &applications.ApplicationsRequestBuilderGetQueryParameters{
@@ -30,7 +30,7 @@ func (e *AzureTemplateExecutor) msGraphApplicationByDisplayName(displayName stri
 			return nil, fmt.Errorf(`failed to query MsGraph application: %w`, err)
 		}
 
-		list, err := e.msGraphApplicationCreateListFromResult(result)
+		list, err := e.mgApplicationCreateListFromResult(result)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to query MsGraph application: %w`, err)
 		}
@@ -46,22 +46,22 @@ func (e *AzureTemplateExecutor) msGraphApplicationByDisplayName(displayName stri
 	})
 }
 
-// msGraphApplicationList fetches list of applications from MsGraph API using $filter query
-func (e *AzureTemplateExecutor) msGraphApplicationList(filter string) (interface{}, error) {
+// mgApplicationList fetches list of applications from MsGraph API using $filter query
+func (e *AzureTemplateExecutor) mgApplicationList(filter string) (interface{}, error) {
 	e.logger.Infof(`fetching MsGraph application list with $filter '%v'`, filter)
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil
 	}
 
-	cacheKey := generateCacheKey(`msGraphApplicationList`, filter)
+	cacheKey := generateCacheKey(`mgApplicationList`, filter)
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
 		result, err := e.msGraphClient().ServiceClient().Applications().Get(e.ctx, nil)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to query MsGraph applications: %w`, err)
 		}
 
-		list, err := e.msGraphApplicationCreateListFromResult(result)
+		list, err := e.mgApplicationCreateListFromResult(result)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to query MsGraph applications: %w`, err)
 		}
@@ -70,7 +70,7 @@ func (e *AzureTemplateExecutor) msGraphApplicationList(filter string) (interface
 	})
 }
 
-func (e *AzureTemplateExecutor) msGraphApplicationCreateListFromResult(result models.ApplicationCollectionResponseable) (list []interface{}, err error) {
+func (e *AzureTemplateExecutor) mgApplicationCreateListFromResult(result models.ApplicationCollectionResponseable) (list []interface{}, err error) {
 	pageIterator, pageIteratorErr := msgraphcore.NewPageIterator(result, e.msGraphClient().RequestAdapter(), models.CreateApplicationCollectionResponseFromDiscriminatorValue)
 	if pageIteratorErr != nil {
 		return list, pageIteratorErr
@@ -79,7 +79,7 @@ func (e *AzureTemplateExecutor) msGraphApplicationCreateListFromResult(result mo
 	iterateErr := pageIterator.Iterate(e.ctx, func(pageItem interface{}) bool {
 		application := pageItem.(models.Applicationable)
 
-		obj, serializeErr := e.msGraphSerializeObject(application)
+		obj, serializeErr := e.mgSerializeObject(application)
 		if serializeErr != nil {
 			err = serializeErr
 			return false

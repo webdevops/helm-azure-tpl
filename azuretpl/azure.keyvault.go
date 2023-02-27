@@ -10,8 +10,8 @@ import (
 	"github.com/webdevops/go-common/azuresdk/cloudconfig"
 )
 
-// buildAzureKeyVaulUrl builds Azure KeyVault url in case value is supplied as KeyVault name only
-func (e *AzureTemplateExecutor) buildAzureKeyVaulUrl(vaultUrl string) (string, error) {
+// buildAzKeyVaulUrl builds Azure KeyVault url in case value is supplied as KeyVault name only
+func (e *AzureTemplateExecutor) buildAzKeyVaulUrl(vaultUrl string) (string, error) {
 	// do not build keyvault url in lint mode
 	if e.LintMode {
 		return vaultUrl, nil
@@ -37,10 +37,10 @@ func (e *AzureTemplateExecutor) buildAzureKeyVaulUrl(vaultUrl string) (string, e
 	return vaultUrl, nil
 }
 
-// azureKeyVaultSecret fetches secret object from Azure KeyVault
-func (e *AzureTemplateExecutor) azureKeyVaultSecret(vaultUrl string, secretName string) (interface{}, error) {
+// azKeyVaultSecret fetches secret object from Azure KeyVault
+func (e *AzureTemplateExecutor) azKeyVaultSecret(vaultUrl string, secretName string) (interface{}, error) {
 	// azure keyvault url detection
-	if val, err := e.buildAzureKeyVaulUrl(vaultUrl); err == nil {
+	if val, err := e.buildAzKeyVaulUrl(vaultUrl); err == nil {
 		vaultUrl = val
 	} else {
 		return nil, err
@@ -51,7 +51,7 @@ func (e *AzureTemplateExecutor) azureKeyVaultSecret(vaultUrl string, secretName 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil
 	}
-	cacheKey := generateCacheKey(`azureKeyVaultSecret`, vaultUrl, secretName)
+	cacheKey := generateCacheKey(`azKeyVaultSecret`, vaultUrl, secretName)
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
 		secretClient, err := azsecrets.NewClient(vaultUrl, e.azureClient().GetCred(), nil)
 		if err != nil {
@@ -79,10 +79,10 @@ func (e *AzureTemplateExecutor) azureKeyVaultSecret(vaultUrl string, secretName 
 	})
 }
 
-// azureKeyVaultSecretList fetches secrets from Azure KeyVault
-func (e *AzureTemplateExecutor) azureKeyVaultSecretList(vaultUrl string, secretNamePattern string) (interface{}, error) {
+// azKeyVaultSecretList fetches secrets from Azure KeyVault
+func (e *AzureTemplateExecutor) azKeyVaultSecretList(vaultUrl string, secretNamePattern string) (interface{}, error) {
 	// azure keyvault url detection
-	if val, err := e.buildAzureKeyVaulUrl(vaultUrl); err == nil {
+	if val, err := e.buildAzKeyVaulUrl(vaultUrl); err == nil {
 		vaultUrl = val
 	} else {
 		return nil, err
@@ -98,7 +98,7 @@ func (e *AzureTemplateExecutor) azureKeyVaultSecretList(vaultUrl string, secretN
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil
 	}
-	cacheKey := generateCacheKey(`azureKeyVaultSecretList`, vaultUrl)
+	cacheKey := generateCacheKey(`azKeyVaultSecretList`, vaultUrl)
 	list, err := e.cacheResult(cacheKey, func() (interface{}, error) {
 		secretClient, err := azsecrets.NewClient(vaultUrl, e.azureClient().GetCred(), nil)
 		if err != nil {

@@ -9,15 +9,15 @@ import (
 	"github.com/webdevops/go-common/utils/to"
 )
 
-// msGraphUserByUserPrincipalName fetches one user from MsGraph API using userPrincipalName
-func (e *AzureTemplateExecutor) msGraphUserByUserPrincipalName(userPrincipalName string) (interface{}, error) {
+// mgUserByUserPrincipalName fetches one user from MsGraph API using userPrincipalName
+func (e *AzureTemplateExecutor) mgUserByUserPrincipalName(userPrincipalName string) (interface{}, error) {
 	e.logger.Infof(`fetching MsGraph user by userPrincipalName '%v'`, userPrincipalName)
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil
 	}
 
-	cacheKey := generateCacheKey(`msGraphUserByUserPrincipalName`, userPrincipalName)
+	cacheKey := generateCacheKey(`mgUserByUserPrincipalName`, userPrincipalName)
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
 		requestOpts := &users.UsersRequestBuilderGetRequestConfiguration{
 			QueryParameters: &users.UsersRequestBuilderGetQueryParameters{
@@ -32,7 +32,7 @@ func (e *AzureTemplateExecutor) msGraphUserByUserPrincipalName(userPrincipalName
 			return nil, fmt.Errorf(`failed to query MsGraph user: %w`, err)
 		}
 
-		list, err := e.msGraphUserCreateListFromResult(result)
+		list, err := e.mgUserCreateListFromResult(result)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to query MsGraph user: %w`, err)
 		}
@@ -48,22 +48,22 @@ func (e *AzureTemplateExecutor) msGraphUserByUserPrincipalName(userPrincipalName
 	})
 }
 
-// msGraphUserList fetches list of users from MsGraph API using $filter query
-func (e *AzureTemplateExecutor) msGraphUserList(filter string) (interface{}, error) {
+// mgUserList fetches list of users from MsGraph API using $filter query
+func (e *AzureTemplateExecutor) mgUserList(filter string) (interface{}, error) {
 	e.logger.Infof(`fetching MsGraph user list with $filter '%v'`, filter)
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil
 	}
 
-	cacheKey := generateCacheKey(`msGraphUserList`, filter)
+	cacheKey := generateCacheKey(`mgUserList`, filter)
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
 		result, err := e.msGraphClient().ServiceClient().Users().Get(e.ctx, nil)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to query MsGraph users: %w`, err)
 		}
 
-		list, err := e.msGraphUserCreateListFromResult(result)
+		list, err := e.mgUserCreateListFromResult(result)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to query MsGraph users: %w`, err)
 		}
@@ -72,7 +72,7 @@ func (e *AzureTemplateExecutor) msGraphUserList(filter string) (interface{}, err
 	})
 }
 
-func (e *AzureTemplateExecutor) msGraphUserCreateListFromResult(result models.UserCollectionResponseable) (list []interface{}, err error) {
+func (e *AzureTemplateExecutor) mgUserCreateListFromResult(result models.UserCollectionResponseable) (list []interface{}, err error) {
 	pageIterator, pageIteratorErr := msgraphcore.NewPageIterator(result, e.msGraphClient().RequestAdapter(), models.CreateUserCollectionResponseFromDiscriminatorValue)
 	if pageIteratorErr != nil {
 		return list, pageIteratorErr
@@ -81,7 +81,7 @@ func (e *AzureTemplateExecutor) msGraphUserCreateListFromResult(result models.Us
 	iterateErr := pageIterator.Iterate(e.ctx, func(pageItem interface{}) bool {
 		user := pageItem.(models.Userable)
 
-		obj, serializeErr := e.msGraphSerializeObject(user)
+		obj, serializeErr := e.mgSerializeObject(user)
 		if serializeErr != nil {
 			err = serializeErr
 			return false

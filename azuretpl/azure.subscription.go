@@ -7,11 +7,11 @@ import (
 	"github.com/webdevops/go-common/utils/to"
 )
 
-// azureSubscription fetches current or defined Azure subscription
-func (e *AzureTemplateExecutor) azureSubscription(subscriptionID ...string) (interface{}, error) {
+// azSubscription fetches current or defined Azure subscription
+func (e *AzureTemplateExecutor) azSubscription(subscriptionID ...string) (interface{}, error) {
 	var selectedSubscriptionId string
 	if len(subscriptionID) > 1 {
-		return nil, fmt.Errorf(`{{azureSubscription}} only supports zero or one subscriptionIDs`)
+		return nil, fmt.Errorf(`{{azSubscription}} only supports zero or one subscriptionIDs`)
 	}
 
 	if val, enabled := e.lintResult(); enabled {
@@ -26,13 +26,13 @@ func (e *AzureTemplateExecutor) azureSubscription(subscriptionID ...string) (int
 		if val, exists := e.azureCliAccountInfo["id"].(string); exists {
 			selectedSubscriptionId = val
 		} else {
-			return nil, fmt.Errorf(`{{azureSubscription}} is unable to find current subscription from "az account show" output`)
+			return nil, fmt.Errorf(`{{azSubscription}} is unable to find current subscription from "az account show" output`)
 		}
 	}
 
 	e.logger.Infof(`fetching Azure subscription '%v'`, selectedSubscriptionId)
 
-	cacheKey := generateCacheKey(`azureSubscription`, selectedSubscriptionId)
+	cacheKey := generateCacheKey(`azSubscription`, selectedSubscriptionId)
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
 		client, err := armsubscriptions.NewClient(e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
 		if err != nil {
@@ -52,15 +52,15 @@ func (e *AzureTemplateExecutor) azureSubscription(subscriptionID ...string) (int
 	})
 }
 
-// azureSubscriptionList fetches list of visible Azure subscriptions
-func (e *AzureTemplateExecutor) azureSubscriptionList() (interface{}, error) {
+// azSubscriptionList fetches list of visible Azure subscriptions
+func (e *AzureTemplateExecutor) azSubscriptionList() (interface{}, error) {
 	e.logger.Infof(`fetching Azure subscriptions`)
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil
 	}
 
-	cacheKey := generateCacheKey(`azureSubscriptionList`)
+	cacheKey := generateCacheKey(`azSubscriptionList`)
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
 		client, err := armsubscriptions.NewClient(e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
 		if err != nil {

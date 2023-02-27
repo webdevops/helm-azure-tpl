@@ -1,5 +1,5 @@
 package azuretpl
 
-func (e *AzureTemplateExecutor) azureAccountInfo() (interface{}, error) {
+func (e *AzureTemplateExecutor) azAccountInfo() (interface{}, error) {
 	return e.azureCliAccountInfo, nil
 }

@@ -9,15 +9,15 @@ import (
 	"github.com/webdevops/go-common/utils/to"
 )
 
-// azurePublicIpAddress fetches ipAddress from Azure Public IP Address
-func (e *AzureTemplateExecutor) azurePublicIpAddress(resourceID string) (interface{}, error) {
+// azPublicIpAddress fetches ipAddress from Azure Public IP Address
+func (e *AzureTemplateExecutor) azPublicIpAddress(resourceID string) (interface{}, error) {
 	e.logger.Infof(`fetching Azure PublicIpAddress '%v'`, resourceID)
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil
 	}
 
-	cacheKey := generateCacheKey(`azurePublicIpAddress`, resourceID)
+	cacheKey := generateCacheKey(`azPublicIpAddress`, resourceID)
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
 		resourceInfo, err := armclient.ParseResourceId(resourceID)
 		if err != nil {
@@ -38,15 +38,15 @@ func (e *AzureTemplateExecutor) azurePublicIpAddress(resourceID string) (interfa
 	})
 }
 
-// azurePublicIpPrefixAddressPrefix fetches ipAddress prefix from Azure Public IP Address prefix
-func (e *AzureTemplateExecutor) azurePublicIpPrefixAddressPrefix(resourceID string) (interface{}, error) {
+// azPublicIpPrefixAddressPrefix fetches ipAddress prefix from Azure Public IP Address prefix
+func (e *AzureTemplateExecutor) azPublicIpPrefixAddressPrefix(resourceID string) (interface{}, error) {
 	e.logger.Infof(`fetching Azure PublicIpPrefix '%v'`, resourceID)
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil
 	}
 
-	cacheKey := generateCacheKey(`azurePublicIpPrefixAddressPrefix`, resourceID)
+	cacheKey := generateCacheKey(`azPublicIpPrefixAddressPrefix`, resourceID)
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
 		resourceInfo, err := armclient.ParseResourceId(resourceID)
 		if err != nil {
@@ -67,15 +67,15 @@ func (e *AzureTemplateExecutor) azurePublicIpPrefixAddressPrefix(resourceID stri
 	})
 }
 
-// azureVirtualNetworkAddressPrefixes fetches ipAddress prefixes (array) from Azure VirtualNetwork
-func (e *AzureTemplateExecutor) azureVirtualNetworkAddressPrefixes(resourceID string) (interface{}, error) {
+// azVirtualNetworkAddressPrefixes fetches ipAddress prefixes (array) from Azure VirtualNetwork
+func (e *AzureTemplateExecutor) azVirtualNetworkAddressPrefixes(resourceID string) (interface{}, error) {
 	e.logger.Infof(`fetching AddressPrefixes from Azure VirtualNetwork '%v'`, resourceID)
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil
 	}
 
-	cacheKey := generateCacheKey(`azureVirtualNetworkAddressPrefixes`, resourceID)
+	cacheKey := generateCacheKey(`azVirtualNetworkAddressPrefixes`, resourceID)
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
 		resourceInfo, err := armclient.ParseResourceId(resourceID)
 		if err != nil {
@@ -99,15 +99,15 @@ func (e *AzureTemplateExecutor) azureVirtualNetworkAddressPrefixes(resourceID st
 	})
 }
 
-// azureVirtualNetworkSubnetAddressPrefixes fetches ipAddress prefixes (array) from Azure VirtualNetwork subnet
-func (e *AzureTemplateExecutor) azureVirtualNetworkSubnetAddressPrefixes(resourceID string, subnetName string) (interface{}, error) {
+// azVirtualNetworkSubnetAddressPrefixes fetches ipAddress prefixes (array) from Azure VirtualNetwork subnet
+func (e *AzureTemplateExecutor) azVirtualNetworkSubnetAddressPrefixes(resourceID string, subnetName string) (interface{}, error) {
 	e.logger.Infof(`fetching AddressPrefixes from Azure VirtualNetwork '%v' subnet '%v'`, resourceID, subnetName)
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil
 	}
 
-	cacheKey := generateCacheKey(`azureVirtualNetworkSubnetAddressPrefixes`, resourceID, subnetName)
+	cacheKey := generateCacheKey(`azVirtualNetworkSubnetAddressPrefixes`, resourceID, subnetName)
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
 		resourceInfo, err := armclient.ParseResourceId(resourceID)
 		if err != nil {

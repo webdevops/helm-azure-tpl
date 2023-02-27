@@ -7,8 +7,8 @@ import (
 	"github.com/Azure/azure-sdk-for-go/sdk/storage/azblob"
 )
 
-// azureStorageAccountContainerBlob fetches container blob from StorageAccount
-func (e *AzureTemplateExecutor) azureStorageAccountContainerBlob(containerBlobUrl string) (interface{}, error) {
+// azStorageAccountContainerBlob fetches container blob from StorageAccount
+func (e *AzureTemplateExecutor) azStorageAccountContainerBlob(containerBlobUrl string) (interface{}, error) {
 	e.logger.Infof(`fetching Azure StorageAccount container blob '%v'`, containerBlobUrl)
 
 	if val, enabled := e.lintResult(); enabled {
@@ -20,7 +20,7 @@ func (e *AzureTemplateExecutor) azureStorageAccountContainerBlob(containerBlobUr
 		return nil, err
 	}
 
-	cacheKey := generateCacheKey(`azureStorageAccountContainerBlob`, containerBlobUrl)
+	cacheKey := generateCacheKey(`azStorageAccountContainerBlob`, containerBlobUrl)
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
 		azblobOpts := azblob.ClientOptions{ClientOptions: *e.azureClient().NewAzCoreClientOptions()}
 

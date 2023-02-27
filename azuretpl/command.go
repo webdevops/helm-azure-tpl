@@ -128,31 +128,31 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *template.Template) template.Fun
 
 	funcMap := map[string]interface{}{
 		// azure
-		`azureResource`:                            e.azureResource,
-		`azureSubscription`:                        e.azureSubscription,
-		`azureSubscriptionList`:                    e.azureSubscriptionList,
-		`azurePublicIpAddress`:                     e.azurePublicIpAddress,
-		`azurePublicIpPrefixAddressPrefix`:         e.azurePublicIpPrefixAddressPrefix,
-		`azureVirtualNetworkAddressPrefixes`:       e.azureVirtualNetworkAddressPrefixes,
-		`azureVirtualNetworkSubnetAddressPrefixes`: e.azureVirtualNetworkSubnetAddressPrefixes,
-		`azureAccountInfo`:                         e.azureAccountInfo,
+		`azResource`:                            e.azResource,
+		`azSubscription`:                        e.azSubscription,
+		`azSubscriptionList`:                    e.azSubscriptionList,
+		`azPublicIpAddress`:                     e.azPublicIpAddress,
+		`azPublicIpPrefixAddressPrefix`:         e.azPublicIpPrefixAddressPrefix,
+		`azVirtualNetworkAddressPrefixes`:       e.azVirtualNetworkAddressPrefixes,
+		`azVirtualNetworkSubnetAddressPrefixes`: e.azVirtualNetworkSubnetAddressPrefixes,
+		`azAccountInfo`:                         e.azAccountInfo,
 
 		// azure keyvault
-		`azureKeyVaultSecret`:     e.azureKeyVaultSecret,
-		`azureKeyVaultSecretList`: e.azureKeyVaultSecretList,
+		`azKeyVaultSecret`:     e.azKeyVaultSecret,
+		`azKeyVaultSecretList`: e.azKeyVaultSecretList,
 
 		// azure storageAccount
-		`azureStorageAccountContainerBlob`: e.azureStorageAccountContainerBlob,
+		`azStorageAccountContainerBlob`: e.azStorageAccountContainerBlob,
 
 		// msGraph
-		`msGraphUserByUserPrincipalName`:       e.msGraphUserByUserPrincipalName,
-		`msGraphUserList`:                      e.msGraphUserList,
-		`msGraphGroupByDisplayName`:            e.msGraphGroupByDisplayName,
-		`msGraphGroupList`:                     e.msGraphGroupList,
-		`msGraphServicePrincipalByDisplayName`: e.msGraphServicePrincipalByDisplayName,
-		`msGraphServicePrincipalList`:          e.msGraphServicePrincipalList,
-		`msGraphApplicationByDisplayName`:      e.msGraphApplicationByDisplayName,
-		`msGraphApplicationList`:               e.msGraphApplicationList,
+		`mgUserByUserPrincipalName`:       e.mgUserByUserPrincipalName,
+		`mgUserList`:                      e.mgUserList,
+		`mgGroupByDisplayName`:            e.mgGroupByDisplayName,
+		`mgGroupList`:                     e.mgGroupList,
+		`mgServicePrincipalByDisplayName`: e.mgServicePrincipalByDisplayName,
+		`mgServicePrincipalList`:          e.mgServicePrincipalList,
+		`mgApplicationByDisplayName`:      e.mgApplicationByDisplayName,
+		`mgApplicationList`:               e.mgApplicationList,
 
 		// misc
 		`jsonPath`: e.jsonPath,
@@ -231,6 +231,23 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *template.Template) template.Fun
 			return "", errors.New(message)
 		},
 	}
+
+	// automatic add legacy funcs
+	tmp := map[string]interface{}{}
+	for funcName, funcCallback := range funcMap {
+		// azFunc -> azureFunc
+		if strings.HasPrefix(funcName, "az") {
+			tmp["azure"+strings.TrimPrefix(funcName, "az")] = funcCallback
+		}
+
+		// mgFunc -> msGraphFunc
+		if strings.HasPrefix(funcName, "mg") {
+			tmp["msGraph"+strings.TrimPrefix(funcName, "mg")] = funcCallback
+		}
+
+		tmp[funcName] = funcCallback
+	}
+	funcMap = tmp
 
 	return funcMap
 }
