@@ -129,6 +129,7 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *template.Template) template.Fun
 	funcMap := map[string]interface{}{
 		// azure
 		`azResource`:                            e.azResource,
+		`azResourceList`:                        e.azResourceList,
 		`azSubscription`:                        e.azSubscription,
 		`azSubscriptionList`:                    e.azSubscriptionList,
 		`azPublicIpAddress`:                     e.azPublicIpAddress,

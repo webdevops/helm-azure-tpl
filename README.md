@@ -113,16 +113,17 @@ Arguments:
 
 :information_source: Functions can also be used starting with `azure` prefix instead of `az`
 
-| Function                                | Parameters                                   | Description                                                                    |
-|-----------------------------------------|----------------------------------------------|--------------------------------------------------------------------------------|
-| `azAccountInfo`                         |                                              | Output of `az account show`                                                    |
-| `azSubscription`                        | `subscriptionID` (string, optional)          | Fetches Azure subscription (current selected one if `subscriptionID` is empty) |
-| `azSubscriptionList`                    |                                              | Fetches list of all visible azure subscriptions                                |
-| `azResource`                            | `resourceID` (string), `apiVersion` (string) | Fetches Azure resource information (json representation, interface object)     |
-| `azPublicIpAddress`                     | `resourceID` (string)                        | Fetches ip address from Azure Public IP                                        |
-| `azPublicIpPrefixAddressPrefix`         | `resourceID` (string)                        | Fetches ip address prefix from Azure Public IP prefix                          |
-| `azVirtualNetworkAddressPrefixes`       | `resourceID` (string)                        | Fetches address prefix (string array) from Azure VirtualNetwork                |
-| `azVirtualNetworkSubnetAddressPrefixes` | `resourceID` (string), `subnetName` (string) | Fetches address prefix (string array) from Azure VirtualNetwork subnet         |
+| Function                                | Parameters                                    | Description                                                                                                                                                                                                                             |
+|-----------------------------------------|-----------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `azAccountInfo`                         |                                               | Output of `az account show`                                                                                                                                                                                                             |
+| `azSubscription`                        | `subscriptionID` (string, optional)           | Fetches Azure subscription (current selected one if `subscriptionID` is empty)                                                                                                                                                          |
+| `azSubscriptionList`                    |                                               | Fetches list of all visible azure subscriptions                                                                                                                                                                                         |
+| `azResource`                            | `resourceID` (string), `apiVersion` (string)  | Fetches Azure resource information (json representation, interface object)                                                                                                                                                              |
+| `azResourceList`                        | `scope` (string), `filter` (string, optional) | Fetches list of Azure resources and filters it by using [$filter](https://learn.microsoft.com/en-us/rest/api/resources/resources/list), scope can be subscription ID or resourceGroup ID (array, json representation, interface object) |
+| `azPublicIpAddress`                     | `resourceID` (string)                         | Fetches ip address from Azure Public IP                                                                                                                                                                                                 |
+| `azPublicIpPrefixAddressPrefix`         | `resourceID` (string)                         | Fetches ip address prefix from Azure Public IP prefix                                                                                                                                                                                   |
+| `azVirtualNetworkAddressPrefixes`       | `resourceID` (string)                         | Fetches address prefix (string array) from Azure VirtualNetwork                                                                                                                                                                         |
+| `azVirtualNetworkSubnetAddressPrefixes` | `resourceID` (string), `subnetName` (string)  | Fetches address prefix (string array) from Azure VirtualNetwork subnet                                                                                                                                                                  |
 
 ### Azure Keyvault functions
 | Function               | Parameters                                                               | Description                                                                                                                           |
@@ -201,7 +202,7 @@ response format:
 ```gotemplate
 
 {{
-    azureResource
+    azResource
     "/subscriptions/d86bcf13-ddf7-45ea-82f1-6f656767a318/resourcegroups/k8s/providers/Microsoft.ContainerService/managedClusters/mblaschke"
     "2022-01-01"
     | jsonPath "$.properties.aadProfile"
@@ -241,7 +242,6 @@ response format:
    | toYaml
 }}
 
-
 ## Fetch resource as object, select .properties.aadProfile via jsonPath and convert to yaml
 {{ azResource
    "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx/resourcegroups/example-rg/providers/Microsoft.ContainerService/managedClusters/k8scluster"
@@ -250,15 +250,19 @@ response format:
    | toYaml
 }}
 
+## Fetches all resources from subscription
+{{ (azResourceList "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx") | toYaml }}
+
+## Fetches all virtualNetwork resources from subscription
+{{ (azResourceList "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx" "resourceType eq 'Microsoft.Network/virtualNetworks'") | toYaml }}
+
+## Fetches all resources from resourceGroup
+{{ (azResourceList "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx/resourcegroups/example-rg") | toYaml }}
+
 ## Fetch Azure VirtualNetwork address prefixes
 {{ azVirtualNetworkAddressPrefixes
     "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx/resourcegroups/example-rg/providers/Microsoft.Network/virtualNetworks/k8s-vnet"
-}}
-
-
-## Fetch Azure VirtualNetwork subnet address prefixes and join them to a string list
-{{ azVirtualNetworkSubnetAddressPrefixes
-   "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx/resourcegroups/example-rg/providers/Microsoft.Network/virtualNetworks/k8s-vnet"
+}}xxx/resourcegroups/example-rg/providers/Microsoft.Network/virtualNetworks/k8s-vnet"
    "default2"
    | join ","
 }}
