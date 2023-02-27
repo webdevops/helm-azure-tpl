@@ -118,7 +118,7 @@ Arguments:
 | `azAccountInfo`                         |                                              | Output of `az account show`                                                    |
 | `azSubscription`                        | `subscriptionID` (string, optional)          | Fetches Azure subscription (current selected one if `subscriptionID` is empty) |
 | `azSubscriptionList`                    |                                              | Fetches list of all visible azure subscriptions                                |
-| `azResource`                            | `resourceID` (string), `apiVersion` (string) | Fetches Azure resource information (interface object)                          |
+| `azResource`                            | `resourceID` (string), `apiVersion` (string) | Fetches Azure resource information (json representation, interface object)     |
 | `azPublicIpAddress`                     | `resourceID` (string)                        | Fetches ip address from Azure Public IP                                        |
 | `azPublicIpPrefixAddressPrefix`         | `resourceID` (string)                        | Fetches ip address prefix from Azure Public IP prefix                          |
 | `azVirtualNetworkAddressPrefixes`       | `resourceID` (string)                        | Fetches address prefix (string array) from Azure VirtualNetwork                |
@@ -129,6 +129,25 @@ Arguments:
 |------------------------|-----------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
 | `azKeyVaultSecret`     | `vaultUrl` (string), `secretName` (string)                | Fetches secret object from Azure KeyVault                                                                                             |
 | `azKeyVaultSecretList` | `vaultUrl` (string), `secretNamePattern` (string, regexp) | Fetche the list of secret objects (without secret value) from Azure KeyVault and filters list by regular expression secretNamePattern |
+
+response format:
+```json
+{
+  "attributes": {
+    "created": 1620236104,
+    "enabled": true,
+    "exp": 1724593377,
+    "nbf": 1661362977,
+    "recoverableDays": 0,
+    "recoveryLevel": "Purgeable",
+    "updated": 1661449616
+  },
+  "contentType": "...",
+  "id": "https://xxx.vault.azure.net/secrets/xxx/xxxxxxxxxx",
+  "tags": {},
+  "value": "..."
+}
+```
 
 ### Azure StorageAccount functions
 | Function                          | Parameters                     | Description                                                |
