@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 	yaml "gopkg.in/yaml.v3"
@@ -76,7 +77,7 @@ func run() {
 			}
 		}
 
-		log.Info("finished")
+		log.WithField("duration", time.Since(startTime).String()).Info("finished")
 	default:
 		fmt.Printf("invalid command '%v'\n", opts.Args.Command)
 		fmt.Println()

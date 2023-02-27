@@ -9,6 +9,7 @@ import (
 	"path"
 	"runtime"
 	"strings"
+	"time"
 
 	"github.com/jessevdk/go-flags"
 	log "github.com/sirupsen/logrus"
@@ -34,6 +35,8 @@ var (
 
 	azAccountInfo map[string]interface{}
 
+	startTime time.Time
+
 	// Git version information
 	gitCommit = "<unknown>"
 	gitTag    = "<unknown>"
@@ -44,6 +47,7 @@ var (
 )
 
 func main() {
+	startTime = time.Now()
 	initArgparser()
 	initAzureEnvironment()
 	run()
