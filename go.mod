@@ -1,6 +1,6 @@
 module github.com/webdevops/helm-azure-tpl
 
-go 1.19
+go 1.20
 
 require (
 	github.com/Azure/azure-sdk-for-go/sdk/data/azappconfig v0.5.0
