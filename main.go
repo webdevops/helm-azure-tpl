@@ -6,16 +6,10 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"path"
-	"runtime"
-	"strings"
 	"time"
 
 	"github.com/jessevdk/go-flags"
-	log "github.com/sirupsen/logrus"
-	"github.com/webdevops/go-common/azuresdk/armclient"
 	"github.com/webdevops/go-common/azuresdk/azidentity"
-	"github.com/webdevops/go-common/msgraphsdk/msgraphclient"
 
 	"github.com/webdevops/helm-azure-tpl/config"
 )
@@ -29,9 +23,6 @@ const (
 
 var (
 	argparser *flags.Parser
-
-	AzureClient   *armclient.ArmClient
-	MsGraphClient *msgraphclient.MsGraphClient
 
 	azAccountInfo map[string]interface{}
 
@@ -49,6 +40,7 @@ var (
 func main() {
 	startTime = time.Now()
 	initArgparser()
+	initLogger()
 	initAzureEnvironment()
 	run()
 }
@@ -76,48 +68,6 @@ func initArgparser() {
 			os.Exit(1)
 		}
 	}
-
-	if opts.Stdout {
-		// send all logs to stderr if we're using stdout output
-		log.SetOutput(os.Stderr)
-	}
-
-	log.SetReportCaller(false)
-	log.SetFormatter(&log.TextFormatter{
-		DisableTimestamp: true,
-		DisableQuote:     true,
-	})
-
-	// verbose level
-	if opts.Logger.Verbose {
-		log.SetLevel(log.DebugLevel)
-	}
-
-	// debug level
-	if opts.Debug {
-		log.SetReportCaller(true)
-		log.SetLevel(log.TraceLevel)
-		log.SetFormatter(&log.TextFormatter{
-			CallerPrettyfier: func(f *runtime.Frame) (string, string) {
-				s := strings.Split(f.Function, ".")
-				funcName := s[len(s)-1]
-				return funcName, fmt.Sprintf("%s:%d", path.Base(f.File), f.Line)
-			},
-		})
-	}
-
-	// json log format
-	if opts.Logger.LogJson {
-		log.SetReportCaller(true)
-		log.SetFormatter(&log.JSONFormatter{
-			DisableTimestamp: true,
-			CallerPrettyfier: func(f *runtime.Frame) (string, string) {
-				s := strings.Split(f.Function, ".")
-				funcName := s[len(s)-1]
-				return funcName, fmt.Sprintf("%s:%d", path.Base(f.File), f.Line)
-			},
-		})
-	}
 }
 
 func fetchAzAccountInfo() {
@@ -126,19 +76,19 @@ func fetchAzAccountInfo() {
 
 	accountInfo, err := cmd.Output()
 	if err != nil {
-		log.Fatalf(`unable to detect Azure TenantID via 'az account show': %v`, err)
+		logger.Fatalf(`unable to detect Azure TenantID via 'az account show': %v`, err)
 	}
 
 	err = json.Unmarshal(accountInfo, &azAccountInfo)
 	if err != nil {
-		log.Fatalf(`unable to parse 'az account show' output: %v`, err)
+		logger.Fatalf(`unable to parse 'az account show' output: %v`, err)
 	}
 
 	// auto set azure tenant id
 	if opts.Azure.Environment == nil || *opts.Azure.Environment == "" {
 		// autodetect tenant
 		if val, ok := azAccountInfo["environmentName"].(string); ok {
-			log.Infof(`use Azure Environment '%v' from 'az account show'`, val)
+			logger.Infof(`use Azure Environment '%v' from 'az account show'`, val)
 			opts.Azure.Environment = &val
 		}
 	}
@@ -147,7 +97,7 @@ func fetchAzAccountInfo() {
 	if opts.Azure.Tenant == nil || *opts.Azure.Tenant == "" {
 		// autodetect tenant
 		if val, ok := azAccountInfo["tenantId"].(string); ok {
-			log.Infof(`use Azure TenantID '%v' from 'az account show'`, val)
+			logger.Infof(`use Azure TenantID '%v' from 'az account show'`, val)
 			opts.Azure.Tenant = &val
 		}
 	}
@@ -160,14 +110,14 @@ func initAzureEnvironment() {
 	if opts.Azure.Environment == nil || *opts.Azure.Environment == "" {
 		// autodetect tenant
 		if val, ok := azAccountInfo["environmentName"].(string); ok {
-			log.Infof(`use Azure Environment '%v' from 'az account show'`, val)
+			logger.Infof(`use Azure Environment '%v' from 'az account show'`, val)
 			opts.Azure.Environment = &val
 		}
 	}
 
 	if opts.Azure.Environment != nil {
 		if err := os.Setenv(azidentity.EnvAzureEnvironment, *opts.Azure.Environment); err != nil {
-			log.Warnf(`unable to set envvar AZURE_ENVIRONMENT: %v`, err.Error())
+			logger.Warnf(`unable to set envvar AZURE_ENVIRONMENT: %v`, err.Error())
 		}
 	}
 }

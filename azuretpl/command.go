@@ -15,15 +15,15 @@ import (
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resources/armresources"
 	"github.com/Masterminds/sprig/v3"
 	cache "github.com/patrickmn/go-cache"
-	log "github.com/sirupsen/logrus"
 	"github.com/webdevops/go-common/azuresdk/armclient"
 	"github.com/webdevops/go-common/msgraphsdk/msgraphclient"
+	"go.uber.org/zap"
 )
 
 type (
 	AzureTemplateExecutor struct {
 		ctx    context.Context
-		logger *log.Entry
+		logger *zap.SugaredLogger
 
 		cache    *cache.Cache
 		cacheTtl time.Duration
@@ -44,7 +44,7 @@ var (
 	msGraphClient *msgraphclient.MsGraphClient
 )
 
-func New(ctx context.Context, logger *log.Entry) *AzureTemplateExecutor {
+func New(ctx context.Context, logger *zap.SugaredLogger) *AzureTemplateExecutor {
 	e := &AzureTemplateExecutor{
 		ctx:    ctx,
 		logger: logger,
@@ -62,15 +62,15 @@ func (e *AzureTemplateExecutor) init() {
 func (e *AzureTemplateExecutor) azureClient() *armclient.ArmClient {
 	var err error
 	if azureClient == nil {
-		azureClient, err = armclient.NewArmClientFromEnvironment(log.StandardLogger())
+		azureClient, err = armclient.NewArmClientFromEnvironment(e.logger)
 		if err != nil {
-			e.logger.Panic(err.Error())
+			e.logger.Fatal(err.Error())
 		}
 
 		azureClient.SetUserAgent(e.UserAgent)
 		azureClient.UseAzCliAuth()
 		if err := azureClient.Connect(); err != nil {
-			e.logger.Panic(err.Error())
+			e.logger.Fatal(err.Error())
 		}
 	}
 	return azureClient
@@ -84,9 +84,9 @@ func (e *AzureTemplateExecutor) msGraphClient() *msgraphclient.MsGraphClient {
 			e.azureClient()
 		}
 
-		msGraphClient, err = msgraphclient.NewMsGraphClientFromEnvironment(log.StandardLogger())
+		msGraphClient, err = msgraphclient.NewMsGraphClientFromEnvironment(e.logger)
 		if err != nil {
-			e.logger.Panic(err.Error())
+			e.logger.Fatal(err.Error())
 		}
 
 		msGraphClient.SetUserAgent(e.UserAgent)

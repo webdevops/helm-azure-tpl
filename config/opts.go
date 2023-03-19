@@ -2,16 +2,14 @@ package config
 
 import (
 	"encoding/json"
-
-	log "github.com/sirupsen/logrus"
 )
 
 type (
 	Opts struct {
 		// logger
 		Logger struct {
-			Verbose bool `short:"v"  long:"verbose"      env:"AZURETPL_VERBOSE"  description:"verbose mode"`
-			LogJson bool `           long:"log.json"     env:"AZURETPL_LOG_JSON" description:"Switch log output to json format"`
+			Development bool `long:"log.devel"    env:"LOG_DEVEL"  description:"development mode"`
+			Json        bool `long:"log.json"     env:"LOG_JSON"   description:"Switch log output to json format"`
 		}
 
 		// Api option
@@ -21,7 +19,7 @@ type (
 		}
 
 		DryRun bool `long:"dry-run" env:"AZURETPL_DRY_RUN"    description:"dry run, do not write any files"`
-		Debug  bool `long:"debug"   env:"HELM_DEBUG"          description:"debug run, print generated content to stdout (WARNING: can expose secrets!)"`
+		Debug  bool `long:"debug"   env:"HELMHELM_DEBUG_DEBUG"          description:"debug run, print generated content to stdout (WARNING: can expose secrets!)"`
 		Stdout bool `long:"stdout"  env:"AZURETPL_STDOUT"     description:"Print parsed content to stdout instead of file (logs will be written to stderr)"`
 
 		Template struct {
@@ -50,7 +48,7 @@ type (
 func (o *Opts) GetJson() []byte {
 	jsonBytes, err := json.Marshal(o)
 	if err != nil {
-		log.Panic(err)
+		panic(err)
 	}
 	return jsonBytes
 }

@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 	yaml "gopkg.in/yaml.v3"
 	"helm.sh/helm/v3/pkg/strvals"
 )
@@ -43,29 +43,29 @@ func run() {
 		fmt.Printf("helm-azure-tpl version: %v (%v, %v)\n", gitTag, gitCommit, runtime.Version())
 		os.Exit(0)
 	case CommandLint:
-		log.Info("enabling lint mode, all functions are in dry mode")
+		logger.Info("enabling lint mode, all functions are in dry mode")
 		lintMode = true
 		fallthrough
 	case CommandProcess:
 		printAppHeader()
 
 		if len(opts.Args.Files) == 0 {
-			log.Fatal(`no files specified as arguments`)
+			logger.Fatal(`no files specified as arguments`)
 		}
 
 		if err := readValuesFiles(); err != nil {
-			log.Fatal(err)
+			logger.Fatal(err)
 			os.Exit(1)
 		}
 		templateFileList := buildSourceTargetList()
 
 		if !lintMode {
-			log.Infof("detecting Azure account information")
+			logger.Infof("detecting Azure account information")
 			fetchAzAccountInfo()
 
 			azAccountInfoJson, err := json.Marshal(azAccountInfo)
 			if err == nil {
-				log.Infof(string(azAccountInfoJson))
+				logger.Infof(string(azAccountInfoJson))
 			}
 		}
 
@@ -77,7 +77,7 @@ func run() {
 			}
 		}
 
-		log.WithField("duration", time.Since(startTime).String()).Info("finished")
+		logger.With(zap.Duration("duration", time.Since(startTime))).Info("finished")
 	default:
 		fmt.Printf("invalid command '%v'\n", opts.Args.Command)
 		fmt.Println()
@@ -87,8 +87,8 @@ func run() {
 }
 
 func printAppHeader() {
-	log.Infof("%v v%s (%s; %s; by %v)", argparser.Command.Name, gitTag, gitCommit, runtime.Version(), Author)
-	log.Info(string(opts.GetJson()))
+	logger.Infof("%v v%s (%s; %s; by %v)", argparser.Command.Name, gitTag, gitCommit, runtime.Version(), Author)
+	logger.Info(string(opts.GetJson()))
 }
 
 // borrowed from helm/helm
@@ -99,9 +99,7 @@ func readValuesFiles() error {
 	for _, filePath := range opts.ValuesFiles {
 		currentMap := map[string]interface{}{}
 
-		contextLogger := log.WithFields(log.Fields{
-			`valuesPath`: filePath,
-		})
+		contextLogger := logger.With(zap.String(`valuesPath`, filePath))
 
 		contextLogger.Info("using .Values file")
 		data, err := os.ReadFile(filePath)
@@ -110,7 +108,7 @@ func readValuesFiles() error {
 		}
 		err = yaml.Unmarshal(data, &currentMap)
 		if err != nil {
-			log.Fatalf("error: %v", err)
+			logger.Fatalf("error: %v", err)
 		}
 		// Merge with the previous map
 		templateData.Values = mergeMaps(templateData.Values, currentMap)
@@ -224,14 +222,10 @@ func buildSourceTargetList() (list []TemplateFile) {
 		sourcePath = filepath.Clean(sourcePath)
 		targetPath = filepath.Clean(targetPath)
 
-		contextLogger := log.WithFields(log.Fields{
-			`sourcePath`: sourcePath,
-		})
+		contextLogger := logger.With(zap.String(`sourcePath`, sourcePath))
 
 		if !opts.Stdout {
-			contextLogger = contextLogger.WithFields(log.Fields{
-				`targetPath`: targetPath,
-			})
+			contextLogger = contextLogger.With(zap.String(`targetPath`, targetPath))
 
 			if targetPath == "" || targetPath == "." || targetPath == "/" {
 				contextLogger.Fatalf(`invalid path '%v' detected`, targetPath)
@@ -239,7 +233,7 @@ func buildSourceTargetList() (list []TemplateFile) {
 		}
 
 		if _, err := os.Stat(sourcePath); errors.Is(err, os.ErrNotExist) {
-			log.Fatalf(err.Error())
+			logger.Fatalf(err.Error())
 		}
 
 		var templateBasePath string
@@ -249,7 +243,7 @@ func buildSourceTargetList() (list []TemplateFile) {
 			if val, err := filepath.Abs(sourcePath); err == nil {
 				templateBasePath = filepath.Dir(val)
 			} else {
-				log.Fatalf(`unable to resolve file: %v`, err)
+				logger.Fatalf(`unable to resolve file: %v`, err)
 			}
 		}
 

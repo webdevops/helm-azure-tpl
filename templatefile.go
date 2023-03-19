@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	log "github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 
 	"github.com/webdevops/helm-azure-tpl/azuretpl"
 )
@@ -18,7 +18,7 @@ type (
 		SourceFile      string
 		TargetFile      string
 		TemplateBaseDir string
-		Logger          *log.Entry
+		Logger          *zap.SugaredLogger
 	}
 )
 
