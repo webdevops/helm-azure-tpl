@@ -19,7 +19,7 @@ func transformToInterface(obj interface{}) (interface{}, error) {
 		return nil, err
 	}
 
-	var ret map[string]interface{}
+	var ret interface{}
 	err = json.Unmarshal(data, &ret)
 	if err != nil {
 		return nil, err
