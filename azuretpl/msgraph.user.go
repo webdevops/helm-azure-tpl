@@ -73,14 +73,12 @@ func (e *AzureTemplateExecutor) mgUserList(filter string) (interface{}, error) {
 }
 
 func (e *AzureTemplateExecutor) mgUserCreateListFromResult(result models.UserCollectionResponseable) (list []interface{}, err error) {
-	pageIterator, pageIteratorErr := msgraphcore.NewPageIterator(result, e.msGraphClient().RequestAdapter(), models.CreateUserCollectionResponseFromDiscriminatorValue)
+	pageIterator, pageIteratorErr := msgraphcore.NewPageIterator[models.Userable](result, e.msGraphClient().RequestAdapter(), models.CreateUserCollectionResponseFromDiscriminatorValue)
 	if pageIteratorErr != nil {
 		return list, pageIteratorErr
 	}
 
-	iterateErr := pageIterator.Iterate(e.ctx, func(pageItem interface{}) bool {
-		user := pageItem.(models.Userable)
-
+	iterateErr := pageIterator.Iterate(e.ctx, func(user models.Userable) bool {
 		obj, serializeErr := e.mgSerializeObject(user)
 		if serializeErr != nil {
 			err = serializeErr

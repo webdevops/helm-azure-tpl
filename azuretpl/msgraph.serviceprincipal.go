@@ -71,14 +71,12 @@ func (e *AzureTemplateExecutor) mgServicePrincipalList(filter string) (interface
 }
 
 func (e *AzureTemplateExecutor) mgServicePrincipalCreateListFromResult(result models.ServicePrincipalCollectionResponseable) (list []interface{}, err error) {
-	pageIterator, pageIteratorErr := msgraphcore.NewPageIterator(result, e.msGraphClient().RequestAdapter(), models.CreateServicePrincipalCollectionResponseFromDiscriminatorValue)
+	pageIterator, pageIteratorErr := msgraphcore.NewPageIterator[models.ServicePrincipalable](result, e.msGraphClient().RequestAdapter(), models.CreateServicePrincipalCollectionResponseFromDiscriminatorValue)
 	if pageIteratorErr != nil {
 		return list, pageIteratorErr
 	}
 
-	iterateErr := pageIterator.Iterate(e.ctx, func(pageItem interface{}) bool {
-		servicePrincipal := pageItem.(models.ServicePrincipalable)
-
+	iterateErr := pageIterator.Iterate(e.ctx, func(servicePrincipal models.ServicePrincipalable) bool {
 		obj, serializeErr := e.mgSerializeObject(servicePrincipal)
 		if serializeErr != nil {
 			err = serializeErr

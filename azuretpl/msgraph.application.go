@@ -71,14 +71,12 @@ func (e *AzureTemplateExecutor) mgApplicationList(filter string) (interface{}, e
 }
 
 func (e *AzureTemplateExecutor) mgApplicationCreateListFromResult(result models.ApplicationCollectionResponseable) (list []interface{}, err error) {
-	pageIterator, pageIteratorErr := msgraphcore.NewPageIterator(result, e.msGraphClient().RequestAdapter(), models.CreateApplicationCollectionResponseFromDiscriminatorValue)
+	pageIterator, pageIteratorErr := msgraphcore.NewPageIterator[models.Applicationable](result, e.msGraphClient().RequestAdapter(), models.CreateApplicationCollectionResponseFromDiscriminatorValue)
 	if pageIteratorErr != nil {
 		return list, pageIteratorErr
 	}
 
-	iterateErr := pageIterator.Iterate(e.ctx, func(pageItem interface{}) bool {
-		application := pageItem.(models.Applicationable)
-
+	iterateErr := pageIterator.Iterate(e.ctx, func(application models.Applicationable) bool {
 		obj, serializeErr := e.mgSerializeObject(application)
 		if serializeErr != nil {
 			err = serializeErr

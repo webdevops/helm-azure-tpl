@@ -70,14 +70,12 @@ func (e *AzureTemplateExecutor) mgGroupList(filter string) (interface{}, error) 
 }
 
 func (e *AzureTemplateExecutor) mgGroupCreateListFromResult(result models.GroupCollectionResponseable) (list []interface{}, err error) {
-	pageIterator, pageIteratorErr := msgraphcore.NewPageIterator(result, e.msGraphClient().RequestAdapter(), models.CreateGroupCollectionResponseFromDiscriminatorValue)
+	pageIterator, pageIteratorErr := msgraphcore.NewPageIterator[models.Groupable](result, e.msGraphClient().RequestAdapter(), models.CreateGroupCollectionResponseFromDiscriminatorValue)
 	if pageIteratorErr != nil {
 		return list, pageIteratorErr
 	}
 
-	iterateErr := pageIterator.Iterate(e.ctx, func(pageItem interface{}) bool {
-		group := pageItem.(models.Groupable)
-
+	iterateErr := pageIterator.Iterate(e.ctx, func(group models.Groupable) bool {
 		obj, serializeErr := e.mgSerializeObject(group)
 		if serializeErr != nil {
 			err = serializeErr
