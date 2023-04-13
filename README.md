@@ -151,9 +151,10 @@ response format:
 ```
 
 ### Azure StorageAccount functions
-| Function                          | Parameters                     | Description                                                |
-|-----------------------------------|--------------------------------|------------------------------------------------------------|
-| `azStorageAccountContainerBlob`   | `containerBlobUrl` (string)    | Fetches container blob from Azure StorageAccount as string |
+| Function                         | Parameters                  | Description                                                |
+|----------------------------------|-----------------------------|------------------------------------------------------------|
+| `azStorageAccountAccessKeys`     | `resourceID` (string)       | Fetches access keys from Azure StorageAccount as array     |
+| `azStorageAccountContainerBlob`  | `containerBlobUrl` (string) | Fetches container blob from Azure StorageAccount as string |
 
 ### Azure AppConfig functions
 | Function               | Parameters                                                         | Description                                                                          |
@@ -266,6 +267,12 @@ response format:
    "default2"
    | join ","
 }}
+
+## Fetch first storageaccount key
+{{ (index (azStorageAccountAccessKeys "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx/resourceGroups/example-rg/providers/Microsoft.Storage/storageAccounts/foobar") 0).value }}
+
+## fetch blob from storageaccount container
+{{ azureStorageAccountContainerBlob "https://foobar.blob.core.windows.net/examplecontainer/file.json" }}
 
 ## Fetch secret value from Azure KeyVault (using only name; only AzurePublicCloud, AzureChinaCloud and AzureGovernmentCloud)
 {{ (azKeyVaultSecret "examplevault" "secretname").value }}
