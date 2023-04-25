@@ -4,20 +4,20 @@ go 1.20
 
 require (
 	github.com/Azure/azure-sdk-for-go/sdk/data/azappconfig v0.5.0
-	github.com/Azure/azure-sdk-for-go/sdk/keyvault/azsecrets v0.11.0
 	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/network/armnetwork v1.1.0
-	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resources/armresources v1.1.0
-	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resources/armsubscriptions v1.1.0
+	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resources/armresources v1.1.1
+	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resources/armsubscriptions v1.1.1
 	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/storage/armstorage v1.3.0
+	github.com/Azure/azure-sdk-for-go/sdk/security/keyvault/azsecrets v0.13.0
 	github.com/Azure/azure-sdk-for-go/sdk/storage/azblob v1.0.0
 	github.com/Masterminds/sprig/v3 v3.2.3
 	github.com/PaesslerAG/jsonpath v0.1.1
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/microsoft/kiota-abstractions-go v0.19.1
-	github.com/microsoftgraph/msgraph-sdk-go v0.61.0
-	github.com/microsoftgraph/msgraph-sdk-go-core v0.36.0
+	github.com/microsoftgraph/msgraph-sdk-go v0.64.0
+	github.com/microsoftgraph/msgraph-sdk-go-core v0.36.1
 	github.com/patrickmn/go-cache v2.1.0+incompatible
-	github.com/webdevops/go-common v0.0.0-20230413201724-aba0ef91d354
+	github.com/webdevops/go-common v0.0.0-20230425195838-2b3ad6880230
 	go.uber.org/zap v1.24.0
 	gopkg.in/yaml.v3 v3.0.1
 	helm.sh/helm/v3 v3.11.3
@@ -28,8 +28,8 @@ require (
 	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.5.0 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.3.0-beta.5 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/internal v1.3.0 // indirect
-	github.com/Azure/azure-sdk-for-go/sdk/keyvault/internal v0.7.1 // indirect
-	github.com/AzureAD/microsoft-authentication-library-for-go v0.9.0 // indirect
+	github.com/Azure/azure-sdk-for-go/sdk/security/keyvault/internal v0.8.0 // indirect
+	github.com/AzureAD/microsoft-authentication-library-for-go v1.0.0 // indirect
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver/v3 v3.2.1 // indirect
 	github.com/PaesslerAG/gval v1.2.2 // indirect
@@ -47,10 +47,10 @@ require (
 	github.com/kylelemons/godebug v1.1.0 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
 	github.com/microsoft/kiota-authentication-azure-go v0.6.0 // indirect
-	github.com/microsoft/kiota-http-go v0.16.1 // indirect
+	github.com/microsoft/kiota-http-go v0.16.2 // indirect
 	github.com/microsoft/kiota-serialization-form-go v0.9.1 // indirect
-	github.com/microsoft/kiota-serialization-json-go v0.9.1 // indirect
-	github.com/microsoft/kiota-serialization-text-go v0.7.0 // indirect
+	github.com/microsoft/kiota-serialization-json-go v0.9.2 // indirect
+	github.com/microsoft/kiota-serialization-text-go v0.7.1 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
 	github.com/pkg/browser v0.0.0-20210911075715-681adbf594b8 // indirect
