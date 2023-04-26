@@ -192,6 +192,13 @@ response format:
 | `mgApplicationByDisplayName`      | `displayName` (string) | Fetches one application by displayName                                                                                                                               |
 | `mgApplicationList`               | `filter` (string)      | Fetches list of applications based on [`$filter`](https://docs.microsoft.com/en-us/graph/filter-query-parameter#examples-using-the-filter-query-operator) query      |
 
+## Time template functions
+
+| Function       | Parameters                     | Description                                 |
+|----------------|--------------------------------|---------------------------------------------|
+| `fromUnixtime` | `timestamp` (int/float/string) | Converts unixtimestamp to Time object       |
+| `toRFC3339`    | `time` (time.Time)             | Converts time object to RFC3339 time string |
+
 ## Misc template functions
 
 | Function    | Parameters          | Description                                                                          |
@@ -276,6 +283,7 @@ response format:
 
 ## Fetch secret value from Azure KeyVault (using only name; only AzurePublicCloud, AzureChinaCloud and AzureGovernmentCloud)
 {{ (azKeyVaultSecret "examplevault" "secretname").value }}
+{{ (azKeyVaultSecret "examplevault" "secretname").attributes.exp | fromUnixtime | toRFC3339 }}
 
 ## Fetch secret value from Azure KeyVault (using full url)
 {{ (azKeyVaultSecret "https://examplevault.vault.azure.net/" "secretname").value }}

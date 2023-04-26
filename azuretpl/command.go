@@ -162,6 +162,10 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *template.Template) template.Fun
 		// misc
 		`jsonPath`: e.jsonPath,
 
+		// time
+		`fromUnixtime`: fromUnixtime,
+		`toRFC3339`:    toRFC3339,
+
 		// borrowed from github.com/helm/helm
 		"toYaml":        toYAML,
 		"fromYaml":      fromYAML,
