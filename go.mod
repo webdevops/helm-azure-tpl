@@ -13,7 +13,7 @@ require (
 	github.com/Masterminds/sprig/v3 v3.2.3
 	github.com/PaesslerAG/jsonpath v0.1.1
 	github.com/jessevdk/go-flags v1.5.0
-	github.com/microsoft/kiota-abstractions-go v0.19.1
+	github.com/microsoft/kiota-abstractions-go v0.20.0
 	github.com/microsoftgraph/msgraph-sdk-go v0.64.0
 	github.com/microsoftgraph/msgraph-sdk-go-core v0.36.1
 	github.com/patrickmn/go-cache v2.1.0+incompatible
@@ -47,9 +47,9 @@ require (
 	github.com/kylelemons/godebug v1.1.0 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
 	github.com/microsoft/kiota-authentication-azure-go v0.6.0 // indirect
-	github.com/microsoft/kiota-http-go v0.16.2 // indirect
+	github.com/microsoft/kiota-http-go v0.17.0 // indirect
 	github.com/microsoft/kiota-serialization-form-go v0.9.1 // indirect
-	github.com/microsoft/kiota-serialization-json-go v0.9.2 // indirect
+	github.com/microsoft/kiota-serialization-json-go v0.9.3 // indirect
 	github.com/microsoft/kiota-serialization-text-go v0.7.1 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
