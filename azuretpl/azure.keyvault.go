@@ -80,6 +80,8 @@ func (e *AzureTemplateExecutor) azKeyVaultSecret(vaultUrl string, secretName str
 			return nil, fmt.Errorf(`unable to useAzure KeyVault secret '%v' -> '%v': secret is expired (expires: %v)`, vaultUrl, secretName, secret.Attributes.Expires.Format(time.RFC3339))
 		}
 
+		e.logger.Infof(`using Azure KeyVault secret '%v' -> '%v' (version: %v)`, vaultUrl, secretName, secret.ID.Version())
+
 		return transformToInterface(secret)
 	})
 }
