@@ -149,6 +149,13 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *template.Template) template.Fun
 		// azure app config
 		`azAppConfigSetting`: e.azAppConfigSetting,
 
+		// resourcegraph
+		`azResourceGraphQuery`: e.azResourceGraphQuery,
+
+		// rbac
+		`azRoleDefinition`:     e.azRoleDefinition,
+		`azRoleDefinitionList`: e.azRoleDefinitionList,
+
 		// msGraph
 		`mgUserByUserPrincipalName`:       e.mgUserByUserPrincipalName,
 		`mgUserList`:                      e.mgUserList,
@@ -326,6 +333,7 @@ func (e *AzureTemplateExecutor) cacheResult(cacheKey string, callback func() (in
 	return ret, nil
 }
 
+// fetchAzureResource fetches json representation of Azure resource by resourceID and apiVersion
 func (e *AzureTemplateExecutor) fetchAzureResource(resourceID string, apiVersion string) (interface{}, error) {
 	resourceInfo, err := armclient.ParseResourceId(resourceID)
 	if err != nil {

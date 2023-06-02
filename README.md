@@ -177,9 +177,20 @@ response format:
 
 ```
 
+### Azure RBAC functions
+| Function               | Parameters                                   | Description                                                                                              |
+|------------------------|----------------------------------------------|----------------------------------------------------------------------------------------------------------|
+| `azRoleDefinition`     | `scope` (string), `roleName` (string)        | Fetches Azure RoleDefinition using scope (eg `/subscriptions/xxx`) and roleName                          |
+| `azRoleDefinitionList` | `scope` (string), `filter` (string,optional) | Fetches list of Azure RoleDefinitions using scope (eg `/subscriptions/xxx`) and optional `$filter` query |
+
+### Azure ResourceGraph functions
+| Function               | Parameters                                              | Description                                                                                                   |
+|------------------------|---------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|
+| `azResourceGraphQuery` | `subscriptionID` (string or []string), `query` (string) | Executes Azure ResourceGraph query against selected subscriptions (as string comma separated or string array) |
+
 ### MsGraph (AzureAD) functions
 
-:information_source: Functions can also be used starting with `msGraph` prefix instead of `ms`
+:information_source: Functions can also be used starting with `msGraph` prefix instead of `mg`
 
 | Function                          | Parameters             | Description                                                                                                                                                          |
 |-----------------------------------|------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -296,6 +307,12 @@ response format:
 
 ## Fetch current selected subscription displayName
 {{ azSubscription.displayName }}
+
+## Fetch RoleDefinition id for "owner" role
+{{ (azRoleDefinition "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx" "Owner").name }}
+
+## Executes ResourceGraph query and returns result as yaml
+{{ azResourceGraphQuery "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx"  `resources | where resourceGroup contains "xxxx"` | toYaml }}
 
 ```
 
