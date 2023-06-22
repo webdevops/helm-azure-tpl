@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -16,6 +18,7 @@ func initLogger() *zap.SugaredLogger {
 		config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 	} else {
 		config = zap.NewProductionConfig()
+		config.DisableStacktrace = true
 	}
 
 	config.Encoding = "console"
@@ -33,6 +36,7 @@ func initLogger() *zap.SugaredLogger {
 		config.Level = zap.NewAtomicLevelAt(zapcore.DebugLevel)
 		config.EncoderConfig.TimeKey = "ts"
 		config.EncoderConfig.CallerKey = "caller"
+		config.DisableStacktrace = false
 	}
 
 	// json log format
@@ -41,6 +45,22 @@ func initLogger() *zap.SugaredLogger {
 
 		// if running in containers, logs already enriched with timestamp by the container runtime
 		config.EncoderConfig.TimeKey = ""
+	}
+
+	switch {
+	case os.Getenv("SYSTEM_TEAMFOUNDATIONSERVERURI") != "":
+		// Azure DevOps
+		fallthrough
+	case os.Getenv("GITLAB_CI") != "":
+		// GitLab
+		fallthrough
+	case os.Getenv("JENKINS_URL") != "":
+		// Jenkins
+		fallthrough
+	case os.Getenv("GITHUB_ACTION") != "":
+		// GitHub
+		config.EncoderConfig.TimeKey = ""
+		config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 	}
 
 	// build logger

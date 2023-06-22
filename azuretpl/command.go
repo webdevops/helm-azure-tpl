@@ -18,6 +18,8 @@ import (
 	"github.com/webdevops/go-common/azuresdk/armclient"
 	"github.com/webdevops/go-common/msgraphsdk/msgraphclient"
 	"go.uber.org/zap"
+
+	"github.com/webdevops/helm-azure-tpl/config"
 )
 
 type (
@@ -28,10 +30,14 @@ type (
 		cache    *cache.Cache
 		cacheTtl time.Duration
 
+		opts config.Opts
+
 		UserAgent string
 
 		TemplateRootPath string
 		TemplateRelPath  string
+
+		currentPath string
 
 		LintMode bool
 
@@ -44,10 +50,11 @@ var (
 	msGraphClient *msgraphclient.MsGraphClient
 )
 
-func New(ctx context.Context, logger *zap.SugaredLogger) *AzureTemplateExecutor {
+func New(ctx context.Context, opts config.Opts, logger *zap.SugaredLogger) *AzureTemplateExecutor {
 	e := &AzureTemplateExecutor{
 		ctx:    ctx,
 		logger: logger,
+		opts:   opts,
 
 		cacheTtl: 15 * time.Minute,
 	}
@@ -269,6 +276,8 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *template.Template) template.Fun
 }
 
 func (e *AzureTemplateExecutor) Parse(path string, templateData interface{}, buf *strings.Builder) error {
+	e.currentPath = path
+
 	tmpl := template.New(path).Funcs(sprig.TxtFuncMap())
 	tmpl = tmpl.Funcs(e.TxtFuncMap(tmpl))
 
@@ -280,21 +289,21 @@ func (e *AzureTemplateExecutor) Parse(path string, templateData interface{}, buf
 
 	content, err := os.ReadFile(path)
 	if err != nil {
-		return fmt.Errorf(`unable to read file: '%w'`, err)
+		return e.handleCicdError(fmt.Errorf(`unable to read file: '%w'`, err))
 	}
 
 	parsedContent, err := tmpl.Parse(string(content))
 	if err != nil {
-		return fmt.Errorf(`unable to parse file: %w`, err)
+		return e.handleCicdError(fmt.Errorf(`unable to parse file: %w`, err))
 	}
 
 	oldPwd, err := os.Getwd()
 	if err != nil {
-		return err
+		return e.handleCicdError(err)
 	}
 
 	if err = os.Chdir(e.TemplateRootPath); err != nil {
-		return err
+		return e.handleCicdError(err)
 	}
 
 	if err = parsedContent.Execute(buf, templateData); err != nil {
@@ -302,7 +311,7 @@ func (e *AzureTemplateExecutor) Parse(path string, templateData interface{}, buf
 	}
 
 	if err = os.Chdir(oldPwd); err != nil {
-		return err
+		return e.handleCicdError(err)
 	}
 
 	return nil
@@ -366,4 +375,64 @@ func (e *AzureTemplateExecutor) fetchAzureResource(resourceID string, apiVersion
 	}
 
 	return resourceRawInfo, nil
+}
+
+func (e *AzureTemplateExecutor) handleCicdWarning(err error) error {
+	workflowLogMsg := ""
+
+	// only show first line of error (could be a multi line error message)
+	workflowLogError := strings.SplitN(err.Error(), "\n", 2)[0]
+
+	switch {
+	case os.Getenv("SYSTEM_TEAMFOUNDATIONSERVERURI") != "":
+		// Azure DevOps
+		workflowLogMsg = fmt.Sprintf(`##vso[task.logissue type=warning;sourcepath=%v]%v`, e.currentPath, workflowLogError)
+	case os.Getenv("GITLAB_CI") != "":
+		// GitLab
+		// no error logging available
+	case os.Getenv("JENKINS_URL") != "":
+		// Jenkins
+		// no error logging available
+	case os.Getenv("GITHUB_ACTION") != "":
+		// GitHub
+		workflowLogMsg = fmt.Sprintf(`::warning file=%v,title=helm-azure-tpl::%v`, e.currentPath, workflowLogError)
+	}
+
+	if workflowLogMsg != "" {
+		e.logger.Sync() //nolint:errcheck
+		fmt.Fprintln(os.Stderr, workflowLogMsg)
+		e.logger.Sync() //nolint:errcheck
+	}
+
+	return err
+}
+
+func (e *AzureTemplateExecutor) handleCicdError(err error) error {
+	workflowLogMsg := ""
+
+	// only show first line of error (could be a multi line error message)
+	workflowLogError := strings.SplitN(err.Error(), "\n", 2)[0]
+
+	switch {
+	case os.Getenv("SYSTEM_TEAMFOUNDATIONSERVERURI") != "":
+		// Azure DevOps
+		workflowLogMsg = fmt.Sprintf(`##vso[task.logissue type=error;sourcepath=%v]%v`, e.currentPath, workflowLogError)
+	case os.Getenv("GITLAB_CI") != "":
+		// GitLab
+		// no error logging available
+	case os.Getenv("JENKINS_URL") != "":
+		// Jenkins
+		// no error logging available
+	case os.Getenv("GITHUB_ACTION") != "":
+		// GitHub
+		workflowLogMsg = fmt.Sprintf(`::error file=%v,title=helm-azure-tpl::%v`, e.currentPath, workflowLogError)
+	}
+
+	if workflowLogMsg != "" {
+		e.logger.Sync() //nolint:errcheck
+		fmt.Fprintln(os.Stderr, workflowLogMsg)
+		e.logger.Sync() //nolint:errcheck
+	}
+
+	return err
 }

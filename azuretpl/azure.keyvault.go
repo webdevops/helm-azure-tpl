@@ -76,8 +76,28 @@ func (e *AzureTemplateExecutor) azKeyVaultSecret(vaultUrl string, secretName str
 			return nil, fmt.Errorf(`unable to use Azure KeyVault secret '%v' -> '%v': secret is not yet active (notBefore: %v)`, vaultUrl, secretName, secret.Attributes.NotBefore.Format(time.RFC3339))
 		}
 
-		if secret.Attributes.Expires != nil && time.Now().After(*secret.Attributes.Expires) {
-			return nil, fmt.Errorf(`unable to useAzure KeyVault secret '%v' -> '%v': secret is expired (expires: %v)`, vaultUrl, secretName, secret.Attributes.Expires.Format(time.RFC3339))
+		if secret.Attributes.Expires != nil {
+			// secret has expiry date, let's check it
+
+			if time.Now().After(*secret.Attributes.Expires) {
+				// secret is expired
+				if !e.opts.Keyvault.IgnoreExpiry {
+					return nil, fmt.Errorf(`unable to use Azure KeyVault secret '%v' -> '%v': secret is expired (expires: %v, set env AZURETPL_KEYVAULT_EXPIRY_IGNORE=1 to ignore)`, vaultUrl, secretName, secret.Attributes.Expires.Format(time.RFC3339))
+				} else {
+					e.logger.Warnln(
+						e.handleCicdWarning(
+							fmt.Errorf(`Azure KeyVault secret '%v' -> '%v': secret is expired, but env AZURETPL_KEYVAULT_EXPIRY_IGNORE=1 is active (expires: %v)`, vaultUrl, secretName, secret.Attributes.Expires.Format(time.RFC3339)),
+						),
+					)
+				}
+			} else if time.Now().Add(e.opts.Keyvault.ExpiryWarning).After(*secret.Attributes.Expires) {
+				// secret is expiring soon
+				e.logger.Warnln(
+					e.handleCicdWarning(
+						fmt.Errorf(`Azure KeyVault secret '%v' -> '%v': secret is expiring soon (expires: %v)`, vaultUrl, secretName, secret.Attributes.Expires.Format(time.RFC3339)),
+					),
+				)
+			}
 		}
 
 		e.logger.Infof(`using Azure KeyVault secret '%v' -> '%v' (version: %v)`, vaultUrl, secretName, secret.ID.Version())
