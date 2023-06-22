@@ -132,7 +132,7 @@ func (e *AzureTemplateExecutor) azKeyVaultSecretList(vaultUrl string, secretName
 			return nil, fmt.Errorf(`failed to create keyvault client for vault "%v": %w`, vaultUrl, err)
 		}
 
-		pager := secretClient.NewListSecretsPager(nil)
+		pager := secretClient.NewListSecretPropertiesPager(nil)
 
 		ret := map[string]interface{}{}
 		for pager.More() {
