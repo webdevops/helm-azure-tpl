@@ -8,6 +8,7 @@ import (
 
 	"github.com/Azure/azure-sdk-for-go/sdk/security/keyvault/azsecrets"
 	"github.com/webdevops/go-common/azuresdk/cloudconfig"
+	"github.com/webdevops/go-common/utils/to"
 )
 
 // buildAzKeyVaulUrl builds Azure KeyVault url in case value is supplied as KeyVault name only
@@ -101,6 +102,7 @@ func (e *AzureTemplateExecutor) azKeyVaultSecret(vaultUrl string, secretName str
 		}
 
 		e.logger.Infof(`using Azure KeyVault secret '%v' -> '%v' (version: %v)`, vaultUrl, secretName, secret.ID.Version())
+		e.handleCicdMaskSecret(to.String(secret.Secret.Value))
 
 		return transformToInterface(secret)
 	})
