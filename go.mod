@@ -14,11 +14,11 @@ require (
 	github.com/Masterminds/sprig/v3 v3.2.3
 	github.com/PaesslerAG/jsonpath v0.1.1
 	github.com/jessevdk/go-flags v1.5.0
-	github.com/microsoft/kiota-abstractions-go v1.0.0
-	github.com/microsoftgraph/msgraph-sdk-go v1.8.0
+	github.com/microsoft/kiota-abstractions-go v1.1.0
+	github.com/microsoftgraph/msgraph-sdk-go v1.9.0
 	github.com/microsoftgraph/msgraph-sdk-go-core v1.0.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible
-	github.com/webdevops/go-common v0.0.0-20230612205735-2ee45347be15
+	github.com/webdevops/go-common v0.0.0-20230701235635-87b94f6f61c3
 	go.uber.org/zap v1.24.0
 	gopkg.in/yaml.v3 v3.0.1
 	helm.sh/helm/v3 v3.12.1
@@ -51,7 +51,7 @@ require (
 	github.com/microsoft/kiota-authentication-azure-go v1.0.0 // indirect
 	github.com/microsoft/kiota-http-go v1.0.0 // indirect
 	github.com/microsoft/kiota-serialization-form-go v1.0.0 // indirect
-	github.com/microsoft/kiota-serialization-json-go v1.0.2 // indirect
+	github.com/microsoft/kiota-serialization-json-go v1.0.3 // indirect
 	github.com/microsoft/kiota-serialization-text-go v1.0.0 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
@@ -76,6 +76,6 @@ require (
 	golang.org/x/net v0.11.0 // indirect
 	golang.org/x/sys v0.9.0 // indirect
 	golang.org/x/text v0.10.0 // indirect
-	google.golang.org/protobuf v1.30.0 // indirect
+	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
