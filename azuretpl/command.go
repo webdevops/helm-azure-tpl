@@ -149,6 +149,9 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *template.Template) template.Fun
 		`azKeyVaultSecret`:     e.azKeyVaultSecret,
 		`azKeyVaultSecretList`: e.azKeyVaultSecretList,
 
+		// azure redis
+		`azRedisAccessKeys`: e.azRedisAccessKeys,
+
 		// azure storageAccount
 		`azStorageAccountAccessKeys`:    e.azStorageAccountAccessKeys,
 		`azStorageAccountContainerBlob`: e.azStorageAccountContainerBlob,

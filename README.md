@@ -150,6 +150,11 @@ response format:
 }
 ```
 
+### Azure Redis cache functions
+| Function                        | Parameters                  | Description                                         |
+|---------------------------------|-----------------------------|-----------------------------------------------------|
+| `azRedisAccessKeys`             | `resourceID` (string)       | Fetches access keys from Azure Redis Cache as array |
+
 ### Azure StorageAccount functions
 | Function                         | Parameters                  | Description                                                |
 |----------------------------------|-----------------------------|------------------------------------------------------------|
