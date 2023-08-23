@@ -146,8 +146,9 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *template.Template) template.Fun
 		`azAccountInfo`:                         e.azAccountInfo,
 
 		// azure keyvault
-		`azKeyVaultSecret`:     e.azKeyVaultSecret,
-		`azKeyVaultSecretList`: e.azKeyVaultSecretList,
+		`azKeyVaultSecret`:         e.azKeyVaultSecret,
+		`azKeyVaultSecretVersions`: e.azKeyVaultSecretVersions,
+		`azKeyVaultSecretList`:     e.azKeyVaultSecretList,
 
 		// azure redis
 		`azRedisAccessKeys`: e.azRedisAccessKeys,

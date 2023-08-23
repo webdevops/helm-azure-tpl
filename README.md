@@ -126,10 +126,11 @@ Arguments:
 | `azVirtualNetworkSubnetAddressPrefixes` | `resourceID` (string), `subnetName` (string)  | Fetches address prefix (string array) from Azure VirtualNetwork subnet                                                                                                                                                                  |
 
 ### Azure Keyvault functions
-| Function               | Parameters                                                               | Description                                                                                                                           |
-|------------------------|--------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
-| `azKeyVaultSecret`     | `vaultUrl` (string), `secretName` (string), `version` (string, optional) | Fetches secret object from Azure KeyVault                                                                                             |
-| `azKeyVaultSecretList` | `vaultUrl` (string), `secretNamePattern` (string, regexp)                | Fetche the list of secret objects (without secret value) from Azure KeyVault and filters list by regular expression secretNamePattern |
+| Function                   | Parameters                                                               | Description                                                                                                                           |
+|----------------------------|--------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
+| `azKeyVaultSecret`         | `vaultUrl` (string), `secretName` (string), `version` (string, optional) | Fetches secret object from Azure KeyVault                                                                                             |
+| `azKeyVaultSecretVersions` | `vaultUrl` (string), `secretName` (string), `count` (integer)            | Fetches the list of `count` secret versions (as array, excluding disabled secrets) from Azure KeyVault                                |
+| `azKeyVaultSecretList`     | `vaultUrl` (string), `secretNamePattern` (string, regexp)                | Fetche the list of secret objects (without secret value) from Azure KeyVault and filters list by regular expression secretNamePattern |
 
 response format:
 ```json

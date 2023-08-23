@@ -3,6 +3,8 @@ package azuretpl
 import (
 	"fmt"
 	"regexp"
+	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -105,6 +107,69 @@ func (e *AzureTemplateExecutor) azKeyVaultSecret(vaultUrl string, secretName str
 		e.handleCicdMaskSecret(to.String(secret.Secret.Value))
 
 		return transformToInterface(secret)
+	})
+}
+
+// azKeyVaultSecretVersions fetches older versions of one secret from Azure KeyVault
+func (e *AzureTemplateExecutor) azKeyVaultSecretVersions(vaultUrl string, secretName string, count int) (interface{}, error) {
+	// azure keyvault url detection
+	if val, err := e.buildAzKeyVaulUrl(vaultUrl); err == nil {
+		vaultUrl = val
+	} else {
+		return nil, err
+	}
+
+	e.logger.Infof(`fetching Azure KeyVault secret history '%v' -> '%v' with %d versions`, vaultUrl, secretName, count)
+
+	if val, enabled := e.lintResult(); enabled {
+		return val, nil
+	}
+	cacheKey := generateCacheKey(`azKeyVaultSecretHistory`, vaultUrl, secretName, strconv.Itoa(count))
+	return e.cacheResult(cacheKey, func() (interface{}, error) {
+		secretClient, err := azsecrets.NewClient(vaultUrl, e.azureClient().GetCred(), nil)
+		if err != nil {
+			return nil, fmt.Errorf(`failed to create keyvault client for vault "%v": %w`, vaultUrl, err)
+		}
+
+		pager := secretClient.NewListSecretPropertiesVersionsPager(secretName, nil)
+
+		ret := []interface{}{}
+		for pager.More() {
+			result, err := pager.NextPage(e.ctx)
+			if err != nil {
+				e.logger.Panic(err)
+			}
+
+			// sort results
+			sort.Slice(result.Value, func(i, j int) bool {
+				return result.Value[i].Attributes.Created.UTC().After(result.Value[j].Attributes.Created.UTC())
+			})
+
+			for _, secretVersion := range result.Value {
+				if count >= 0 && len(ret) >= count {
+					break
+				}
+
+				secret, err := secretClient.GetSecret(e.ctx, secretVersion.ID.Name(), secretVersion.ID.Version(), nil)
+				if err != nil {
+					return nil, fmt.Errorf(`unable to fetch secret "%[2]v" with version "%[3]v" from vault "%[1]v": %[4]w`, vaultUrl, secretVersion.ID.Name(), secretVersion.ID.Version(), err)
+				}
+
+				if !*secret.Attributes.Enabled {
+					continue
+				}
+
+				e.handleCicdMaskSecret(to.String(secret.Secret.Value))
+
+				if val, err := transformToInterface(secret); err == nil {
+					ret = append(ret, val)
+				} else {
+					return nil, err
+				}
+			}
+		}
+
+		return ret, nil
 	})
 }
 
