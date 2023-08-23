@@ -133,39 +133,50 @@ func (e *AzureTemplateExecutor) azKeyVaultSecretVersions(vaultUrl string, secret
 
 		pager := secretClient.NewListSecretPropertiesVersionsPager(secretName, nil)
 
-		ret := []interface{}{}
+		// get secrets first
+		secretList := []*azsecrets.SecretProperties{}
 		for pager.More() {
 			result, err := pager.NextPage(e.ctx)
 			if err != nil {
 				e.logger.Panic(err)
 			}
 
-			// sort results
-			sort.Slice(result.Value, func(i, j int) bool {
-				return result.Value[i].Attributes.Created.UTC().After(result.Value[j].Attributes.Created.UTC())
-			})
-
 			for _, secretVersion := range result.Value {
-				if count >= 0 && len(ret) >= count {
-					break
-				}
-
-				secret, err := secretClient.GetSecret(e.ctx, secretVersion.ID.Name(), secretVersion.ID.Version(), nil)
-				if err != nil {
-					return nil, fmt.Errorf(`unable to fetch secret "%[2]v" with version "%[3]v" from vault "%[1]v": %[4]w`, vaultUrl, secretVersion.ID.Name(), secretVersion.ID.Version(), err)
-				}
-
-				if !*secret.Attributes.Enabled {
+				if !*secretVersion.Attributes.Enabled {
 					continue
 				}
 
-				e.handleCicdMaskSecret(to.String(secret.Secret.Value))
+				secretList = append(secretList, secretVersion)
+			}
 
-				if val, err := transformToInterface(secret); err == nil {
-					ret = append(ret, val)
-				} else {
-					return nil, err
-				}
+			if count >= 0 && len(secretList) >= count {
+				break
+			}
+		}
+
+		// sort results
+		sort.Slice(secretList, func(i, j int) bool {
+			return secretList[i].Attributes.Created.UTC().After(secretList[j].Attributes.Created.UTC())
+		})
+
+		// process list
+		ret := []interface{}{}
+		for _, secretVersion := range secretList {
+			secret, err := secretClient.GetSecret(e.ctx, secretVersion.ID.Name(), secretVersion.ID.Version(), nil)
+			if err != nil {
+				return nil, fmt.Errorf(`unable to fetch secret "%[2]v" with version "%[3]v" from vault "%[1]v": %[4]w`, vaultUrl, secretVersion.ID.Name(), secretVersion.ID.Version(), err)
+			}
+
+			e.handleCicdMaskSecret(to.String(secret.Secret.Value))
+
+			if val, err := transformToInterface(secret); err == nil {
+				ret = append(ret, val)
+			} else {
+				return nil, err
+			}
+
+			if count >= 0 && len(ret) >= count {
+				break
 			}
 		}
 
