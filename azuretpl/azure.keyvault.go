@@ -219,9 +219,6 @@ func (e *AzureTemplateExecutor) azKeyVaultSecretVersions(vaultUrl string, secret
 
 			e.handleCicdMaskSecret(to.String(secret.Secret.Value))
 
-			foo := newAzKeyvaultSecretItem(secret.Secret)
-			fmt.Println(transformToInterface(foo))
-
 			if val, err := transformToInterface(newAzKeyvaultSecretItem(secret.Secret)); err == nil {
 				ret = append(ret, val)
 			} else {
