@@ -146,8 +146,11 @@ response format:
   },
   "contentType": "...",
   "id": "https://xxx.vault.azure.net/secrets/xxx/xxxxxxxxxx",
+  "managed": false,
+  "name": "xxx",
   "tags": {},
-  "value": "..."
+  "value": "...",
+  "version": "xxxxxxxxxx"
 }
 ```
 

@@ -13,6 +13,56 @@ import (
 	"github.com/webdevops/go-common/utils/to"
 )
 
+type (
+	AzKeyvaultSecretItem struct {
+		// The secret management attributes.
+		Attributes *azsecrets.SecretAttributes `json:"attributes"`
+
+		// The content type of the secret.
+		ContentType *string `json:"contentType"`
+
+		// The secret id.
+		ID string `json:"id"`
+
+		// Application specific metadata in the form of key-value pairs.
+		Tags map[string]*string `json:"tags"`
+
+		// The secret value.
+		Value *string `json:"value"`
+
+		Managed bool `json:"managed"`
+
+		Version string `json:"version" yaml:"version"`
+		Name    string `json:"name" yaml:"name"`
+	}
+)
+
+func newAzKeyvaultSecretItem(secret azsecrets.Secret) *AzKeyvaultSecretItem {
+	return &AzKeyvaultSecretItem{
+		Attributes:  secret.Attributes,
+		ContentType: secret.ContentType,
+		ID:          string(*secret.ID),
+		Tags:        secret.Tags,
+		Value:       secret.Value,
+		Managed:     to.Bool(secret.Managed),
+		Version:     secret.ID.Version(),
+		Name:        secret.ID.Name(),
+	}
+}
+
+func newAzKeyvaultSecretListItem(secret azsecrets.SecretProperties) *AzKeyvaultSecretItem {
+	return &AzKeyvaultSecretItem{
+		Attributes:  secret.Attributes,
+		ContentType: secret.ContentType,
+		ID:          string(*secret.ID),
+		Tags:        secret.Tags,
+		Value:       nil,
+		Managed:     to.Bool(secret.Managed),
+		Version:     secret.ID.Version(),
+		Name:        secret.ID.Name(),
+	}
+}
+
 // buildAzKeyVaulUrl builds Azure KeyVault url in case value is supplied as KeyVault name only
 func (e *AzureTemplateExecutor) buildAzKeyVaulUrl(vaultUrl string) (string, error) {
 	// do not build keyvault url in lint mode
@@ -106,7 +156,7 @@ func (e *AzureTemplateExecutor) azKeyVaultSecret(vaultUrl string, secretName str
 		e.logger.Infof(`using Azure KeyVault secret '%v' -> '%v' (version: %v)`, vaultUrl, secretName, secret.ID.Version())
 		e.handleCicdMaskSecret(to.String(secret.Secret.Value))
 
-		return transformToInterface(secret)
+		return transformToInterface(newAzKeyvaultSecretItem(secret.Secret))
 	})
 }
 
@@ -169,7 +219,10 @@ func (e *AzureTemplateExecutor) azKeyVaultSecretVersions(vaultUrl string, secret
 
 			e.handleCicdMaskSecret(to.String(secret.Secret.Value))
 
-			if val, err := transformToInterface(secret); err == nil {
+			foo := newAzKeyvaultSecretItem(secret.Secret)
+			fmt.Println(transformToInterface(foo))
+
+			if val, err := transformToInterface(newAzKeyvaultSecretItem(secret.Secret)); err == nil {
 				ret = append(ret, val)
 			} else {
 				return nil, err
@@ -220,7 +273,7 @@ func (e *AzureTemplateExecutor) azKeyVaultSecretList(vaultUrl string, secretName
 			}
 
 			for _, secret := range result.Value {
-				secretData, err := transformToInterface(secret)
+				secretData, err := transformToInterface(newAzKeyvaultSecretListItem(*secret))
 				if err != nil {
 					return nil, fmt.Errorf(`unable to transform KeyVault secret '%v': %w`, secret.ID.Name(), err)
 				}
