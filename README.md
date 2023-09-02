@@ -173,15 +173,15 @@ response format:
 response format:
 ```json
 {
-  "ContentType": "...",
-  "ETag": "...",
-  "IsReadOnly": false,
-  "Key":" ...",
-  "Label": null,
-  "LastModified": null,
-  "SyncToken": "...",
-  "Tags": {},
-  "Value": "..."
+  "contentType": "...",
+  "eTag": "...",
+  "isReadOnly": false,
+  "key":" ...",
+  "label": null,
+  "lastModified": null,
+  "syncToken": "...",
+  "tags": {},
+  "value": "..."
 }
 
 ```

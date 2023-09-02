@@ -10,6 +10,8 @@ import (
 	"github.com/Azure/azure-sdk-for-go/sdk/data/azappconfig"
 	"github.com/webdevops/go-common/azuresdk/cloudconfig"
 	"github.com/webdevops/go-common/utils/to"
+
+	"github.com/webdevops/helm-azure-tpl/azuretpl/models"
 )
 
 // buildAppConfigUrl builds Azure AppConfig url in case value is supplied as AppConfig name only
@@ -108,6 +110,6 @@ func (e *AzureTemplateExecutor) azAppConfigSetting(appConfigUrl string, settingN
 			appConfigValue.Value = to.StringPtr(secretMap["value"].(string))
 		}
 
-		return transformToInterface(appConfigValue)
+		return transformToInterface(models.NewAzAppconfigSettingFromReponse(appConfigValue))
 	})
 }
