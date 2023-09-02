@@ -9,7 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"text/template"
+	textTemplate "text/template"
 	"time"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resources/armresources"
@@ -130,7 +130,7 @@ func (e *AzureTemplateExecutor) SetLintMode(val bool) {
 	e.LintMode = val
 }
 
-func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *template.Template) template.FuncMap {
+func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *textTemplate.Template) textTemplate.FuncMap {
 	includedNames := make(map[string]int)
 
 	funcMap := map[string]interface{}{
@@ -279,10 +279,8 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *template.Template) template.Fun
 	return funcMap
 }
 
-func (e *AzureTemplateExecutor) Parse(path string, templateData interface{}, buf *strings.Builder) error {
-	e.currentPath = path
-
-	tmpl := template.New(path).Funcs(sprig.TxtFuncMap())
+func (e *AzureTemplateExecutor) TxtTemplate(name string) *textTemplate.Template {
+	tmpl := textTemplate.New(name).Funcs(sprig.TxtFuncMap())
 	tmpl = tmpl.Funcs(e.TxtFuncMap(tmpl))
 
 	if !e.LintMode {
@@ -290,6 +288,14 @@ func (e *AzureTemplateExecutor) Parse(path string, templateData interface{}, buf
 	} else {
 		tmpl.Option("missingkey=zero")
 	}
+
+	return tmpl
+}
+
+func (e *AzureTemplateExecutor) Parse(path string, templateData interface{}, buf *strings.Builder) error {
+	e.currentPath = path
+
+	tmpl := e.TxtTemplate(path)
 
 	content, err := os.ReadFile(path)
 	if err != nil {
