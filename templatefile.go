@@ -60,9 +60,8 @@ func (f *TemplateFile) parse(buf *strings.Builder) {
 	ctx := f.Context
 	contextLogger := f.Logger
 
-	azureTemplate := azuretpl.New(ctx, opts, contextLogger)
+	azureTemplate := azuretpl.New(ctx, opts.AzureTpl, contextLogger)
 	azureTemplate.SetUserAgent(UserAgent + gitTag)
-	azureTemplate.SetAzureCliAccountInfo(azAccountInfo)
 	azureTemplate.SetLintMode(lintMode)
 	azureTemplate.SetTemplateRootPath(f.TemplateBaseDir)
 	azureTemplate.SetTemplateRelPath(filepath.Dir(f.SourceFile))

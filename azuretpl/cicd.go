@@ -15,11 +15,6 @@ var (
 func (e *AzureTemplateExecutor) handleCicdMaskSecret(val string) {
 	workflowLogMsgList := []string{}
 
-	if !e.opts.Debug && !e.opts.Stdout {
-		// no mask hiding needed
-		return
-	}
-
 	// only show first line of error (could be a multi line error message)
 	val = strings.SplitN(val, "\n", 2)[0]
 

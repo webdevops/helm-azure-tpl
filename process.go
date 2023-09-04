@@ -96,7 +96,7 @@ func printAppHeader() {
 // Apache License, Version 2.0
 func readValuesFiles() error {
 	templateData.Values = map[string]interface{}{}
-	for _, filePath := range opts.ValuesFiles {
+	for _, filePath := range opts.AzureTpl.ValuesFiles {
 		currentMap := map[string]interface{}{}
 
 		contextLogger := logger.With(zap.String(`valuesPath`, filePath))
@@ -115,28 +115,28 @@ func readValuesFiles() error {
 	}
 
 	// User specified a value via --set-json
-	for _, value := range opts.JSONValues {
+	for _, value := range opts.AzureTpl.JSONValues {
 		if err := strvals.ParseJSON(value, templateData.Values); err != nil {
 			return fmt.Errorf(`failed parsing --set-json data %s`, value)
 		}
 	}
 
 	// User specified a value via --set
-	for _, value := range opts.Values {
+	for _, value := range opts.AzureTpl.Values {
 		if err := strvals.ParseInto(value, templateData.Values); err != nil {
 			return fmt.Errorf(`failed parsing --set data: %w`, err)
 		}
 	}
 
 	// User specified a value via --set-string
-	for _, value := range opts.StringValues {
+	for _, value := range opts.AzureTpl.StringValues {
 		if err := strvals.ParseIntoString(value, templateData.Values); err != nil {
 			return fmt.Errorf(`failed parsing --set-string data: %w`, err)
 		}
 	}
 
 	// User specified a value via --set-file
-	for _, value := range opts.FileValues {
+	for _, value := range opts.AzureTpl.FileValues {
 		reader := func(rs []rune) (interface{}, error) {
 			bytes, err := os.ReadFile(string(rs))
 			if err != nil {
