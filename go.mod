@@ -3,6 +3,7 @@ module github.com/webdevops/helm-azure-tpl
 go 1.21
 
 require (
+	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.8.0-beta.2
 	github.com/Azure/azure-sdk-for-go/sdk/data/azappconfig v0.5.0
 	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/authorization/armauthorization/v2 v2.1.1
 	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/network/armnetwork v1.1.0
@@ -16,10 +17,10 @@ require (
 	github.com/PaesslerAG/jsonpath v0.1.1
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/microsoft/kiota-abstractions-go v1.2.0
-	github.com/microsoftgraph/msgraph-sdk-go v1.16.0
+	github.com/microsoftgraph/msgraph-sdk-go v1.17.0
 	github.com/microsoftgraph/msgraph-sdk-go-core v1.0.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible
-	github.com/webdevops/go-common v0.0.0-20230820114003-bb41fb73f341
+	github.com/webdevops/go-common v0.0.0-20230904210511-501ff6faf39b
 	go.uber.org/zap v1.25.0
 	gopkg.in/yaml.v3 v3.0.1
 	helm.sh/helm/v3 v3.12.3
@@ -27,12 +28,11 @@ require (
 )
 
 require (
-	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.8.0-beta.2 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.3.1 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/internal v1.3.0 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resourcegraph/armresourcegraph v0.8.1 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/security/keyvault/internal v1.0.0 // indirect
-	github.com/AzureAD/microsoft-authentication-library-for-go v1.1.1 // indirect
+	github.com/AzureAD/microsoft-authentication-library-for-go v1.2.0 // indirect
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver/v3 v3.2.1 // indirect
 	github.com/PaesslerAG/gval v1.2.2 // indirect
@@ -69,14 +69,17 @@ require (
 	github.com/spf13/cast v1.5.1 // indirect
 	github.com/stretchr/testify v1.8.4 // indirect
 	github.com/yosida95/uritemplate/v3 v3.0.2 // indirect
-	go.opentelemetry.io/otel v1.16.0 // indirect
-	go.opentelemetry.io/otel/metric v1.16.0 // indirect
-	go.opentelemetry.io/otel/trace v1.16.0 // indirect
+	go.opentelemetry.io/otel v1.17.0 // indirect
+	go.opentelemetry.io/otel/metric v1.17.0 // indirect
+	go.opentelemetry.io/otel/trace v1.17.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/crypto v0.12.0 // indirect
 	golang.org/x/net v0.14.0 // indirect
-	golang.org/x/sys v0.11.0 // indirect
-	golang.org/x/text v0.12.0 // indirect
+	golang.org/x/sys v0.12.0 // indirect
+	golang.org/x/text v0.13.0 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
+	k8s.io/apimachinery v0.28.1 // indirect
+	k8s.io/klog/v2 v2.100.1 // indirect
+	k8s.io/utils v0.0.0-20230726121419-3b25d923346b // indirect
 )
