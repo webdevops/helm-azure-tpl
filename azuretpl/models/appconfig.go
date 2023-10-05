@@ -59,6 +59,6 @@ func NewAzAppconfigSetting(setting azappconfig.Setting) *AzAppconfigSetting {
 
 func NewAzAppconfigSettingFromReponse(setting azappconfig.GetSettingResponse) *AzAppconfigSetting {
 	ret := NewAzAppconfigSetting(setting.Setting)
-	ret.SyncToken = setting.SyncToken
+	ret.SyncToken = to.StringPtr(string(setting.SyncToken))
 	return ret
 }
