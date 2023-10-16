@@ -3,8 +3,8 @@ module github.com/webdevops/helm-azure-tpl
 go 1.21
 
 require (
-	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.8.0-beta.3
-	github.com/Azure/azure-sdk-for-go/sdk/data/azappconfig v0.6.0
+	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.8.0
+	github.com/Azure/azure-sdk-for-go/sdk/data/azappconfig v1.0.0
 	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/authorization/armauthorization/v2 v2.1.1
 	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/network/armnetwork v1.1.0
 	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/redis/armredis v1.0.0
@@ -28,7 +28,7 @@ require (
 )
 
 require (
-	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.3.1 // indirect
+	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.4.0 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/internal v1.3.0 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resourcegraph/armresourcegraph v0.8.1 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/security/keyvault/internal v1.0.0 // indirect
