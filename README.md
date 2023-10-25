@@ -154,6 +154,11 @@ response format:
 }
 ```
 
+### Azure ManagedCluster functions
+| Function                          | Parameters              | Description                                    |
+|-----------------------------------|-------------------------|------------------------------------------------|
+| `azManagedClusterUserCredentials` | `resourceID` (string)   | Fetches managedCluster user credentials object |
+
 ### Azure Redis cache functions
 | Function                        | Parameters                  | Description                                         |
 |---------------------------------|-----------------------------|-----------------------------------------------------|
@@ -322,6 +327,10 @@ response format:
 
 ## Executes ResourceGraph query and returns result as yaml
 {{ azResourceGraphQuery "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx"  `resources | where resourceGroup contains "xxxx"` | toYaml }}
+
+## Fetch kubeconfig from AKS managed cluster
+{{ (index (azManagedClusterUserCredentials "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx/resourcegroups/example-rg/providers/Microsoft.ContainerService/managedClusters/foobar").kubeconfigs 0).value | b64dec }}
+
 
 ```
 

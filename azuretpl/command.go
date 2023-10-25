@@ -167,6 +167,9 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *textTemplate.Template) textTemp
 		// azure app config
 		`azAppConfigSetting`: e.azAppConfigSetting,
 
+		// azure managedCluster
+		`azManagedClusterUserCredentials`: e.azManagedClusterUserCredentials,
+
 		// resourcegraph
 		`azResourceGraphQuery`: e.azResourceGraphQuery,
 
