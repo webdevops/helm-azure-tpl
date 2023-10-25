@@ -1,8 +1,11 @@
 name: build/docker
 
 on:
-  workflow_call: {}
-
+  workflow_call:
+    inputs:
+      publish:
+        required: true
+        type: boolean
 
 jobs:
   lint:
@@ -60,24 +63,26 @@ jobs:
 
       - name: Login to DockerHub
         uses: docker/login-action@v3
+        if: ${{ inputs.publish }}
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Login to Quay
         uses: docker/login-action@v3
+        if: ${{ inputs.publish }}
         with:
           registry: quay.io
           username: ${{ secrets.QUAY_USERNAME }}
           password: ${{ secrets.QUAY_TOKEN }}
 
-      - name: Build and push
+      - name: ${{ inputs.publish && 'Build and push' || 'Build' }}
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./${{ matrix.Dockerfile }}
           target: ${{ matrix.target }}
           platforms: linux/amd64,linux/arm64
-          push: ${{ github.event_name != 'pull_request' }}
+          push: ${{ inputs.publish }}
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}

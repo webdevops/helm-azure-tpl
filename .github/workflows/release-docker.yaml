@@ -13,4 +13,5 @@ jobs:
   release:
     uses: ./.github/workflows/build-docker.yaml
     secrets: inherit
-
+    with:
+      publish: ${{ github.event_name != 'pull_request' }}
