@@ -2,7 +2,7 @@ name: "schedule/docker"
 
 on:
   schedule:
-    - cron: '0 7 * * 45'
+    - cron: '45 6 * * 1'
 
 jobs:
   schedule:
