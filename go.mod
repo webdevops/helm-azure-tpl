@@ -17,7 +17,7 @@ require (
 	github.com/Masterminds/sprig/v3 v3.2.3
 	github.com/PaesslerAG/jsonpath v0.1.1
 	github.com/jessevdk/go-flags v1.5.0
-	github.com/microsoft/kiota-abstractions-go v1.3.0
+	github.com/microsoft/kiota-abstractions-go v1.5.0
 	github.com/microsoftgraph/msgraph-sdk-go v1.23.0
 	github.com/microsoftgraph/msgraph-sdk-go-core v1.0.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible
@@ -44,7 +44,7 @@ require (
 	github.com/go-logr/logr v1.2.4 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/golang-jwt/jwt/v5 v5.0.0 // indirect
-	github.com/google/uuid v1.3.1 // indirect
+	github.com/google/uuid v1.4.0 // indirect
 	github.com/huandu/xstrings v1.4.0 // indirect
 	github.com/imdario/mergo v0.3.16 // indirect
 	github.com/kylelemons/godebug v1.1.0 // indirect

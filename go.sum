@@ -73,8 +73,8 @@ github.com/google/go-cmp v0.5.5/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/
 github.com/google/go-cmp v0.5.9 h1:O2Tfq5qg4qc4AmwVlvv0oLiVAGB7enBSJ2x2DqQFi38=
 github.com/google/go-cmp v0.5.9/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
 github.com/google/uuid v1.1.1/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
-github.com/google/uuid v1.3.1 h1:KjJaJ9iWZ3jOFZIf1Lqf4laDRCasjl0BCmnEGxkdLb4=
-github.com/google/uuid v1.3.1/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
+github.com/google/uuid v1.4.0 h1:MtMxsa51/r9yyhkyLsVeVt0B+BGQZzpQiTQ4eHZ8bc4=
+github.com/google/uuid v1.4.0/go.mod h1:TIyPZe4MgqvfeYDBFedMoGGpEw/LqOeaOT+nhxU+yHo=
 github.com/huandu/xstrings v1.3.3/go.mod h1:y5/lhBue+AyNmUVz9RLU9xbLR0o4KIIExikq4ovT0aE=
 github.com/huandu/xstrings v1.4.0 h1:D17IlohoQq4UcpqD7fDk80P7l+lwAmlFaBHgOipl2FU=
 github.com/huandu/xstrings v1.4.0/go.mod h1:y5/lhBue+AyNmUVz9RLU9xbLR0o4KIIExikq4ovT0aE=
@@ -91,8 +91,8 @@ github.com/kylelemons/godebug v1.1.0 h1:RPNrshWIDI6G2gRW9EHilWtl7Z6Sb1BR0xunSBf0
 github.com/kylelemons/godebug v1.1.0/go.mod h1:9/0rRGxNHcop5bhtWyNeEfOS8JIWk580+fNqagV/RAw=
 github.com/matttproud/golang_protobuf_extensions/v2 v2.0.0 h1:jWpvCLoY8Z/e3VKvlsiIGKtc+UG6U5vzxaoagmhXfyg=
 github.com/matttproud/golang_protobuf_extensions/v2 v2.0.0/go.mod h1:QUyp042oQthUoa9bqDv0ER0wrtXnBruoNd7aNjkbP+k=
-github.com/microsoft/kiota-abstractions-go v1.3.0 h1:mZTAg+Lf43+hoqTYWT53F/Dg+f0bqtHULnTI/GyiXn8=
-github.com/microsoft/kiota-abstractions-go v1.3.0/go.mod h1:yPSuzNSOIVQSFFe1iT+3Lu5zmis22E8Wg+bkyjhd+pY=
+github.com/microsoft/kiota-abstractions-go v1.5.0 h1:CD36eKsJ6NZLLu6LS5UqDPApIkrZEq2L7E0Uw/CTKzc=
+github.com/microsoft/kiota-abstractions-go v1.5.0/go.mod h1:NRJnAFg8qqOoX/VQWTe3ZYmcIbLa20LNC+eTqO2j60U=
 github.com/microsoft/kiota-authentication-azure-go v1.0.1 h1:F4HH+2QQHSecQg50gVEZaUcxA8/XxCaC2oOMYv2gTIM=
 github.com/microsoft/kiota-authentication-azure-go v1.0.1/go.mod h1:IbifJeoi+sULI0vjnsWYSmDu5atFo/4FZ6WCoAkPjsc=
 github.com/microsoft/kiota-http-go v1.1.0 h1:L5I93EiNtlP/X6YzeTlhjWt7Q1DxzC9CmWSVtX3b0tE=
