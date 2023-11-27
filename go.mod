@@ -17,7 +17,7 @@ require (
 	github.com/Masterminds/sprig/v3 v3.2.3
 	github.com/PaesslerAG/jsonpath v0.1.1
 	github.com/jessevdk/go-flags v1.5.0
-	github.com/microsoft/kiota-abstractions-go v1.3.0
+	github.com/microsoft/kiota-abstractions-go v1.5.3
 	github.com/microsoftgraph/msgraph-sdk-go v1.23.0
 	github.com/microsoftgraph/msgraph-sdk-go-core v1.0.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible
@@ -41,10 +41,10 @@ require (
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/cjlapao/common-go v0.0.39 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/go-logr/logr v1.2.4 // indirect
+	github.com/go-logr/logr v1.3.0 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/golang-jwt/jwt/v5 v5.0.0 // indirect
-	github.com/google/uuid v1.3.1 // indirect
+	github.com/google/uuid v1.4.0 // indirect
 	github.com/huandu/xstrings v1.4.0 // indirect
 	github.com/imdario/mergo v0.3.16 // indirect
 	github.com/kylelemons/godebug v1.1.0 // indirect
@@ -67,11 +67,11 @@ require (
 	github.com/remeh/sizedwaitgroup v1.0.0 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
 	github.com/spf13/cast v1.5.1 // indirect
-	github.com/std-uritemplate/std-uritemplate/go v0.0.46 // indirect
+	github.com/std-uritemplate/std-uritemplate/go v0.0.47 // indirect
 	github.com/stretchr/testify v1.8.4 // indirect
-	go.opentelemetry.io/otel v1.19.0 // indirect
-	go.opentelemetry.io/otel/metric v1.19.0 // indirect
-	go.opentelemetry.io/otel/trace v1.19.0 // indirect
+	go.opentelemetry.io/otel v1.21.0 // indirect
+	go.opentelemetry.io/otel/metric v1.21.0 // indirect
+	go.opentelemetry.io/otel/trace v1.21.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/crypto v0.14.0 // indirect
 	golang.org/x/net v0.17.0 // indirect
