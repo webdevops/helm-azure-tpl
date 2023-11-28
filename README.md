@@ -32,6 +32,8 @@ helm plugin uninstall azure-tpl
 
 you can use helm in "downloader" mode to process files eg:
 
+> :warning: **DO NOT use azure-tpl functions in ``values.yaml`` files as these files are read again by helm without azure-tpl processing! Use different file names.
+
 ```gotemplate
 helm upgrade foobar123 -f azuretpl://config/values.yaml .
 ```
