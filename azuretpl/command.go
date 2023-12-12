@@ -144,6 +144,8 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *textTemplate.Template) textTemp
 		// azure
 		`azResource`:                            e.azResource,
 		`azResourceList`:                        e.azResourceList,
+		`azManagementGroup`:                     e.azManagementGroup,
+		`azManagementGroupSubscriptionList`:     e.azManagementGroupSubscriptionList,
 		`azSubscription`:                        e.azSubscription,
 		`azSubscriptionList`:                    e.azSubscriptionList,
 		`azPublicIpAddress`:                     e.azPublicIpAddress,
