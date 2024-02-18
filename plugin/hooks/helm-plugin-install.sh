@@ -22,18 +22,18 @@ echo "  platform: ${HOST_OS}/${HOST_ARCH}"
 echo "       url: $PLUGIN_DOWNLOAD_URL"
 echo "    target: $PLUGIN_TARGET_PATH"
 
-rm -f "$PLUGIN_TARGET_PATH"
+rm -f -- "$PLUGIN_TARGET_PATH"
 curl --fail --location "$PLUGIN_DOWNLOAD_URL" -o "$PLUGIN_TARGET_PATH"
 if [ "$?" -ne 0 ]; then
     >&2 echo "[ERROR] failed to download plugin executable"
     exit 1
 fi
 
-if [[ ! -f  "$PLUGIN_TARGET_PATH" ]]; then
+if [[ ! -f "$PLUGIN_TARGET_PATH" ]]; then
     >&2 echo "[ERROR] installation of executable failed, please report issue"
     exit 1
 fi
 
-chmod +x "$PLUGIN_TARGET_PATH"
+chmod +x -- "$PLUGIN_TARGET_PATH"
 
 echo "successfully downloaded executable"
