@@ -34,6 +34,6 @@ if [[ ! -f "$PLUGIN_TARGET_PATH" ]]; then
     exit 1
 fi
 
-chmod +x -- "$PLUGIN_TARGET_PATH"
+chmod +x "$PLUGIN_TARGET_PATH"
 
 echo "successfully downloaded executable"
