@@ -14,10 +14,10 @@ requires `sed` and `curl` for installation
 
 ```bash
 # Installation of latest version
-helm plugin install https://github.com/webdevops/helm-azure-tpl
+helm plugin install https://github.com/webdevops/helm-azure-tpl.git
 
 # Installation of specific version
-helm plugin install https://github.com/webdevops/helm-azure-tpl --version=0.47.0
+helm plugin install https://github.com/webdevops/helm-azure-tpl.git --version=0.47.0
 
 # Update to latest version
 helm plugin update azure-tpl
@@ -32,7 +32,8 @@ helm plugin uninstall azure-tpl
 
 you can use helm in "downloader" mode to process files eg:
 
-> :warning: **DO NOT use azure-tpl functions in ``values.yaml`` files as these files are read again by helm without azure-tpl processing! Use different file names.**
+> [!CAUTION]
+> **DO NOT use azure-tpl functions in ``values.yaml`` files as these files are read again by helm without azure-tpl processing! Use different file names and paths.**
 
 ```gotemplate
 helm upgrade foobar123 -f azuretpl://config/values.yaml .
@@ -113,7 +114,8 @@ Arguments:
 
 ### Azure template functions
 
-:information_source: Functions can also be used starting with `azure` prefix instead of `az`
+> [!NOTE]
+> Functions can also be used starting with `azure` prefix instead of `az`
 
 | Function                                 | Parameters                                    | Description                                                                                                                                                                                                                             |
 |------------------------------------------|-----------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -208,7 +210,8 @@ response format:
 
 ### MsGraph (AzureAD) functions
 
-:information_source: Functions can also be used starting with `msGraph` prefix instead of `mg`
+> [!NOTE]
+> Functions can also be used starting with `msGraph` prefix instead of `mg`
 
 | Function                          | Parameters             | Description                                                                                                                                                          |
 |-----------------------------------|------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -239,11 +242,11 @@ response format:
 ```gotemplate
 
 {{
-    azResource
-    "/subscriptions/d86bcf13-ddf7-45ea-82f1-6f656767a318/resourcegroups/k8s/providers/Microsoft.ContainerService/managedClusters/mblaschke"
-    "2022-01-01"
-    | jsonPath "$.properties.aadProfile"
-    | toYaml
+azResource
+"/subscriptions/d86bcf13-ddf7-45ea-82f1-6f656767a318/resourcegroups/k8s/providers/Microsoft.ContainerService/managedClusters/mblaschke"
+"2022-01-01"
+| jsonPath "$.properties.aadProfile"
+| toYaml
 }}
 
 ```
@@ -274,17 +277,17 @@ response format:
 
 ## Fetch resource as object and convert to yaml
 {{ azResource
-   "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx/resourcegroups/example-rg/providers/Microsoft.ContainerService/managedClusters/k8scluster"
-   "2022-01-01"
-   | toYaml
+"/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx/resourcegroups/example-rg/providers/Microsoft.ContainerService/managedClusters/k8scluster"
+"2022-01-01"
+| toYaml
 }}
 
 ## Fetch resource as object, select .properties.aadProfile via jsonPath and convert to yaml
 {{ azResource
-   "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx/resourcegroups/example-rg/providers/Microsoft.ContainerService/managedClusters/k8scluster"
-   "2022-01-01"
-   | jsonPath "$.properties.aadProfile"
-   | toYaml
+"/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx/resourcegroups/example-rg/providers/Microsoft.ContainerService/managedClusters/k8scluster"
+"2022-01-01"
+| jsonPath "$.properties.aadProfile"
+| toYaml
 }}
 
 ## Fetches all resources from subscription
@@ -298,10 +301,10 @@ response format:
 
 ## Fetch Azure VirtualNetwork address prefixes
 {{ azVirtualNetworkAddressPrefixes
-    "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx/resourcegroups/example-rg/providers/Microsoft.Network/virtualNetworks/k8s-vnet"
+"/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx/resourcegroups/example-rg/providers/Microsoft.Network/virtualNetworks/k8s-vnet"
 }}xxx/resourcegroups/example-rg/providers/Microsoft.Network/virtualNetworks/k8s-vnet"
-   "default2"
-   | join ","
+"default2"
+| join ","
 }}
 
 ## Fetch first storageaccount key
