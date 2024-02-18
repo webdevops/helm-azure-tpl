@@ -30,8 +30,6 @@ func (e *AzureTemplateExecutor) azResourceGraphQuery(subscriptionID interface{},
 		return nil, fmt.Errorf(`invalid subscription ID type, expected string or string array, got "%v"`, v)
 	}
 
-	fmt.Println(subscriptionIdList)
-
 	if len(subscriptionIdList) > 1 {
 		return nil, fmt.Errorf(`{{azResourceGraphQuery}} needs at least one subscription ID`)
 	}
