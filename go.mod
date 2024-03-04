@@ -22,7 +22,7 @@ require (
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/microsoft/kiota-abstractions-go v1.5.6
 	github.com/microsoftgraph/msgraph-sdk-go v1.33.0
-	github.com/microsoftgraph/msgraph-sdk-go-core v1.0.2
+	github.com/microsoftgraph/msgraph-sdk-go-core v1.1.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/webdevops/go-common v0.0.0-20240217103834-271a75e4e59c
 	go.uber.org/zap v1.26.0
