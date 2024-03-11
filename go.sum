@@ -1,5 +1,5 @@
-github.com/Azure/azure-sdk-for-go/sdk/azcore v1.9.2 h1:c4k2FIYIh4xtwqrQwV0Ct1v5+ehlNXj5NI/MWVsiTkQ=
-github.com/Azure/azure-sdk-for-go/sdk/azcore v1.9.2/go.mod h1:5FDJtLEO/GxwNgUxbwrY3LP0pEoThTQJtk2oysdXHxM=
+github.com/Azure/azure-sdk-for-go/sdk/azcore v1.10.0 h1:n1DH8TPV4qqPTje2RcUBYwtrTWlabVp4n46+74X2pn4=
+github.com/Azure/azure-sdk-for-go/sdk/azcore v1.10.0/go.mod h1:HDcZnuGbiyppErN6lB+idp4CKhjbc8gwjto6OPpyggM=
 github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.5.1 h1:sO0/P7g68FrryJzljemN+6GTssUXdANk6aJ7T1ZxnsQ=
 github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.5.1/go.mod h1:h8hyGFDsU5HMivxiS2iYFZsgDbU9OnnJ163x5UGVKYo=
 github.com/Azure/azure-sdk-for-go/sdk/data/azappconfig v1.1.0 h1:AdaGDU3FgoUC2tsd3vsd9JblRrpFLUsS38yh1eLYfwM=
@@ -103,10 +103,10 @@ github.com/microsoft/kiota-serialization-multipart-go v1.0.0 h1:3O5sb5Zj+moLBiJy
 github.com/microsoft/kiota-serialization-multipart-go v1.0.0/go.mod h1:yauLeBTpANk4L03XD985akNysG24SnRJGaveZf+p4so=
 github.com/microsoft/kiota-serialization-text-go v1.0.0 h1:XOaRhAXy+g8ZVpcq7x7a0jlETWnWrEum0RhmbYrTFnA=
 github.com/microsoft/kiota-serialization-text-go v1.0.0/go.mod h1:sM1/C6ecnQ7IquQOGUrUldaO5wj+9+v7G2W3sQ3fy6M=
-github.com/microsoftgraph/msgraph-sdk-go v1.33.0 h1:cR9ue0UuYD3EhYeUb47NvIzrCvlPeXmF3D8TYYfBm88=
-github.com/microsoftgraph/msgraph-sdk-go v1.33.0/go.mod h1:vrsU4lnP+OnIbVqPBv3wbRZpN8zhHOYWzoLf6led9ms=
-github.com/microsoftgraph/msgraph-sdk-go-core v1.0.2 h1:GsZ2bUe+aMdPo9B6ivm0T9vlU9s4ufTScu+GqZnYNNw=
-github.com/microsoftgraph/msgraph-sdk-go-core v1.0.2/go.mod h1:3c/v/N/iuH8UWDf4r4Z9FBiSyGeNZ54BHe2y+9Ccxtc=
+github.com/microsoftgraph/msgraph-sdk-go v1.36.0 h1:DFofL21syrHLa1C71kri9z5GfPxMu8vl2NXsKybJwyw=
+github.com/microsoftgraph/msgraph-sdk-go v1.36.0/go.mod h1:LRiv9UP/7NFLvhQGKHWSMDN2eLSg5u5IJ6FUpigDVX8=
+github.com/microsoftgraph/msgraph-sdk-go-core v1.1.0 h1:NB7c/n4Knj+TLaLfjsahhSqoUqoN/CtyNB0XIe/nJnM=
+github.com/microsoftgraph/msgraph-sdk-go-core v1.1.0/go.mod h1:M3w/5IFJ1u/DpwOyjsjNSVEA43y1rLOeX58suyfBhGk=
 github.com/mitchellh/copystructure v1.0.0/go.mod h1:SNtv71yrdKgLRyLFxmLdkAbkKEFWgYaq1OVrnRcwhnw=
 github.com/mitchellh/copystructure v1.2.0 h1:vpKXTN4ewci03Vljg/q9QvCGUDttBOGBIa15WveJJGw=
 github.com/mitchellh/copystructure v1.2.0/go.mod h1:qLl+cE2AmVv+CoeAwDPye/v+N2HKCj9FbZEVFJRxO9s=
@@ -144,8 +144,8 @@ github.com/std-uritemplate/std-uritemplate/go v0.0.53/go.mod h1:CLZ1543WRCuUQQjK
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
 github.com/stretchr/testify v1.5.1/go.mod h1:5W2xD1RspED5o8YsWQXVCued0rvSQ+mT+I5cxcmMvtA=
-github.com/stretchr/testify v1.8.4 h1:CcVxjf3Q8PM0mHUKJCdn+eZZtm5yQwehR5yeSVQQcUk=
-github.com/stretchr/testify v1.8.4/go.mod h1:sz/lmYIOXD/1dqDmKjjqLyZ2RngseejIcXlSw2iwfAo=
+github.com/stretchr/testify v1.9.0 h1:HtqpIVDClZ4nwg75+f6Lvsy/wHu+3BoSGCbBAcpTsTg=
+github.com/stretchr/testify v1.9.0/go.mod h1:r2ic/lqez/lEtzL7wO/rwa5dbSLXVDPFyf8C91i36aY=
 github.com/webdevops/go-common v0.0.0-20240217103834-271a75e4e59c h1:BHm6Dv/43CW7CDOMTKgBC5ixyGyZfgd/ailL/eCtPFs=
 github.com/webdevops/go-common v0.0.0-20240217103834-271a75e4e59c/go.mod h1:Ut443ThSsOcrZdT5T62ZhuG4lJSdGrcp3FCY5UA8ozI=
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
