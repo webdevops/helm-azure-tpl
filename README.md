@@ -131,7 +131,7 @@ Arguments:
 | `azVirtualNetworkAddressPrefixes`        | `resourceID` (string)                         | Fetches address prefix (string array) from Azure VirtualNetwork                                                                                                                                                                         |
 | `azVirtualNetworkSubnetAddressPrefixes`  | `resourceID` (string), `subnetName` (string)  | Fetches address prefix (string array) from Azure VirtualNetwork subnet                                                                                                                                                                  |
 
-### Azure Keyvault functions
+### Azure KeyVault functions
 | Function                   | Parameters                                                               | Description                                                                                                                           |
 |----------------------------|--------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------|
 | `azKeyVaultSecret`         | `vaultUrl` (string), `secretName` (string), `version` (string, optional) | Fetches secret object from Azure KeyVault                                                                                             |
@@ -204,9 +204,13 @@ response format:
 | `azRoleDefinitionList` | `scope` (string), `filter` (string,optional) | Fetches list of Azure RoleDefinitions using scope (eg `/subscriptions/xxx`) and optional `$filter` query |
 
 ### Azure ResourceGraph functions
-| Function               | Parameters                                              | Description                                                                                                   |
-|------------------------|---------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|
-| `azResourceGraphQuery` | `subscriptionID` (string or []string), `query` (string) | Executes Azure ResourceGraph query against selected subscriptions (as string comma separated or string array) |
+| Function               | Parameters                                     | Description                                                                                                                                  |
+|------------------------|------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+| `azResourceGraphQuery` | `scope` (string or []string), `query` (string) | Executes Azure ResourceGraph query against selected subscription IDs or management group IDs (as string comma separated or string array) |
+
+> [!NOTE]
+> ManagementGroups must be defined with their resource ID `/providers/microsoft.management/managementgroups/{MANAGEMENT_GROUP_ID}`.
+> Subscriptions must either be defined by the subscription id or their resource id `/subscriptions/{SUBSCRIPTION_ID}`.
 
 ### MsGraph (AzureAD) functions
 
@@ -333,7 +337,9 @@ azResource
 {{ (azRoleDefinition "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx" "Owner").name }}
 
 ## Executes ResourceGraph query and returns result as yaml
-{{ azResourceGraphQuery "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx"  `resources | where resourceGroup contains "xxxx"` | toYaml }}
+{{ azResourceGraphQuery "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx" `resources | where resourceGroup contains "xxxx"` | toYaml }}
+or
+{{ `resources | where resourceGroup contains "xxxx"` | azResourceGraphQuery "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx"   | toYaml }}
 
 ## Fetch kubeconfig from AKS managed cluster
 {{ (index (azManagedClusterUserCredentials "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxx/resourcegroups/example-rg/providers/Microsoft.ContainerService/managedClusters/foobar").kubeconfigs 0).value | b64dec }}

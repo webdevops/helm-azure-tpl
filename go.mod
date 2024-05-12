@@ -24,7 +24,7 @@ require (
 	github.com/microsoftgraph/msgraph-sdk-go v1.41.0
 	github.com/microsoftgraph/msgraph-sdk-go-core v1.1.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible
-	github.com/webdevops/go-common v0.0.0-20240512143320-3218f7a5ccfc
+	github.com/webdevops/go-common v0.0.0-20240512200714-ad1bee1eddb7
 	go.uber.org/zap v1.27.0
 	gopkg.in/yaml.v3 v3.0.1
 	helm.sh/helm/v3 v3.14.4
