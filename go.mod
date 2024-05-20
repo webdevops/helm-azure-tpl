@@ -21,7 +21,7 @@ require (
 	github.com/PaesslerAG/jsonpath v0.1.1
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/microsoft/kiota-abstractions-go v1.6.0
-	github.com/microsoftgraph/msgraph-sdk-go v1.41.0
+	github.com/microsoftgraph/msgraph-sdk-go v1.42.0
 	github.com/microsoftgraph/msgraph-sdk-go-core v1.1.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/webdevops/go-common v0.0.0-20240512200714-ad1bee1eddb7
