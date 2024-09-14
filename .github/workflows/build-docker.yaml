@@ -38,7 +38,7 @@ jobs:
       matrix:
         include:
           - Dockerfile: Dockerfile
-            target: "final-static"
+            target: "final-azcli"
             suffix: ""
             latest: "auto"
 
