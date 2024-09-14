@@ -36,7 +36,7 @@ func (e *AzureTemplateExecutor) azSubscription(subscriptionID ...string) (interf
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
 		client, err := armsubscriptions.NewClient(e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
 		if err != nil {
-			return nil, fmt.Errorf(err.Error())
+			return nil, err
 		}
 
 		resource, err := client.Get(e.ctx, selectedSubscriptionId, nil)

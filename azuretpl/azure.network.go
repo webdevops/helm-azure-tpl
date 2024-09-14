@@ -26,7 +26,7 @@ func (e *AzureTemplateExecutor) azPublicIpAddress(resourceID string) (interface{
 
 		client, err := armnetwork.NewPublicIPAddressesClient(resourceInfo.Subscription, e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
 		if err != nil {
-			return nil, fmt.Errorf(err.Error())
+			return nil, err
 		}
 
 		pipAddress, err := client.Get(e.ctx, resourceInfo.ResourceGroup, resourceInfo.ResourceName, nil)
@@ -55,7 +55,7 @@ func (e *AzureTemplateExecutor) azPublicIpPrefixAddressPrefix(resourceID string)
 
 		client, err := armnetwork.NewPublicIPPrefixesClient(resourceInfo.Subscription, e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
 		if err != nil {
-			return nil, fmt.Errorf(err.Error())
+			return nil, err
 		}
 
 		pipAddress, err := client.Get(e.ctx, resourceInfo.ResourceGroup, resourceInfo.ResourceName, nil)
@@ -84,7 +84,7 @@ func (e *AzureTemplateExecutor) azVirtualNetworkAddressPrefixes(resourceID strin
 
 		client, err := armnetwork.NewVirtualNetworksClient(resourceInfo.Subscription, e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
 		if err != nil {
-			return nil, fmt.Errorf(err.Error())
+			return nil, err
 		}
 
 		vnet, err := client.Get(e.ctx, resourceInfo.ResourceGroup, resourceInfo.ResourceName, nil)
@@ -116,7 +116,7 @@ func (e *AzureTemplateExecutor) azVirtualNetworkSubnetAddressPrefixes(resourceID
 
 		client, err := armnetwork.NewVirtualNetworksClient(resourceInfo.Subscription, e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
 		if err != nil {
-			return nil, fmt.Errorf(err.Error())
+			return nil, err
 		}
 
 		vnet, err := client.Get(e.ctx, resourceInfo.ResourceGroup, resourceInfo.ResourceName, nil)

@@ -1,7 +1,7 @@
 #############################################
 # Build
 #############################################
-FROM --platform=$BUILDPLATFORM golang:1.22-alpine as build
+FROM --platform=$BUILDPLATFORM golang:1.23-alpine AS build
 
 RUN apk upgrade --no-cache --force
 RUN apk add --update build-base make git curl
@@ -23,7 +23,7 @@ RUN chmod +x entrypoint.sh
 #############################################
 # Test
 #############################################
-FROM gcr.io/distroless/static as test
+FROM gcr.io/distroless/static AS test
 USER 0:0
 WORKDIR /app
 COPY --from=build /go/src/github.com/webdevops/helm-azure-tpl/helm-azure-tpl .
@@ -33,7 +33,7 @@ RUN ["./helm-azure-tpl", "--help"]
 #############################################
 # final
 #############################################
-FROM mcr.microsoft.com/azure-cli:latest as final-azcli
+FROM mcr.microsoft.com/azure-cli:latest AS final-azcli
 WORKDIR /
 COPY --from=test /app .
 USER 1000:1000

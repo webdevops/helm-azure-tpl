@@ -66,7 +66,7 @@ func (e *AzureTemplateExecutor) azRoleDefinitionList(scope string, filter ...str
 func (e *AzureTemplateExecutor) fetchAzureRoleDefinitions(scope string, filter string) ([]armauthorization.RoleDefinition, error) {
 	client, err := armauthorization.NewRoleDefinitionsClient(e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
 	if err != nil {
-		return nil, fmt.Errorf(err.Error())
+		return nil, err
 	}
 
 	listOpts := armauthorization.RoleDefinitionsClientListOptions{
@@ -78,7 +78,7 @@ func (e *AzureTemplateExecutor) fetchAzureRoleDefinitions(scope string, filter s
 	for pager.More() {
 		result, err := pager.NextPage(e.ctx)
 		if err != nil {
-			return nil, fmt.Errorf(err.Error())
+			return nil, err
 		}
 
 		for _, roleDefinition := range result.Value {
