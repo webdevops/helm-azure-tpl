@@ -3,7 +3,7 @@ module github.com/webdevops/helm-azure-tpl
 go 1.23
 
 require (
-	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.14.0
+	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.16.0
 	github.com/Azure/azure-sdk-for-go/sdk/data/azappconfig v1.1.0
 	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/authorization/armauthorization/v2 v2.2.0
 	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/containerservice/armcontainerservice v1.0.0
@@ -14,18 +14,18 @@ require (
 	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resources/armsubscriptions v1.3.0
 	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/storage/armstorage v1.6.0
 	github.com/Azure/azure-sdk-for-go/sdk/security/keyvault/azsecrets v1.1.0
-	github.com/Azure/azure-sdk-for-go/sdk/storage/azblob v1.4.0
+	github.com/Azure/azure-sdk-for-go/sdk/storage/azblob v1.4.1
 	github.com/Masterminds/sprig/v3 v3.3.0
 	github.com/PaesslerAG/jsonpath v0.1.1
 	github.com/jessevdk/go-flags v1.6.1
 	github.com/microsoft/kiota-abstractions-go v1.7.0
-	github.com/microsoftgraph/msgraph-sdk-go v1.48.0
+	github.com/microsoftgraph/msgraph-sdk-go v1.51.0
 	github.com/microsoftgraph/msgraph-sdk-go-core v1.2.1
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/webdevops/go-common v0.0.0-20240914143308-98dd8416e15d
 	go.uber.org/zap v1.27.0
 	gopkg.in/yaml.v3 v3.0.1
-	helm.sh/helm/v3 v3.16.1
+	helm.sh/helm/v3 v3.16.2
 	sigs.k8s.io/yaml v1.4.0
 )
 

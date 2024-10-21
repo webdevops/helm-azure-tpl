@@ -1,7 +1,7 @@
 dario.cat/mergo v1.0.1 h1:Ra4+bf83h2ztPIQYNP99R6m+Y7KfnARDfID+a+vLl4s=
 dario.cat/mergo v1.0.1/go.mod h1:uNxQE+84aUszobStD9th8a29P2fMDhsBdgRYvZOxGmk=
-github.com/Azure/azure-sdk-for-go/sdk/azcore v1.14.0 h1:nyQWyZvwGTvunIMxi1Y9uXkcyr+I7TeNrr/foo4Kpk8=
-github.com/Azure/azure-sdk-for-go/sdk/azcore v1.14.0/go.mod h1:l38EPgmsp71HHLq9j7De57JcKOWPyhrsW1Awm1JS6K0=
+github.com/Azure/azure-sdk-for-go/sdk/azcore v1.16.0 h1:JZg6HRh6W6U4OLl6lk7BZ7BLisIzM9dG1R50zUk9C/M=
+github.com/Azure/azure-sdk-for-go/sdk/azcore v1.16.0/go.mod h1:YL1xnZ6QejvQHWJrX/AvhFl4WW4rqHVoKspWNVwFk0M=
 github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.7.0 h1:tfLQ34V6F7tVSwoTf/4lH5sE0o6eCJuNDTmH09nDpbc=
 github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.7.0/go.mod h1:9kIvujWAA58nmPmWB1m23fyWic1kYZMxD9CxaWn4Qpg=
 github.com/Azure/azure-sdk-for-go/sdk/data/azappconfig v1.1.0 h1:AdaGDU3FgoUC2tsd3vsd9JblRrpFLUsS38yh1eLYfwM=
@@ -36,8 +36,8 @@ github.com/Azure/azure-sdk-for-go/sdk/security/keyvault/azsecrets v1.1.0 h1:h4Zx
 github.com/Azure/azure-sdk-for-go/sdk/security/keyvault/azsecrets v1.1.0/go.mod h1:LgLGXawqSreJz135Elog0ywTJDsm0Hz2k+N+6ZK35u8=
 github.com/Azure/azure-sdk-for-go/sdk/security/keyvault/internal v1.0.1 h1:9fXQS/0TtQmKXp8SureKouF+idbQvp7cPUxykiohnBs=
 github.com/Azure/azure-sdk-for-go/sdk/security/keyvault/internal v1.0.1/go.mod h1:f+OaoSg0VQYPMqB0Jp2D54j1VHzITYcJaCNwV+k00ts=
-github.com/Azure/azure-sdk-for-go/sdk/storage/azblob v1.4.0 h1:Be6KInmFEKV81c0pOAEbRYehLMwmmGI1exuFj248AMk=
-github.com/Azure/azure-sdk-for-go/sdk/storage/azblob v1.4.0/go.mod h1:WCPBHsOXfBVnivScjs2ypRfimjEW0qPVLGgJkZlrIOA=
+github.com/Azure/azure-sdk-for-go/sdk/storage/azblob v1.4.1 h1:cf+OIKbkmMHBaC3u78AXomweqM0oxQSgBXRZf3WH4yM=
+github.com/Azure/azure-sdk-for-go/sdk/storage/azblob v1.4.1/go.mod h1:ap1dmS6vQKJxSMNiGJcq4QuUQkOynyD93gLw6MDF7ek=
 github.com/AzureAD/microsoft-authentication-library-for-go v1.2.2 h1:XHOnouVk1mxXfQidrMEnLlPk9UMeRtyBTnEFtxkV0kU=
 github.com/AzureAD/microsoft-authentication-library-for-go v1.2.2/go.mod h1:wP83P5OoQ5p6ip3ScPr0BAq0BvuPAvacpEuSzyouqAI=
 github.com/Masterminds/goutils v1.1.1 h1:5nUrii3FMTL5diU80unEVvNevw1nH4+ZV4DSLVJLSYI=
@@ -100,8 +100,8 @@ github.com/microsoft/kiota-serialization-multipart-go v1.0.0 h1:3O5sb5Zj+moLBiJy
 github.com/microsoft/kiota-serialization-multipart-go v1.0.0/go.mod h1:yauLeBTpANk4L03XD985akNysG24SnRJGaveZf+p4so=
 github.com/microsoft/kiota-serialization-text-go v1.0.0 h1:XOaRhAXy+g8ZVpcq7x7a0jlETWnWrEum0RhmbYrTFnA=
 github.com/microsoft/kiota-serialization-text-go v1.0.0/go.mod h1:sM1/C6ecnQ7IquQOGUrUldaO5wj+9+v7G2W3sQ3fy6M=
-github.com/microsoftgraph/msgraph-sdk-go v1.48.0 h1:JYKXW90/rjMzbD9kIzD+PzoBBbiNh4dRW6riKg+Bm94=
-github.com/microsoftgraph/msgraph-sdk-go v1.48.0/go.mod h1:ghZjDbiV52URFLjZGFZckbLqMW1IgWvQKW4AqLgOm5E=
+github.com/microsoftgraph/msgraph-sdk-go v1.51.0 h1:IfRY0uVHToT8X9k6Ri19tKdt8hwPomji2yx5YsKoaw4=
+github.com/microsoftgraph/msgraph-sdk-go v1.51.0/go.mod h1:MVTeFCCih3qXy9D0q+f4NdOyumFnMZ+Ppcpurgd30TY=
 github.com/microsoftgraph/msgraph-sdk-go-core v1.2.1 h1:P1wpmn3xxfPMFJHg+PJPcusErfRkl63h6OdAnpDbkS8=
 github.com/microsoftgraph/msgraph-sdk-go-core v1.2.1/go.mod h1:vFmWQGWyLlhxCESNLv61vlE4qesBU+eWmEVH7DJSESA=
 github.com/mitchellh/copystructure v1.2.0 h1:vpKXTN4ewci03Vljg/q9QvCGUDttBOGBIa15WveJJGw=
@@ -169,8 +169,8 @@ gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c h1:Hei/4ADfdWqJk1ZMxUNpqntN
 gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c/go.mod h1:JHkPIbrfpd72SG/EVd6muEfDQjcINNoR0C8j2r3qZ4Q=
 gopkg.in/yaml.v3 v3.0.1 h1:fxVm/GzAzEWqLHuvctI91KS9hhNmmWOoWu0XTYJS7CA=
 gopkg.in/yaml.v3 v3.0.1/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
-helm.sh/helm/v3 v3.16.1 h1:cER6tI/8PgUAsaJaQCVBUg3VI9KN4oVaZJgY60RIc0c=
-helm.sh/helm/v3 v3.16.1/go.mod h1:r+xBHHP20qJeEqtvBXMf7W35QDJnzY/eiEBzt+TfHps=
+helm.sh/helm/v3 v3.16.2 h1:Y9v7ry+ubQmi+cb5zw1Llx8OKHU9Hk9NQ/+P+LGBe2o=
+helm.sh/helm/v3 v3.16.2/go.mod h1:SyTXgKBjNqi2NPsHCW5dDAsHqvGIu0kdNYNH9gQaw70=
 k8s.io/apimachinery v0.31.1 h1:mhcUBbj7KUjaVhyXILglcVjuS4nYXiwC+KKFBgIVy7U=
 k8s.io/apimachinery v0.31.1/go.mod h1:rsPdaZJfTfLsNJSQzNHQvYoTmxhoOEofxtOsF3rtsMo=
 k8s.io/klog/v2 v2.130.1 h1:n9Xl7H1Xvksem4KFG4PYbdQCQxqc/tTUyrgXaOhHSzk=
