@@ -151,9 +151,19 @@ func (e *AzureTemplateExecutor) azKeyVaultSecretVersions(vaultUrl string, secret
 				secretList = append(secretList, secretVersion)
 			}
 
-			if count >= 0 && len(secretList) >= count {
-				break
-			}
+			// WARNING: secrets are ordered by version instead of creation date
+			// so we cannot limit paging to just a few pages as even the current secrets
+			// could be on the next or last page.
+			// this was an awful design decision from Azure not to order the entries by creation date.
+			// so we have to get the full list of versions for filtering,
+			// otherwise we might miss important entries.
+			// luckily versions are limited to just 500 entries but it's still an awful trap.
+			// the same applies to the Azure KeyVault secret listing in the Azure Portal,
+			// it's a mess, horrible to debug and a trap for all developers.
+			//
+			// if count >= 0 && len(secretList) >= count {
+			// 	break
+			// }
 		}
 
 		// sort results
