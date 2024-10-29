@@ -6,7 +6,15 @@ on:
 
 jobs:
   release:
+    name: "${{ matrix.task }}"
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - task: release-assets-linux
+          - task: release-assets-darwin
+          - task: release-assets-windows
     steps:
       - uses: actions/checkout@v4
 
@@ -23,7 +31,7 @@ jobs:
 
       - name: Build
         run: |
-          make release-assets
+          make "${{ matrix.task }}"
 
       - name: Upload assets to release
         uses: svenstaro/upload-release-action@v2
