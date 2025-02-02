@@ -23,18 +23,15 @@ const (
 	CommandProcess = "apply"
 )
 
-type (
-	TemplatePayload struct {
-		Values map[string]interface{}
-	}
-)
-
 var (
-	templateData TemplatePayload
+	templateData map[string]interface{}
 	lintMode     = false
 )
 
 func run() {
+	// init template data
+	templateData = make(map[string]interface{})
+
 	switch opts.Args.Command {
 	case CommandHelp:
 		argparser.WriteHelp(os.Stdout)
@@ -95,7 +92,8 @@ func printAppHeader() {
 // https://github.com/helm/helm/blob/main/pkg/cli/values/options.go
 // Apache License, Version 2.0
 func readValuesFiles() error {
-	templateData.Values = map[string]interface{}{}
+	templateDataValues := map[string]interface{}{}
+
 	for _, filePath := range opts.AzureTpl.ValuesFiles {
 		currentMap := map[string]interface{}{}
 
@@ -111,26 +109,26 @@ func readValuesFiles() error {
 			logger.Fatalf("error: %v", err)
 		}
 		// Merge with the previous map
-		templateData.Values = mergeMaps(templateData.Values, currentMap)
+		templateDataValues = mergeMaps(templateDataValues, currentMap)
 	}
 
 	// User specified a value via --set-json
 	for _, value := range opts.AzureTpl.JSONValues {
-		if err := strvals.ParseJSON(value, templateData.Values); err != nil {
+		if err := strvals.ParseJSON(value, templateDataValues); err != nil {
 			return fmt.Errorf(`failed parsing --set-json data %s`, value)
 		}
 	}
 
 	// User specified a value via --set
 	for _, value := range opts.AzureTpl.Values {
-		if err := strvals.ParseInto(value, templateData.Values); err != nil {
+		if err := strvals.ParseInto(value, templateDataValues); err != nil {
 			return fmt.Errorf(`failed parsing --set data: %w`, err)
 		}
 	}
 
 	// User specified a value via --set-string
 	for _, value := range opts.AzureTpl.StringValues {
-		if err := strvals.ParseIntoString(value, templateData.Values); err != nil {
+		if err := strvals.ParseIntoString(value, templateDataValues); err != nil {
 			return fmt.Errorf(`failed parsing --set-string data: %w`, err)
 		}
 	}
@@ -144,10 +142,12 @@ func readValuesFiles() error {
 			}
 			return string(bytes), err
 		}
-		if err := strvals.ParseIntoFile(value, templateData.Values, reader); err != nil {
+		if err := strvals.ParseIntoFile(value, templateDataValues, reader); err != nil {
 			return fmt.Errorf(`failed parsing --set-file data: %w`, err)
 		}
 	}
+
+	templateData["Values"] = templateDataValues
 
 	if opts.Debug {
 		fmt.Fprintln(os.Stderr)
