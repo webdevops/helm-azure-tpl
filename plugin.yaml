@@ -1,6 +1,6 @@
 ---
 name: "azure-tpl"
-version: "0.52.0"
+version: "0.52.1"
 usage: "applies azure information into your helm files"
 description: |-
   see https://github.com/webdevops/helm-azure-tpl/blob/main/README.md
