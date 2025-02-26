@@ -7,9 +7,17 @@ HELM_AZURE_TPL_VERSION=$(sed -n -e 's/version:[ "]*\([^"]*\).*/\1/p' "${HELM_PLU
 HOST_OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 HOST_ARCH=$(uname -m | tr '[:upper:]' '[:lower:]')
 
+FILE_SUFFIX=""
+
 case "${HOST_OS}" in
-	cygwin*)	HOST_OS="windows";;
-	mingw*)		HOST_OS="windows";;
+	cygwin*)
+	    HOST_OS="windows"
+	    FILE_SUFFIX=".exe"
+	    ;;
+	mingw*)
+	    HOST_OS="windows"
+	    FILE_SUFFIX=".exe"
+	    ;;
 esac
 
 case "$HOST_ARCH" in
@@ -18,7 +26,7 @@ case "$HOST_ARCH" in
         HOST_ARCH="amd64"
 esac
 
-PLUGIN_DOWNLOAD_FILE="helm-azure-tpl.${HOST_OS}.${HOST_ARCH}"
+PLUGIN_DOWNLOAD_FILE="helm-azure-tpl.${HOST_OS}.${HOST_ARCH}${FILE_SUFFIX}"
 PLUGIN_DOWNLOAD_URL="https://github.com/webdevops/helm-azure-tpl/releases/download/${HELM_AZURE_TPL_VERSION}/${PLUGIN_DOWNLOAD_FILE}"
 PLUGIN_TARGET_PATH="${HELM_PLUGIN_DIR}/${PLUGIN_DOWNLOAD_FILE}"
 
