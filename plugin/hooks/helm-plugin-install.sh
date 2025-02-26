@@ -8,8 +8,8 @@ HOST_OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 HOST_ARCH=$(uname -m | tr '[:upper:]' '[:lower:]')
 
 case "${HOST_OS}" in
-	CYGWIN*)	HOST_OS="windows";;
-	MINGW*)		HOST_OS="windows";;
+	cygwin*)	HOST_OS="windows";;
+	mingw*)		HOST_OS="windows";;
 esac
 
 case "$HOST_ARCH" in
