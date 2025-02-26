@@ -7,6 +7,11 @@ HELM_AZURE_TPL_VERSION=$(sed -n -e 's/version:[ "]*\([^"]*\).*/\1/p' "${HELM_PLU
 HOST_OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 HOST_ARCH=$(uname -m | tr '[:upper:]' '[:lower:]')
 
+case "${HOST_OS}" in
+	CYGWIN*)	HOST_OS="windows";;
+	MINGW*)		HOST_OS="windows";;
+esac
+
 case "$HOST_ARCH" in
     "x86_64")
         ## translate to amd64
