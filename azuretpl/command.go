@@ -166,6 +166,9 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *textTemplate.Template) textTemp
 		`azStorageAccountAccessKeys`:    e.azStorageAccountAccessKeys,
 		`azStorageAccountContainerBlob`: e.azStorageAccountContainerBlob,
 
+		// azure eventhub
+		`azEventHubListByNamespace`: e.azEventHubListByNamespace,
+
 		// azure app config
 		`azAppConfigSetting`: e.azAppConfigSetting,
 

@@ -176,6 +176,11 @@ response format:
 | `azStorageAccountAccessKeys`     | `resourceID` (string)       | Fetches access keys from Azure StorageAccount as array     |
 | `azStorageAccountContainerBlob`  | `containerBlobUrl` (string) | Fetches container blob from Azure StorageAccount as string |
 
+### Azure EventHub functions
+| Function                         | Parameters                  | Description                                                                    |
+|----------------------------------|-----------------------------|--------------------------------------------------------------------------------|
+| `azEventHubListByNamespace`      | `resourceID` (string)       | Fetches list of EventHubs in an EventHub namespace (specified by `resourceID`) |
+
 ### Azure AppConfig functions
 | Function               | Parameters                                                         | Description                                                                          |
 |------------------------|--------------------------------------------------------------------|--------------------------------------------------------------------------------------|
@@ -204,9 +209,9 @@ response format:
 | `azRoleDefinitionList` | `scope` (string), `filter` (string,optional) | Fetches list of Azure RoleDefinitions using scope (eg `/subscriptions/xxx`) and optional `$filter` query |
 
 ### Azure ResourceGraph functions
-| Function               | Parameters                                     | Description                                                                                                                                  |
-|------------------------|------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
-| `azResourceGraphQuery` | `scope` (string or []string), `query` (string) | Executes Azure ResourceGraph query against selected subscription IDs or management group IDs (as string comma separated or string array) |
+| Function               | Parameters                                     | Description                                                                                                                                |
+|------------------------|------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| `azResourceGraphQuery` | `scope` (string or []string), `query` (string) | Executes Azure ResourceGraph query against selected subscription IDs or management group IDs (as string comma separated or string array)   |
 
 > [!NOTE]
 > ManagementGroups must be defined with their resource ID `/providers/microsoft.management/managementgroups/{MANAGEMENT_GROUP_ID}`.
