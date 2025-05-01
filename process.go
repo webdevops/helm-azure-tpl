@@ -42,6 +42,11 @@ func run() {
 			"version":   gitTag,
 			"gitTag":    gitTag,
 			"gitCommit": gitCommit,
+			"goVersion": runtime.Version(),
+			"os":        runtime.GOOS,
+			"arch":      runtime.GOARCH,
+			"compiler":  runtime.Compiler,
+			"author":    Author,
 		}
 
 		version, _ := json.Marshal(versionPayload) // nolint: errcheck
