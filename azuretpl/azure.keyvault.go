@@ -91,7 +91,7 @@ func (e *AzureTemplateExecutor) azKeyVaultSecret(vaultUrl string, secretName str
 				} else {
 					e.logger.Warnln(
 						e.handleCicdWarning(
-							fmt.Errorf(`Azure KeyVault secret '%v' -> '%v': secret is expired, but env AZURETPL_KEYVAULT_EXPIRY_IGNORE=1 is active (expires: %v)`, vaultUrl, secretName, secret.Attributes.Expires.Format(time.RFC3339)),
+							fmt.Errorf(`found expiring Azure KeyVault secret '%v' -> '%v': secret is expired, but env AZURETPL_KEYVAULT_EXPIRY_IGNORE=1 is active (expires: %v)`, vaultUrl, secretName, secret.Attributes.Expires.Format(time.RFC3339)),
 						),
 					)
 				}
@@ -99,14 +99,14 @@ func (e *AzureTemplateExecutor) azKeyVaultSecret(vaultUrl string, secretName str
 				// secret is expiring soon
 				e.logger.Warnln(
 					e.handleCicdWarning(
-						fmt.Errorf(`Azure KeyVault secret '%v' -> '%v': secret is expiring soon (expires: %v)`, vaultUrl, secretName, secret.Attributes.Expires.Format(time.RFC3339)),
+						fmt.Errorf(`found expiring Azure KeyVault secret '%v' -> '%v': secret is expiring soon (expires: %v)`, vaultUrl, secretName, secret.Attributes.Expires.Format(time.RFC3339)),
 					),
 				)
 			}
 		}
 
 		e.logger.Infof(`using Azure KeyVault secret '%v' -> '%v' (version: %v)`, vaultUrl, secretName, secret.ID.Version())
-		e.handleCicdMaskSecret(to.String(secret.Secret.Value))
+		e.handleCicdMaskSecret(to.String(secret.Value))
 
 		return transformToInterface(models.NewAzSecretItem(secret.Secret))
 	})
@@ -179,7 +179,7 @@ func (e *AzureTemplateExecutor) azKeyVaultSecretVersions(vaultUrl string, secret
 				return nil, fmt.Errorf(`unable to fetch secret "%[2]v" with version "%[3]v" from vault "%[1]v": %[4]w`, vaultUrl, secretVersion.ID.Name(), secretVersion.ID.Version(), err)
 			}
 
-			e.handleCicdMaskSecret(to.String(secret.Secret.Value))
+			e.handleCicdMaskSecret(to.String(secret.Value))
 
 			if val, err := transformToInterface(models.NewAzSecretItem(secret.Secret)); err == nil {
 				ret = append(ret, val)

@@ -84,7 +84,7 @@ func run() {
 }
 
 func printAppHeader() {
-	logger.Infof("%v v%s (%s; %s; by %v)", argparser.Command.Name, gitTag, gitCommit, runtime.Version(), Author)
+	logger.Infof("%v v%s (%s; %s; by %v)", argparser.Name, gitTag, gitCommit, runtime.Version(), Author)
 	logger.Info(string(opts.GetJson()))
 }
 

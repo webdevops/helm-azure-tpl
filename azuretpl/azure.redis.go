@@ -34,8 +34,8 @@ func (e *AzureTemplateExecutor) azRedisAccessKeys(resourceID string) (interface{
 		}
 
 		val := []string{
-			to.String(result.AccessKeys.PrimaryKey),
-			to.String(result.AccessKeys.SecondaryKey),
+			to.String(result.PrimaryKey),
+			to.String(result.SecondaryKey),
 		}
 
 		return transformToInterface(val)
