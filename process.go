@@ -32,20 +32,20 @@ func run() {
 	// init template data
 	templateData = make(map[string]interface{})
 
+	printAppHeader()
+	initSystem()
+
 	switch opts.Args.Command {
 	case CommandHelp:
 		argparser.WriteHelp(os.Stdout)
 		os.Exit(0)
 	case CommandVersion:
-		fmt.Printf("helm-azure-tpl version: %v (%v, %v)\n", gitTag, gitCommit, runtime.Version())
 		os.Exit(0)
 	case CommandLint:
 		logger.Info("enabling lint mode, all functions are in dry mode")
 		lintMode = true
 		fallthrough
 	case CommandProcess:
-		printAppHeader()
-
 		if len(opts.Args.Files) == 0 {
 			logger.Fatal(`no files specified as arguments`)
 		}

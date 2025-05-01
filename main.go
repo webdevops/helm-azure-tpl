@@ -41,7 +41,6 @@ func main() {
 	startTime = time.Now()
 	initArgparser()
 	initLogger()
-	initSystem()
 	initAzureEnvironment()
 	run()
 }
