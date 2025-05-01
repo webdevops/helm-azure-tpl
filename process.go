@@ -32,20 +32,32 @@ func run() {
 	// init template data
 	templateData = make(map[string]interface{})
 
-	printAppHeader()
-	initSystem()
-
+	lintMode := false
 	switch opts.Args.Command {
 	case CommandHelp:
 		argparser.WriteHelp(os.Stdout)
 		os.Exit(0)
 	case CommandVersion:
+		versionPayload := map[string]string{
+			"version":   gitTag,
+			"gitTag":    gitTag,
+			"gitCommit": gitCommit,
+		}
+
+		version, _ := json.Marshal(versionPayload) // nolint: errcheck
+		fmt.Println(string(version))
 		os.Exit(0)
 	case CommandLint:
-		logger.Info("enabling lint mode, all functions are in dry mode")
 		lintMode = true
 		fallthrough
 	case CommandProcess:
+		printAppHeader()
+		initSystem()
+
+		if lintMode {
+			logger.Info("enabling lint mode, all functions are in dry mode")
+		}
+
 		if len(opts.Args.Files) == 0 {
 			logger.Fatal(`no files specified as arguments`)
 		}
