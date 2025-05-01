@@ -87,6 +87,9 @@ func (e *AzureTemplateExecutor) azureClient() *armclient.ArmClient {
 
 		azureClient.SetUserAgent(e.UserAgent)
 		azureClient.UseAzCliAuth()
+		if err := azureClient.LazyConnect(); err != nil {
+			e.logger.Fatal(err.Error())
+		}
 	}
 	return azureClient
 }
