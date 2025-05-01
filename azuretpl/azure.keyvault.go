@@ -73,6 +73,8 @@ func (e *AzureTemplateExecutor) azKeyVaultSecret(vaultUrl string, secretName str
 			return nil, fmt.Errorf(`unable to fetch secret "%[2]v" from vault "%[1]v": %[3]w`, vaultUrl, secretName, err)
 		}
 
+		e.addSummaryKeyvaultSecret(vaultUrl, secret)
+
 		if !*secret.Attributes.Enabled {
 			return nil, fmt.Errorf(`unable to use Azure KeyVault secret '%v' -> '%v': secret is disabled`, vaultUrl, secretName)
 		}
@@ -100,6 +102,14 @@ func (e *AzureTemplateExecutor) azKeyVaultSecret(vaultUrl string, secretName str
 				e.logger.Warnln(
 					e.handleCicdWarning(
 						fmt.Errorf(`found expiring Azure KeyVault secret '%v' -> '%v': secret is expiring soon (expires: %v)`, vaultUrl, secretName, secret.Attributes.Expires.Format(time.RFC3339)),
+					),
+				)
+
+				e.addSummaryLine(
+					"warnings",
+					fmt.Sprintf(
+						` - found expiring Azure KeyVault secret '%v' -> '%v': secret is expiring soon (expires: %v)`,
+						vaultUrl, secretName, secret.Attributes.Expires.Format(time.RFC3339),
 					),
 				)
 			}
@@ -178,6 +188,8 @@ func (e *AzureTemplateExecutor) azKeyVaultSecretVersions(vaultUrl string, secret
 			if err != nil {
 				return nil, fmt.Errorf(`unable to fetch secret "%[2]v" with version "%[3]v" from vault "%[1]v": %[4]w`, vaultUrl, secretVersion.ID.Name(), secretVersion.ID.Version(), err)
 			}
+
+			e.addSummaryKeyvaultSecret(vaultUrl, secret)
 
 			e.handleCicdMaskSecret(to.String(secret.Value))
 

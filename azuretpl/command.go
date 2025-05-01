@@ -40,6 +40,8 @@ type (
 		LintMode bool
 
 		azureCliAccountInfo map[string]interface{}
+
+		summary map[string][]string
 	}
 
 	Opts struct {
@@ -68,6 +70,7 @@ func New(ctx context.Context, opts Opts, logger *zap.SugaredLogger) *AzureTempla
 		opts:   opts,
 
 		cacheTtl: 15 * time.Minute,
+		summary:  map[string][]string{},
 	}
 	e.init()
 	return e
@@ -334,6 +337,8 @@ func (e *AzureTemplateExecutor) Parse(path string, templateData interface{}, buf
 	if err = parsedContent.Execute(buf, templateData); err != nil {
 		return fmt.Errorf(`unable to process template: '%w'`, err)
 	}
+
+	e.postSummary()
 
 	if err = os.Chdir(oldPwd); err != nil {
 		return e.handleCicdError(err)
