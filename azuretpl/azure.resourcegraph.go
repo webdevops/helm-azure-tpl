@@ -11,6 +11,9 @@ import (
 func (e *AzureTemplateExecutor) azResourceGraphQuery(scope interface{}, query string) (interface{}, error) {
 	resourceGraphOptions := armclient.ResourceGraphOptions{}
 
+	// make query more readable in outputs
+	query = strings.TrimSpace(query)
+
 	scopeList := []string{}
 
 	switch v := scope.(type) {
