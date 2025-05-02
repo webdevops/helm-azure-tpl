@@ -3,7 +3,6 @@ package azuretpl
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 	"strings"
 	"time"
 
@@ -64,7 +63,7 @@ func (e *AzureTemplateExecutor) postSummary() {
 	}
 
 	// github summary
-	if summaryPath := os.Getenv("GITHUB_STEP_SUMMARY"); summaryPath != "" && filepath.IsLocal(summaryPath) {
+	if summaryPath := os.Getenv("GITHUB_STEP_SUMMARY"); summaryPath != "" {
 		content := e.buildSummary()
 
 		// If the file doesn't exist, create it, or append to the file
