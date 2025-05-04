@@ -3,7 +3,7 @@ package config
 import (
 	"encoding/json"
 
-	"github.com/webdevops/helm-azure-tpl/azuretpl"
+	"github.com/webdevops/helm-azure-tpl/azuretpl/models"
 )
 
 type (
@@ -34,7 +34,7 @@ type (
 			FileExt *string `long:"target.fileext"  env:"AZURETPL_TARGET_FILEEXT"  description:"replaces file extension (or adds if empty) with this value (eg. '.yaml')"`
 		}
 
-		AzureTpl azuretpl.Opts
+		AzureTpl models.Opts
 
 		Args struct {
 			Command string   `positional-arg-name:"command" description:"specifies what to do (help, version, lint, apply)" choice:"help" choice:"version" choice:"lint" choice:"apply" required:"yes"` // nolint:staticcheck

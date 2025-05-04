@@ -14,6 +14,8 @@ import (
 	"go.uber.org/zap"
 	yaml "gopkg.in/yaml.v3"
 	"helm.sh/helm/v3/pkg/strvals"
+
+	"github.com/webdevops/helm-azure-tpl/azuretpl"
 )
 
 const (
@@ -90,6 +92,8 @@ func run() {
 				templateFile.Apply()
 			}
 		}
+
+		azuretpl.PostSummary(logger, opts)
 
 		logger.With(zap.Duration("duration", time.Since(startTime))).Info("finished")
 	default:

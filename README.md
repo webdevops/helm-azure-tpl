@@ -357,5 +357,10 @@ or
 
 ```
 
+## Experimental features
+
+| Env var                           | Description                     |
+|-----------------------------------|---------------------------------|
+| `AZURETPL_EXPERIMENTAL_SUMMARY=1` | Post CICD summary (only GitHub) |
 
 PS: some code is borrowed from [Helm](https://github.com/helm/helm)
