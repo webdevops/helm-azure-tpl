@@ -189,10 +189,15 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *textTemplate.Template) textTemp
 		`toRFC3339`:    toRFC3339,
 
 		// borrowed from github.com/helm/helm
+		"toToml":        toTOML,
+		"fromToml":      fromTOML,
 		"toYaml":        toYAML,
+		"mustToYaml":    mustToYAML,
+		"toYamlPretty":  toYAMLPretty,
 		"fromYaml":      fromYAML,
 		"fromYamlArray": fromYAMLArray,
 		"toJson":        toJSON,
+		"mustToJson":    mustToJSON,
 		"fromJson":      fromJSON,
 		"fromJsonArray": fromJSONArray,
 

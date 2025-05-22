@@ -268,10 +268,15 @@ azResource
 | `include`       | `path` (string), `data` (interface) | Parses and includes template file            |
 | `required`      | `message` (string)                  | Throws error if passed object/value is empty |
 | `fail`          | `message` (string)                  | Throws error                                 |
+| `toToml`        |                                     | Convert object to toml                       |
+| `fromToml`      |                                     | Convert toml to object                       |
 | `toYaml`        |                                     | Convert object to yaml                       |
+| `toYamlPretty`  |                                     | Convert object to yaml (pretty format)       |
+| `mustToYaml`    |                                     | Convert object to yaml                       |
 | `fromYaml`      |                                     | Convert yaml to object                       |
 | `fromYamlArray` |                                     | Convert yaml array to array                  |
 | `toJson`        |                                     | Convert object to json                       |
+| `mustToJson`    |                                     | Convert object to json                       |
 | `fromJson`      |                                     | Convert json to object                       |
 | `fromJsonArray` |                                     | Convert json array to array                  |
 
