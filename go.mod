@@ -29,7 +29,7 @@ require (
 	github.com/webdevops/go-common v0.0.0-20250501225441-53b22a3a9550
 	go.uber.org/zap v1.27.0
 	gopkg.in/yaml.v3 v3.0.1
-	helm.sh/helm/v3 v3.18.0
+	helm.sh/helm/v3 v3.18.2
 	sigs.k8s.io/yaml v1.4.0
 )
 
