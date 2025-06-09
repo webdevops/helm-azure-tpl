@@ -23,13 +23,13 @@ require (
 	github.com/PaesslerAG/jsonpath v0.1.1
 	github.com/jessevdk/go-flags v1.6.1
 	github.com/microsoft/kiota-abstractions-go v1.9.2
-	github.com/microsoftgraph/msgraph-sdk-go v1.72.0
+	github.com/microsoftgraph/msgraph-sdk-go v1.73.0
 	github.com/microsoftgraph/msgraph-sdk-go-core v1.3.2
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/webdevops/go-common v0.0.0-20250501225441-53b22a3a9550
 	go.uber.org/zap v1.27.0
 	gopkg.in/yaml.v3 v3.0.1
-	helm.sh/helm/v3 v3.18.0
+	helm.sh/helm/v3 v3.18.2
 	sigs.k8s.io/yaml v1.4.0
 )
 
