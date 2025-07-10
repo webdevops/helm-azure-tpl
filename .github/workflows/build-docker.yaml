@@ -18,7 +18,8 @@ jobs:
         with:
           swap-size-gb: 12
 
-      - id: toolchain
+      - name: Detect GoLang version
+        id: toolchain
         run: echo "version=$(sed -ne '/^toolchain /s/^toolchain go//p' go.mod)" >> "$GITHUB_OUTPUT"
 
       - uses: actions/setup-go@v5
@@ -54,7 +55,8 @@ jobs:
         with:
           swap-size-gb: 12
 
-      - id: toolchain
+      - name: Detect GoLang version
+        id: toolchain
         run: echo "version=$(sed -ne '/^toolchain /s/^toolchain go//p' go.mod)" >> "$GITHUB_OUTPUT"
 
       - uses: actions/setup-go@v5
