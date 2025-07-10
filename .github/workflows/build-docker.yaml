@@ -20,7 +20,10 @@ jobs:
 
       - name: Detect GoLang version
         id: toolchain
-        run: echo "version=$(sed -ne '/^toolchain /s/^toolchain go//p' go.mod)" >> "$GITHUB_OUTPUT"
+        run: |
+          GO_VERSION=$(sed -ne '/^toolchain /s/^toolchain go//p' go.mod)
+          echo "version=$GO_VERSION" >> "$GITHUB_OUTPUT"
+          echo "$GO_VERSION"
 
       - uses: actions/setup-go@v5
         with:
@@ -57,7 +60,10 @@ jobs:
 
       - name: Detect GoLang version
         id: toolchain
-        run: echo "version=$(sed -ne '/^toolchain /s/^toolchain go//p' go.mod)" >> "$GITHUB_OUTPUT"
+        run: |
+          GO_VERSION=$(sed -ne '/^toolchain /s/^toolchain go//p' go.mod)
+          echo "version=$GO_VERSION" >> "$GITHUB_OUTPUT"
+          echo "$GO_VERSION"
 
       - uses: actions/setup-go@v5
         with:
