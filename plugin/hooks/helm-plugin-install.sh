@@ -24,6 +24,11 @@ case "$HOST_ARCH" in
     "x86_64")
         ## translate to amd64
         HOST_ARCH="amd64"
+        ;;
+    "aarch64")
+        ## translate to arm64
+        HOST_ARCH="arm64"
+        ;;
 esac
 
 PLUGIN_DOWNLOAD_FILE="helm-azure-tpl.${HOST_OS}.${HOST_ARCH}${FILE_SUFFIX}"
