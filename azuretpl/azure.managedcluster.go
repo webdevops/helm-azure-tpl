@@ -2,6 +2,7 @@ package azuretpl
 
 import (
 	"fmt"
+	"log/slog"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/containerservice/armcontainerservice"
 	"github.com/webdevops/go-common/azuresdk/armclient"
@@ -9,7 +10,7 @@ import (
 
 // azManagedClusterUserCredentials fetches user credentials object from managed cluster (AKS)
 func (e *AzureTemplateExecutor) azManagedClusterUserCredentials(resourceID string) (interface{}, error) {
-	e.logger.Infof(`fetching Azure ManagedCluster user credentials for '%v'`, resourceID)
+	e.logger.Info(`fetching Azure ManagedCluster user credentials`, slog.String("resourceID", resourceID))
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil

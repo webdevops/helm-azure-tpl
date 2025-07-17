@@ -2,6 +2,7 @@ package azuretpl
 
 import (
 	"fmt"
+	"log/slog"
 	"strings"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/managementgroups/armmanagementgroups"
@@ -10,7 +11,7 @@ import (
 
 // azManagementGroup fetches Azure ManagementGroup
 func (e *AzureTemplateExecutor) azManagementGroup(groupID string) (interface{}, error) {
-	e.logger.Infof(`fetching Azure ManagementGroup '%v'`, groupID)
+	e.logger.Info(`fetching Azure ManagementGroup`, slog.String("mgmtgroup", groupID))
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil
@@ -34,7 +35,7 @@ func (e *AzureTemplateExecutor) azManagementGroup(groupID string) (interface{}, 
 
 // azManagementGroupSubscriptionList fetches list of Azure Subscriptions under Azure ManagementGroup
 func (e *AzureTemplateExecutor) azManagementGroupSubscriptionList(groupID string) (interface{}, error) {
-	e.logger.Infof(`fetching subscriptions from Azure ManagementGroup '%v'`, groupID)
+	e.logger.Info(`fetching subscriptions from Azure ManagementGroup`, slog.String("mgmtgroup", groupID))
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil
@@ -52,7 +53,7 @@ func (e *AzureTemplateExecutor) azManagementGroupSubscriptionList(groupID string
 		for pager.More() {
 			result, err := pager.NextPage(e.ctx)
 			if err != nil {
-				e.logger.Panic(err)
+				panic(err)
 			}
 
 			for _, resource := range result.Value {

@@ -2,6 +2,7 @@ package azuretpl
 
 import (
 	"fmt"
+	"log/slog"
 	"regexp"
 	"sort"
 	"strconv"
@@ -51,7 +52,7 @@ func (e *AzureTemplateExecutor) azKeyVaultSecret(vaultUrl string, secretName str
 		return nil, err
 	}
 
-	e.logger.Infof(`fetching Azure KeyVault secret '%v' -> '%v'`, vaultUrl, secretName)
+	e.logger.Info(`fetching Azure KeyVault secret`, slog.String("keyvault", vaultUrl), slog.String("secret", secretName))
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil
@@ -91,7 +92,7 @@ func (e *AzureTemplateExecutor) azKeyVaultSecret(vaultUrl string, secretName str
 				if !e.opts.Keyvault.IgnoreExpiry {
 					return nil, fmt.Errorf(`unable to use Azure KeyVault secret '%v' -> '%v': secret is expired (expires: %v, set env AZURETPL_KEYVAULT_EXPIRY_IGNORE=1 to ignore)`, vaultUrl, secretName, secret.Attributes.Expires.Format(time.RFC3339))
 				} else {
-					e.logger.Warnln(
+					e.logger.Warn(
 						e.handleCicdWarning(
 							fmt.Errorf(`found expiring Azure KeyVault secret '%v' -> '%v': secret is expired, but env AZURETPL_KEYVAULT_EXPIRY_IGNORE=1 is active (expires: %v)`, vaultUrl, secretName, secret.Attributes.Expires.Format(time.RFC3339)),
 						),
@@ -99,7 +100,7 @@ func (e *AzureTemplateExecutor) azKeyVaultSecret(vaultUrl string, secretName str
 				}
 			} else if time.Now().Add(e.opts.Keyvault.ExpiryWarning).After(*secret.Attributes.Expires) {
 				// secret is expiring soon
-				e.logger.Warnln(
+				e.logger.Warn(
 					e.handleCicdWarning(
 						fmt.Errorf(`found expiring Azure KeyVault secret '%v' -> '%v': secret is expiring soon (expires: %v)`, vaultUrl, secretName, secret.Attributes.Expires.Format(time.RFC3339)),
 					),
@@ -115,7 +116,7 @@ func (e *AzureTemplateExecutor) azKeyVaultSecret(vaultUrl string, secretName str
 			}
 		}
 
-		e.logger.Infof(`using Azure KeyVault secret '%v' -> '%v' (version: %v)`, vaultUrl, secretName, secret.ID.Version())
+		e.logger.Info(`using Azure KeyVault secret`, slog.String("keyvault", vaultUrl), slog.String("secret", secretName), slog.String("version", secret.ID.Version()))
 		e.handleCicdMaskSecret(to.String(secret.Value))
 
 		return transformToInterface(models.NewAzSecretItem(secret.Secret))
@@ -131,7 +132,7 @@ func (e *AzureTemplateExecutor) azKeyVaultSecretVersions(vaultUrl string, secret
 		return nil, err
 	}
 
-	e.logger.Infof(`fetching Azure KeyVault secret history '%v' -> '%v' with %d versions`, vaultUrl, secretName, count)
+	e.logger.Info(`fetching Azure KeyVault secret history`, slog.String("keyvault", vaultUrl), slog.String("secret", secretName), slog.Int("count", count))
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil
@@ -150,7 +151,7 @@ func (e *AzureTemplateExecutor) azKeyVaultSecretVersions(vaultUrl string, secret
 		for pager.More() {
 			result, err := pager.NextPage(e.ctx)
 			if err != nil {
-				e.logger.Panic(err)
+				panic(err)
 			}
 
 			for _, secretVersion := range result.Value {
@@ -217,7 +218,7 @@ func (e *AzureTemplateExecutor) azKeyVaultSecretList(vaultUrl string, secretName
 		return nil, err
 	}
 
-	e.logger.Infof(`fetching Azure KeyVault secret list from vault '%v'`, vaultUrl)
+	e.logger.Info(`fetching Azure KeyVault secret list from vault`, slog.String("keyvault", vaultUrl))
 
 	secretNamePatternRegExp, err := regexp.Compile(secretNamePattern)
 	if err != nil {
@@ -240,7 +241,7 @@ func (e *AzureTemplateExecutor) azKeyVaultSecretList(vaultUrl string, secretName
 		for pager.More() {
 			result, err := pager.NextPage(e.ctx)
 			if err != nil {
-				e.logger.Panic(err)
+				panic(err)
 			}
 
 			for _, secret := range result.Value {

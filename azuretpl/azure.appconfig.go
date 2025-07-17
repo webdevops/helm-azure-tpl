@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log/slog"
 	"net/url"
 	"strings"
 
@@ -50,7 +51,7 @@ func (e *AzureTemplateExecutor) azAppConfigSetting(appConfigUrl string, settingN
 		return nil, err
 	}
 
-	e.logger.Infof(`fetching AppConfig value '%v' -> '%v'`, appConfigUrl, settingName)
+	e.logger.Info(`fetching AppConfig value`, slog.String("url", appConfigUrl), slog.String("setting", settingName))
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil

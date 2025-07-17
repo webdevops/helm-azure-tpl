@@ -2,6 +2,7 @@ package azuretpl
 
 import (
 	"fmt"
+	"log/slog"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resources/armsubscriptions"
 	"github.com/webdevops/go-common/utils/to"
@@ -30,7 +31,7 @@ func (e *AzureTemplateExecutor) azSubscription(subscriptionID ...string) (interf
 		}
 	}
 
-	e.logger.Infof(`fetching Azure subscription '%v'`, selectedSubscriptionId)
+	e.logger.Info(`fetching Azure subscription`, slog.String("subscriptionID", selectedSubscriptionId))
 
 	cacheKey := generateCacheKey(`azSubscription`, selectedSubscriptionId)
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
@@ -54,7 +55,7 @@ func (e *AzureTemplateExecutor) azSubscription(subscriptionID ...string) (interf
 
 // azSubscriptionList fetches list of visible Azure subscriptions
 func (e *AzureTemplateExecutor) azSubscriptionList() (interface{}, error) {
-	e.logger.Infof(`fetching Azure subscriptions`)
+	e.logger.Info(`fetching Azure subscriptions`)
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil
@@ -64,7 +65,7 @@ func (e *AzureTemplateExecutor) azSubscriptionList() (interface{}, error) {
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
 		client, err := armsubscriptions.NewClient(e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
 		if err != nil {
-			e.logger.Panic(err.Error())
+			panic(err.Error())
 		}
 
 		pager := client.NewListPager(nil)
@@ -72,7 +73,7 @@ func (e *AzureTemplateExecutor) azSubscriptionList() (interface{}, error) {
 		for pager.More() {
 			result, err := pager.NextPage(e.ctx)
 			if err != nil {
-				e.logger.Panic(err)
+				panic(err)
 			}
 
 			for _, subscription := range result.Value {

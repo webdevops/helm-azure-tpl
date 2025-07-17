@@ -2,6 +2,7 @@ package azuretpl
 
 import (
 	"fmt"
+	"log/slog"
 
 	armauthorization "github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/authorization/armauthorization/v2"
 	"github.com/webdevops/go-common/utils/to"
@@ -9,7 +10,7 @@ import (
 
 // azRoleDefinition fetches Azure RoleDefinition by roleName
 func (e *AzureTemplateExecutor) azRoleDefinition(scope string, roleName string) (interface{}, error) {
-	e.logger.Infof(`fetching Azure RoleDefinition '%v' for scope '%v' and roleName '%v'`, roleName, scope)
+	e.logger.Info(`fetching Azure RoleDefinition`, slog.String("scope", scope), slog.String("role", roleName))
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil
@@ -47,7 +48,7 @@ func (e *AzureTemplateExecutor) azRoleDefinitionList(scope string, filter ...str
 		roleDefinitionFilter = filter[0]
 	}
 
-	e.logger.Infof(`fetching Azure RoleDefinitions for scope '%v' and $filter "%v"`, scope, roleDefinitionFilter)
+	e.logger.Info(`fetching Azure RoleDefinitions`, slog.String("scope", scope), slog.String("filter", roleDefinitionFilter))
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil

@@ -3,6 +3,7 @@ package azuretpl
 import (
 	"fmt"
 	"io"
+	"log/slog"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/storage/armstorage"
 	"github.com/Azure/azure-sdk-for-go/sdk/storage/azblob"
@@ -11,7 +12,7 @@ import (
 
 // azStorageAccountAccessKeys fetches container blob from StorageAccount
 func (e *AzureTemplateExecutor) azStorageAccountAccessKeys(resourceID string) (interface{}, error) {
-	e.logger.Infof(`fetching Azure StorageAccount accesskey '%v'`, resourceID)
+	e.logger.Info(`fetching Azure StorageAccount accesskey`, slog.String("resourceID", resourceID))
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil
@@ -40,7 +41,7 @@ func (e *AzureTemplateExecutor) azStorageAccountAccessKeys(resourceID string) (i
 
 // azStorageAccountContainerBlob fetches container blob from StorageAccount
 func (e *AzureTemplateExecutor) azStorageAccountContainerBlob(containerBlobUrl string) (interface{}, error) {
-	e.logger.Infof(`fetching Azure StorageAccount container blob '%v'`, containerBlobUrl)
+	e.logger.Info(`fetching Azure StorageAccount container blob`, slog.String("containerBlobUrl", containerBlobUrl))
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil

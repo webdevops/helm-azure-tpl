@@ -2,6 +2,7 @@ package azuretpl
 
 import (
 	"fmt"
+	"log/slog"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resources/armresources"
 	"github.com/webdevops/go-common/azuresdk/armclient"
@@ -10,7 +11,7 @@ import (
 
 // azResource fetches resource json from Azure REST API using the specified apiVersion
 func (e *AzureTemplateExecutor) azResource(resourceID string, apiVersion string) (interface{}, error) {
-	e.logger.Infof(`fetching Azure Resource '%v' in apiVersion '%v'`, resourceID, apiVersion)
+	e.logger.Info(`fetching Azure Resource`, slog.String("resourceID", resourceID), slog.String("apiVersion", apiVersion))
 
 	cacheKey := generateCacheKey(`azResource`, resourceID, apiVersion)
 	return e.cacheResult(cacheKey, func() (interface{}, error) {
@@ -25,7 +26,7 @@ func (e *AzureTemplateExecutor) azResourceList(scope string, opts ...string) (in
 		filter = opts[0]
 	}
 
-	e.logger.Infof(`fetching Azure Resource list for scope '%v' and filter '%v'`, scope, filter)
+	e.logger.Info(`fetching Azure Resource list`, slog.String("scope", scope), slog.String("filter", filter))
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil
@@ -55,7 +56,7 @@ func (e *AzureTemplateExecutor) azResourceList(scope string, opts ...string) (in
 			for pager.More() {
 				result, err := pager.NextPage(e.ctx)
 				if err != nil {
-					e.logger.Panic(err)
+					panic(err)
 				}
 
 				for _, resource := range result.Value {
@@ -77,7 +78,7 @@ func (e *AzureTemplateExecutor) azResourceList(scope string, opts ...string) (in
 			for pager.More() {
 				result, err := pager.NextPage(e.ctx)
 				if err != nil {
-					e.logger.Panic(err)
+					panic(err)
 				}
 
 				for _, resource := range result.Value {

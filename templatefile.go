@@ -3,11 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"strings"
-
-	"go.uber.org/zap"
 
 	"github.com/webdevops/helm-azure-tpl/azuretpl"
 )
@@ -18,20 +17,20 @@ type (
 		SourceFile      string
 		TargetFile      string
 		TemplateBaseDir string
-		Logger          *zap.SugaredLogger
+		Logger          *slog.Logger
 	}
 )
 
 func (f *TemplateFile) Lint() {
 	var buf strings.Builder
-	f.Logger.Infof(`linting file`)
+	f.Logger.Info(`linting file`)
 	f.parse(&buf)
 	f.Logger.Info(`file successfully linted`)
 }
 
 func (f *TemplateFile) Apply() {
 	var buf strings.Builder
-	f.Logger.Infof(`process file`)
+	f.Logger.Info(`process file`)
 	f.parse(&buf)
 
 	if opts.Debug {
@@ -67,14 +66,16 @@ func (f *TemplateFile) parse(buf *strings.Builder) {
 	azureTemplate.SetTemplateRelPath(filepath.Dir(f.SourceFile))
 	err := azureTemplate.Parse(f.SourceFile, templateData, buf)
 	if err != nil {
-		f.Logger.Fatalf(err.Error())
+		f.Logger.Error(err.Error())
+		os.Exit(1)
 	}
 }
 
 func (f *TemplateFile) write(buf *strings.Builder) {
-	f.Logger.Infof(`writing file '%v'`, f.TargetFile)
+	f.Logger.Info(`writing file`, slog.String("path", f.TargetFile))
 	err := os.WriteFile(f.TargetFile, []byte(buf.String()), 0600)
 	if err != nil {
-		f.Logger.Fatalf(`unable to write target file '%v': %v`, f.TargetFile, err.Error())
+		f.Logger.Error(`unable to write target file`, slog.String("path", f.TargetFile), slog.Any("error", err.Error()))
+		os.Exit(1)
 	}
 }

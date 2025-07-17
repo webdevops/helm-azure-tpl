@@ -2,6 +2,7 @@ package azuretpl
 
 import (
 	"fmt"
+	"log/slog"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/redis/armredis"
 	"github.com/webdevops/go-common/azuresdk/armclient"
@@ -10,7 +11,7 @@ import (
 
 // azRedisAccessKeys fetches accesskeys from redis cache
 func (e *AzureTemplateExecutor) azRedisAccessKeys(resourceID string) (interface{}, error) {
-	e.logger.Infof(`fetching Azure Redis accesskey '%v'`, resourceID)
+	e.logger.Info(`fetching Azure Redis accesskey`, slog.String("resourceID", resourceID))
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil

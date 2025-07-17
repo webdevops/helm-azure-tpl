@@ -2,6 +2,7 @@ package azuretpl
 
 import (
 	"fmt"
+	"log/slog"
 
 	msgraphcore "github.com/microsoftgraph/msgraph-sdk-go-core"
 	"github.com/microsoftgraph/msgraph-sdk-go/models"
@@ -11,7 +12,7 @@ import (
 
 // mgServicePrincipalByDisplayName fetches one servicePrincipal from MsGraph API using displayName
 func (e *AzureTemplateExecutor) mgServicePrincipalByDisplayName(displayName string) (interface{}, error) {
-	e.logger.Infof(`fetching MsGraph servicePrincipal by displayName '%v'`, displayName)
+	e.logger.Info(`fetching MsGraph servicePrincipal by displayName`, slog.String("displayName", displayName))
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil
@@ -48,7 +49,7 @@ func (e *AzureTemplateExecutor) mgServicePrincipalByDisplayName(displayName stri
 
 // mgServicePrincipalList fetches list of servicePrincipals from MsGraph API using $filter query
 func (e *AzureTemplateExecutor) mgServicePrincipalList(filter string) (interface{}, error) {
-	e.logger.Infof(`fetching MsGraph servicePrincipal list with $filter '%v'`, filter)
+	e.logger.Info(`fetching MsGraph servicePrincipal list with $filter`, slog.String("filter", filter))
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil

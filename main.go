@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log/slog"
 	"os"
 	"os/exec"
 	"time"
@@ -76,19 +77,21 @@ func fetchAzAccountInfo() {
 
 	accountInfo, err := cmd.Output()
 	if err != nil {
-		logger.Fatalf(`unable to detect Azure TenantID via 'az account show': %v`, err)
+		logger.Error(`unable to detect Azure TenantID via 'az account show'`, slog.Any("error", err))
+		os.Exit(1)
 	}
 
 	err = json.Unmarshal(accountInfo, &azAccountInfo)
 	if err != nil {
-		logger.Fatalf(`unable to parse 'az account show' output: %v`, err)
+		logger.Error(`unable to parse 'az account show' output`, slog.Any("error", err))
+		os.Exit(1)
 	}
 
 	// auto set azure tenant id
 	if opts.Azure.Environment == nil || *opts.Azure.Environment == "" {
 		// autodetect tenant
 		if val, ok := azAccountInfo["environmentName"].(string); ok {
-			logger.Infof(`use Azure Environment '%v' from 'az account show'`, val)
+			logger.Info(`detected Azure Environment from 'az account show'`, slog.String("azureEnvironment", val))
 			opts.Azure.Environment = &val
 		}
 	}
@@ -97,7 +100,7 @@ func fetchAzAccountInfo() {
 	if opts.Azure.Tenant == nil || *opts.Azure.Tenant == "" {
 		// autodetect tenant
 		if val, ok := azAccountInfo["tenantId"].(string); ok {
-			logger.Infof(`use Azure TenantID '%v' from 'az account show'`, val)
+			logger.Info(`detected Azure TenantID from 'az account show'`, slog.String("azureTenant", val))
 			opts.Azure.Tenant = &val
 		}
 	}
@@ -110,14 +113,14 @@ func initAzureEnvironment() {
 	if opts.Azure.Environment == nil || *opts.Azure.Environment == "" {
 		// autodetect tenant
 		if val, ok := azAccountInfo["environmentName"].(string); ok {
-			logger.Infof(`use Azure Environment '%v' from 'az account show'`, val)
+			logger.Info(`detected Azure Environment '%v' from 'az account show'`, slog.String("azureEnvironment", val))
 			opts.Azure.Environment = &val
 		}
 	}
 
 	if opts.Azure.Environment != nil {
 		if err := os.Setenv(azidentity.EnvAzureEnvironment, *opts.Azure.Environment); err != nil {
-			logger.Warnf(`unable to set envvar AZURE_ENVIRONMENT: %v`, err.Error())
+			logger.Warn(`unable to set envvar AZURE_ENVIRONMENT`, slog.Any("error", err))
 		}
 	}
 }

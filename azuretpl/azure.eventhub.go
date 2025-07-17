@@ -2,6 +2,7 @@ package azuretpl
 
 import (
 	"fmt"
+	"log/slog"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/eventhub/armeventhub"
 	"github.com/webdevops/go-common/azuresdk/armclient"
@@ -9,7 +10,7 @@ import (
 
 // azEventHubListByNamespace fetches list of Azure EventHubs by Namespace
 func (e *AzureTemplateExecutor) azEventHubListByNamespace(resourceID string) (interface{}, error) {
-	e.logger.Infof(`fetching EventHub list by namespace '%v'`, resourceID)
+	e.logger.Info(`fetching EventHub list by namespace`, slog.String("resourceID", resourceID))
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil

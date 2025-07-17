@@ -42,13 +42,11 @@ func (e *AzureTemplateExecutor) handleCicdMaskSecret(val string) {
 	}
 
 	for _, workflowLogMsg := range workflowLogMsgList {
-		e.logger.Sync() //nolint:errcheck
 		fmt.Fprintln(os.Stderr, workflowLogMsg)
-		e.logger.Sync() //nolint:errcheck
 	}
 }
 
-func (e *AzureTemplateExecutor) handleCicdWarning(err error) error {
+func (e *AzureTemplateExecutor) handleCicdWarning(err error) string {
 	workflowLogMsg := ""
 
 	// only show first line of error (could be a multi line error message)
@@ -70,12 +68,10 @@ func (e *AzureTemplateExecutor) handleCicdWarning(err error) error {
 	}
 
 	if workflowLogMsg != "" {
-		e.logger.Sync() //nolint:errcheck
 		fmt.Fprintln(os.Stderr, workflowLogMsg)
-		e.logger.Sync() //nolint:errcheck
 	}
 
-	return err
+	return err.Error()
 }
 
 func (e *AzureTemplateExecutor) handleCicdError(err error) error {
@@ -100,9 +96,7 @@ func (e *AzureTemplateExecutor) handleCicdError(err error) error {
 	}
 
 	if workflowLogMsg != "" {
-		e.logger.Sync() //nolint:errcheck
 		fmt.Fprintln(os.Stderr, workflowLogMsg)
-		e.logger.Sync() //nolint:errcheck
 	}
 
 	return err

@@ -2,6 +2,7 @@ package azuretpl
 
 import (
 	"encoding/json"
+	"log/slog"
 	"os"
 	"os/exec"
 )
@@ -13,12 +14,14 @@ func (e *AzureTemplateExecutor) azAccountInfo() (interface{}, error) {
 
 		accountInfo, err := cmd.Output()
 		if err != nil {
-			e.logger.Fatalf(`unable to detect Azure TenantID via 'az account show': %v`, err)
+			e.logger.Error(`unable to detect Azure TenantID via 'az account show'`, slog.Any("error", err))
+			os.Exit(1)
 		}
 
 		err = json.Unmarshal(accountInfo, &e.azureCliAccountInfo)
 		if err != nil {
-			e.logger.Fatalf(`unable to parse 'az account show' output: %v`, err)
+			e.logger.Error(`unable to parse 'az account show' output`, slog.Any("error", err))
+			os.Exit(1)
 		}
 	}
 	return e.azureCliAccountInfo, nil

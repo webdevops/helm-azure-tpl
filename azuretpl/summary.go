@@ -2,13 +2,13 @@ package azuretpl
 
 import (
 	"fmt"
+	"log/slog"
 	"os"
 	"strings"
 	"time"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/security/keyvault/azsecrets"
 	"github.com/webdevops/go-common/utils/to"
-	"go.uber.org/zap"
 
 	"github.com/webdevops/helm-azure-tpl/config"
 )
@@ -77,7 +77,7 @@ func buildSummary(opts config.Opts) string {
 	return "\n" + strings.Join(output, "\n") + "\n"
 }
 
-func PostSummary(logger *zap.SugaredLogger, opts config.Opts) {
+func PostSummary(logger *slog.Logger, opts config.Opts) {
 	if val := os.Getenv("AZURETPL_EXPERIMENTAL_SUMMARY"); val != "true" && val != "1" {
 		return
 	}
@@ -94,13 +94,13 @@ func PostSummary(logger *zap.SugaredLogger, opts config.Opts) {
 		// If the file doesn't exist, create it, or append to the file
 		f, err := os.OpenFile(summaryPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 		if err != nil {
-			logger.Warnf(`unable to post GITHUB step summary: %w`, err)
+			logger.Warn(`unable to post GITHUB step summary`, slog.Any("error", err))
 			return
 		}
 		defer f.Close() // nolint: errcheck
 
 		if _, err := f.Write([]byte(content)); err != nil {
-			logger.Warnf(`unable to post GITHUB step summary: %w`, err)
+			logger.Warn(`unable to post GITHUB step summary`, slog.Any("error", err))
 		}
 	}
 }

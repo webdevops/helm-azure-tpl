@@ -2,6 +2,7 @@ package azuretpl
 
 import (
 	"fmt"
+	"log/slog"
 
 	msgraphcore "github.com/microsoftgraph/msgraph-sdk-go-core"
 	"github.com/microsoftgraph/msgraph-sdk-go/groups"
@@ -11,7 +12,7 @@ import (
 
 // mgGroupByDisplayName fetches one group from MsGraph API using displayName
 func (e *AzureTemplateExecutor) mgGroupByDisplayName(displayName string) (interface{}, error) {
-	e.logger.Infof(`fetching MsGraph group by displayName '%v'`, displayName)
+	e.logger.Info(`fetching MsGraph group by displayName`, slog.String("displayName", displayName))
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil
@@ -47,7 +48,7 @@ func (e *AzureTemplateExecutor) mgGroupByDisplayName(displayName string) (interf
 
 // mgGroupList fetches list of groups from MsGraph API using $filter query
 func (e *AzureTemplateExecutor) mgGroupList(filter string) (interface{}, error) {
-	e.logger.Infof(`fetching MsGraph group list with $filter '%v'`, filter)
+	e.logger.Info(`fetching MsGraph group list with $filter`, slog.String("filter", filter))
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil

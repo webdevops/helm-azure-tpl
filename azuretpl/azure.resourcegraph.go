@@ -2,6 +2,7 @@ package azuretpl
 
 import (
 	"fmt"
+	"log/slog"
 	"strings"
 
 	"github.com/webdevops/go-common/azuresdk/armclient"
@@ -47,7 +48,7 @@ func (e *AzureTemplateExecutor) azResourceGraphQuery(scope interface{}, query st
 		return val, nil
 	}
 
-	e.logger.Infof(`executing ResourceGraph query '%v' for scopes '%v'`, query, scopeList)
+	e.logger.Info(`executing ResourceGraph query '%v' for scopes '%v'`, slog.String("query", query), slog.Any("scopes", scopeList))
 
 	cacheKey := generateCacheKey(`azResourceGraphQuery`, query, strings.Join(scopeList, ","))
 	return e.cacheResult(cacheKey, func() (interface{}, error) {

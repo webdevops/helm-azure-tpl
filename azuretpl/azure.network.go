@@ -2,6 +2,7 @@ package azuretpl
 
 import (
 	"fmt"
+	"log/slog"
 	"strings"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/network/armnetwork"
@@ -11,7 +12,7 @@ import (
 
 // azPublicIpAddress fetches ipAddress from Azure Public IP Address
 func (e *AzureTemplateExecutor) azPublicIpAddress(resourceID string) (interface{}, error) {
-	e.logger.Infof(`fetching Azure PublicIpAddress '%v'`, resourceID)
+	e.logger.Info(`fetching Azure PublicIpAddress`, slog.String("resourceID", resourceID))
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil
@@ -40,7 +41,7 @@ func (e *AzureTemplateExecutor) azPublicIpAddress(resourceID string) (interface{
 
 // azPublicIpPrefixAddressPrefix fetches ipAddress prefix from Azure Public IP Address prefix
 func (e *AzureTemplateExecutor) azPublicIpPrefixAddressPrefix(resourceID string) (interface{}, error) {
-	e.logger.Infof(`fetching Azure PublicIpPrefix '%v'`, resourceID)
+	e.logger.Info(`fetching Azure PublicIpPrefix`, slog.String("resourceID", resourceID))
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil
@@ -69,7 +70,7 @@ func (e *AzureTemplateExecutor) azPublicIpPrefixAddressPrefix(resourceID string)
 
 // azVirtualNetworkAddressPrefixes fetches ipAddress prefixes (array) from Azure VirtualNetwork
 func (e *AzureTemplateExecutor) azVirtualNetworkAddressPrefixes(resourceID string) (interface{}, error) {
-	e.logger.Infof(`fetching AddressPrefixes from Azure VirtualNetwork '%v'`, resourceID)
+	e.logger.Info(`fetching AddressPrefixes from Azure VirtualNetwork '%v'`, slog.String("resourceID", resourceID))
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil
@@ -101,7 +102,7 @@ func (e *AzureTemplateExecutor) azVirtualNetworkAddressPrefixes(resourceID strin
 
 // azVirtualNetworkSubnetAddressPrefixes fetches ipAddress prefixes (array) from Azure VirtualNetwork subnet
 func (e *AzureTemplateExecutor) azVirtualNetworkSubnetAddressPrefixes(resourceID string, subnetName string) (interface{}, error) {
-	e.logger.Infof(`fetching AddressPrefixes from Azure VirtualNetwork '%v' subnet '%v'`, resourceID, subnetName)
+	e.logger.Info(`fetching AddressPrefixes from Azure VirtualNetwork`, slog.String("resourceID", resourceID), slog.String("subnet", subnetName))
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil

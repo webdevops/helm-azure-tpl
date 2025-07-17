@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"strings"
@@ -17,7 +18,6 @@ import (
 	cache "github.com/patrickmn/go-cache"
 	"github.com/webdevops/go-common/azuresdk/armclient"
 	"github.com/webdevops/go-common/msgraphsdk/msgraphclient"
-	"go.uber.org/zap"
 
 	"github.com/webdevops/helm-azure-tpl/azuretpl/models"
 )
@@ -25,7 +25,7 @@ import (
 type (
 	AzureTemplateExecutor struct {
 		ctx    context.Context
-		logger *zap.SugaredLogger
+		logger *slog.Logger
 
 		cache    *cache.Cache
 		cacheTtl time.Duration
@@ -50,7 +50,7 @@ var (
 	msGraphClient *msgraphclient.MsGraphClient
 )
 
-func New(ctx context.Context, opts models.Opts, logger *zap.SugaredLogger) *AzureTemplateExecutor {
+func New(ctx context.Context, opts models.Opts, logger *slog.Logger) *AzureTemplateExecutor {
 	e := &AzureTemplateExecutor{
 		ctx:    ctx,
 		logger: logger,
@@ -71,13 +71,15 @@ func (e *AzureTemplateExecutor) azureClient() *armclient.ArmClient {
 	if azureClient == nil {
 		azureClient, err = armclient.NewArmClientFromEnvironment(e.logger)
 		if err != nil {
-			e.logger.Fatal(err.Error())
+			e.logger.Error(err.Error())
+			os.Exit(1)
 		}
 
 		azureClient.SetUserAgent(e.UserAgent)
 		azureClient.UseAzCliAuth()
 		if err := azureClient.LazyConnect(); err != nil {
-			e.logger.Fatal(err.Error())
+			e.logger.Error(err.Error())
+			os.Exit(1)
 		}
 	}
 	return azureClient
@@ -93,7 +95,8 @@ func (e *AzureTemplateExecutor) msGraphClient() *msgraphclient.MsGraphClient {
 
 		msGraphClient, err = msgraphclient.NewMsGraphClientFromEnvironment(e.logger)
 		if err != nil {
-			e.logger.Fatal(err.Error())
+			e.logger.Error(err.Error())
+			os.Exit(1)
 		}
 
 		msGraphClient.SetUserAgent(e.UserAgent)
@@ -109,7 +112,8 @@ func (e *AzureTemplateExecutor) SetUserAgent(val string) {
 func (e *AzureTemplateExecutor) SetTemplateRootPath(val string) {
 	path, err := filepath.Abs(filepath.Clean(val))
 	if err != nil {
-		e.logger.Fatalf(`invalid base path '%v': %v`, val, err.Error())
+		e.logger.Error(`invalid base path`, slog.String("path", val), slog.Any("error", err))
+		os.Exit(1)
 	}
 	e.TemplateRootPath = path
 }
@@ -117,7 +121,8 @@ func (e *AzureTemplateExecutor) SetTemplateRootPath(val string) {
 func (e *AzureTemplateExecutor) SetTemplateRelPath(val string) {
 	path, err := filepath.Abs(filepath.Clean(val))
 	if err != nil {
-		e.logger.Fatalf(`invalid base path '%v': %v`, val, err.Error())
+		e.logger.Error(`invalid base path`, slog.String("path", val), slog.Any("error", err))
+		os.Exit(1)
 	}
 	e.TemplateRelPath = path
 }
@@ -241,7 +246,7 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *textTemplate.Template) textTemp
 			if val == nil {
 				if e.LintMode {
 					// Don't fail on missing required values when linting
-					e.logger.Infof("[TPL::required] missing required value: %s", message)
+					e.logger.Info(fmt.Sprintf("[TPL::required] missing required value: %s", message))
 					return "", nil
 				}
 				return val, errors.New(message)
@@ -249,7 +254,7 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *textTemplate.Template) textTemp
 				if val == "" {
 					if e.LintMode {
 						// Don't fail on missing required values when linting
-						e.logger.Infof("[TPL::required] missing required value: %s", message)
+						e.logger.Info(fmt.Sprintf("[TPL::required] missing required value: %s", message))
 						return "", nil
 					}
 					return val, errors.New(message)
@@ -261,7 +266,7 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *textTemplate.Template) textTemp
 		"fail": func(message string) (string, error) {
 			if e.LintMode {
 				// Don't fail when linting
-				e.logger.Infof("[TPL::fail] fail: %s", message)
+				e.logger.Info(fmt.Sprintf("[TPL::fail] fail: %s", message))
 				return "", nil
 			}
 			return "", errors.New(message)
@@ -347,7 +352,7 @@ func (e *AzureTemplateExecutor) lintResult() (interface{}, bool) {
 // cacheResult caches template function results (eg. Azure REST API resource information)
 func (e *AzureTemplateExecutor) cacheResult(cacheKey string, callback func() (interface{}, error)) (interface{}, error) {
 	if val, ok := e.cache.Get(cacheKey); ok {
-		e.logger.Infof("found in cache (%v)", cacheKey)
+		e.logger.Info("found in cache", slog.String("cacheKey", cacheKey))
 		return val, nil
 	}
 

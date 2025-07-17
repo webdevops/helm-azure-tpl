@@ -2,6 +2,7 @@ package azuretpl
 
 import (
 	"fmt"
+	"log/slog"
 
 	msgraphcore "github.com/microsoftgraph/msgraph-sdk-go-core"
 	"github.com/microsoftgraph/msgraph-sdk-go/applications"
@@ -11,7 +12,7 @@ import (
 
 // mgApplicationByDisplayName fetches one application from MsGraph API using displayName
 func (e *AzureTemplateExecutor) mgApplicationByDisplayName(displayName string) (interface{}, error) {
-	e.logger.Infof(`fetching MsGraph application by displayName '%v'`, displayName)
+	e.logger.Info(`fetching MsGraph application by displayName`, slog.String("displayName", displayName))
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil
@@ -48,7 +49,7 @@ func (e *AzureTemplateExecutor) mgApplicationByDisplayName(displayName string) (
 
 // mgApplicationList fetches list of applications from MsGraph API using $filter query
 func (e *AzureTemplateExecutor) mgApplicationList(filter string) (interface{}, error) {
-	e.logger.Infof(`fetching MsGraph application list with $filter '%v'`, filter)
+	e.logger.Info(`fetching MsGraph application list with $filter`, slog.String("filter", filter))
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil

@@ -2,6 +2,7 @@ package azuretpl
 
 import (
 	"fmt"
+	"log/slog"
 
 	msgraphcore "github.com/microsoftgraph/msgraph-sdk-go-core"
 	"github.com/microsoftgraph/msgraph-sdk-go/models"
@@ -11,7 +12,7 @@ import (
 
 // mgUserByUserPrincipalName fetches one user from MsGraph API using userPrincipalName
 func (e *AzureTemplateExecutor) mgUserByUserPrincipalName(userPrincipalName string) (interface{}, error) {
-	e.logger.Infof(`fetching MsGraph user by userPrincipalName '%v'`, userPrincipalName)
+	e.logger.Info(`fetching MsGraph user by userPrincipalName`, slog.String("upn", userPrincipalName))
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil
@@ -50,7 +51,7 @@ func (e *AzureTemplateExecutor) mgUserByUserPrincipalName(userPrincipalName stri
 
 // mgUserList fetches list of users from MsGraph API using $filter query
 func (e *AzureTemplateExecutor) mgUserList(filter string) (interface{}, error) {
-	e.logger.Infof(`fetching MsGraph user list with $filter '%v'`, filter)
+	e.logger.Info(`fetching MsGraph user list with $filter`, slog.String("filter", filter))
 
 	if val, enabled := e.lintResult(); enabled {
 		return val, nil

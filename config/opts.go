@@ -10,8 +10,8 @@ type (
 	Opts struct {
 		// logger
 		Logger struct {
-			Development bool `long:"log.devel"    env:"LOG_DEVEL"  description:"development mode"`
-			Json        bool `long:"log.json"     env:"LOG_JSON"   description:"Switch log output to json format"`
+			Debug bool `long:"log.debug"    env:"LOG_DEBUG"  description:"debug mode"`
+			Json  bool `long:"log.json"     env:"LOG_JSON"   description:"Switch log output to json format"`
 		}
 
 		// Api option
