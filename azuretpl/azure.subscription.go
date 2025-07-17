@@ -23,7 +23,13 @@ func (e *AzureTemplateExecutor) azSubscription(subscriptionID ...string) (interf
 		//
 		selectedSubscriptionId = subscriptionID[0]
 	} else {
-		// use current subscription id
+		// load az account info
+		_, err := e.azAccountInfo()
+		if err != nil {
+			return nil, err
+		}
+
+		// try to read subscription id
 		if val, exists := e.azureCliAccountInfo["id"].(string); exists {
 			selectedSubscriptionId = val
 		} else {
