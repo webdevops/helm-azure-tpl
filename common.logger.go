@@ -9,25 +9,32 @@ import (
 )
 
 var (
-	logger *slog.Logger
+	logger      *slog.Logger
+	loggerLevel = new(slog.LevelVar)
 )
 
 func initLogger() *slog.Logger {
 	if opts.Logger.Json {
-		logger = slog.New(slog.NewJSONHandler(os.Stderr, nil))
-		if opts.Logger.Debug {
-			slog.SetLogLoggerLevel(slog.LevelDebug)
-		} else {
-			slog.SetLogLoggerLevel(slog.LevelInfo)
+		ReplaceAttr := func(group []string, a slog.Attr) slog.Attr {
+			if a.Key == "time" {
+				return slog.Attr{}
+			}
+			return slog.Attr{Key: a.Key, Value: a.Value}
 		}
+
+		loggerOpts := slog.HandlerOptions{
+			AddSource:   true,
+			Level:       loggerLevel,
+			ReplaceAttr: ReplaceAttr,
+		}
+		logger = slog.New(slog.NewJSONHandler(os.Stderr, &loggerOpts))
 	} else {
-		logOpts := []slogor.OptionFn{}
+		logOpts := []slogor.OptionFn{
+			slogor.SetLevel(loggerLevel),
+		}
 
 		if opts.Logger.Debug {
-			logOpts = append(logOpts, slogor.SetLevel(slog.LevelDebug))
 			logOpts = append(logOpts, slogor.ShowSource())
-		} else {
-			logOpts = append(logOpts, slogor.SetLevel(slog.LevelInfo))
 		}
 
 		if !isatty.IsTerminal(os.Stderr.Fd()) {
@@ -37,9 +44,11 @@ func initLogger() *slog.Logger {
 		logger = slog.New(slogor.NewHandler(os.Stderr, logOpts...))
 	}
 
-	slog.SetDefault(logger)
+	if opts.Logger.Debug {
+		loggerLevel.Set(slog.LevelDebug)
+	}
 
-	logger.Debug("foobar")
+	slog.SetDefault(logger)
 
 	return logger
 }
