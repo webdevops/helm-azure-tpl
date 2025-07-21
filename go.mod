@@ -22,8 +22,8 @@ require (
 	github.com/Masterminds/sprig/v3 v3.3.0
 	github.com/PaesslerAG/jsonpath v0.1.1
 	github.com/jessevdk/go-flags v1.6.1
-	github.com/mattn/go-isatty v0.0.17
-	github.com/microsoft/kiota-abstractions-go v1.9.2
+	github.com/mattn/go-isatty v0.0.20
+	github.com/microsoft/kiota-abstractions-go v1.9.3
 	github.com/microsoftgraph/msgraph-sdk-go v1.79.0
 	github.com/microsoftgraph/msgraph-sdk-go-core v1.3.2
 	github.com/patrickmn/go-cache v2.1.0+incompatible
