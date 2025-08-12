@@ -1,0 +1,17 @@
+name: 'Setup-Go'
+description: 'Setup go with dependencies'
+runs:
+  using: composite
+  steps:
+    - name: Detect GoLang version
+      id: toolchain
+      run: |
+        GO_VERSION=$(sed -ne '/^toolchain/s/^toolchain go\([0-9]*\.[0-9]*\)\.[0-9]*/\1/p' go.mod)
+        echo "version=$GO_VERSION" >> "$GITHUB_OUTPUT"
+        echo "$GO_VERSION"
+
+    - uses: actions/setup-go@v5
+      with:
+        go-version: ${{ steps.toolchain.outputs.version }}
+        cache-dependency-path: "go.sum"
+        check-latest: true

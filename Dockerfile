@@ -8,10 +8,6 @@ RUN apk add --update build-base make git curl
 
 WORKDIR /go/src/github.com/webdevops/helm-azure-tpl
 
-# Dependencies
-COPY go.mod go.sum .
-RUN go mod download
-
 COPY . .
 RUN make test
 
