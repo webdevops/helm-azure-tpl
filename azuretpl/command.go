@@ -17,6 +17,7 @@ import (
 	"github.com/Masterminds/sprig/v3"
 	cache "github.com/patrickmn/go-cache"
 	"github.com/webdevops/go-common/azuresdk/armclient"
+	"github.com/webdevops/go-common/log/slogger"
 	"github.com/webdevops/go-common/msgraphsdk/msgraphclient"
 
 	"github.com/webdevops/helm-azure-tpl/azuretpl/models"
@@ -25,7 +26,7 @@ import (
 type (
 	AzureTemplateExecutor struct {
 		ctx    context.Context
-		logger *slog.Logger
+		logger *slogger.Logger
 
 		cache    *cache.Cache
 		cacheTtl time.Duration
@@ -50,7 +51,7 @@ var (
 	msGraphClient *msgraphclient.MsGraphClient
 )
 
-func New(ctx context.Context, opts models.Opts, logger *slog.Logger) *AzureTemplateExecutor {
+func New(ctx context.Context, opts models.Opts, logger *slogger.Logger) *AzureTemplateExecutor {
 	e := &AzureTemplateExecutor{
 		ctx:    ctx,
 		logger: logger,
@@ -69,7 +70,7 @@ func (e *AzureTemplateExecutor) init() {
 func (e *AzureTemplateExecutor) azureClient() *armclient.ArmClient {
 	var err error
 	if azureClient == nil {
-		azureClient, err = armclient.NewArmClientFromEnvironment(e.logger)
+		azureClient, err = armclient.NewArmClientFromEnvironment(e.logger.Slog())
 		if err != nil {
 			e.logger.Error(err.Error())
 			os.Exit(1)
@@ -93,7 +94,7 @@ func (e *AzureTemplateExecutor) msGraphClient() *msgraphclient.MsGraphClient {
 			e.azureClient()
 		}
 
-		msGraphClient, err = msgraphclient.NewMsGraphClientFromEnvironment(e.logger)
+		msGraphClient, err = msgraphclient.NewMsGraphClientFromEnvironment(e.logger.Slog())
 		if err != nil {
 			e.logger.Error(err.Error())
 			os.Exit(1)

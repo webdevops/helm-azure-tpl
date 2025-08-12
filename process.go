@@ -246,7 +246,7 @@ func buildSourceTargetList() (list []TemplateFile) {
 		sourcePath = filepath.Clean(sourcePath)
 		targetPath = filepath.Clean(targetPath)
 
-		contextLogger := logger.With(slog.String(`sourcePath`, sourcePath))
+		contextLogger := logger.With(slog.String(`template`, sourcePath))
 
 		if !opts.Stdout {
 			contextLogger = contextLogger.With(slog.String(`targetPath`, targetPath))

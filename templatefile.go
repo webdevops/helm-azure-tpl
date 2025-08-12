@@ -8,6 +8,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/webdevops/go-common/log/slogger"
+
 	"github.com/webdevops/helm-azure-tpl/azuretpl"
 )
 
@@ -17,7 +19,7 @@ type (
 		SourceFile      string
 		TargetFile      string
 		TemplateBaseDir string
-		Logger          *slog.Logger
+		Logger          *slogger.Logger
 	}
 )
 

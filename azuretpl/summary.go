@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/Azure/azure-sdk-for-go/sdk/security/keyvault/azsecrets"
+	"github.com/webdevops/go-common/log/slogger"
 	"github.com/webdevops/go-common/utils/to"
 
 	"github.com/webdevops/helm-azure-tpl/config"
@@ -77,7 +78,7 @@ func buildSummary(opts config.Opts) string {
 	return "\n" + strings.Join(output, "\n") + "\n"
 }
 
-func PostSummary(logger *slog.Logger, opts config.Opts) {
+func PostSummary(logger *slogger.Logger, opts config.Opts) {
 	if val := os.Getenv("AZURETPL_EXPERIMENTAL_SUMMARY"); val != "true" && val != "1" {
 		return
 	}
