@@ -16,3 +16,8 @@ runs:
         go-version: ${{ steps.toolchain.outputs.version }}
         cache-dependency-path: "go.sum"
         check-latest: true
+
+    - name: GoLang dependencies
+      shell: bash
+      run: |
+        go mod vendor
