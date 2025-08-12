@@ -4,6 +4,7 @@ runs:
   using: composite
   steps:
     - name: Detect GoLang version
+      shell: bash
       id: toolchain
       run: |
         GO_VERSION=$(sed -ne '/^toolchain/s/^toolchain go\([0-9]*\.[0-9]*\)\.[0-9]*/\1/p' go.mod)
