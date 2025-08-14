@@ -28,7 +28,7 @@ require (
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/webdevops/go-common v0.0.0-20250812192643-504f08004b89
 	gopkg.in/yaml.v3 v3.0.1
-	helm.sh/helm/v3 v3.18.4
+	helm.sh/helm/v3 v3.18.5
 	sigs.k8s.io/yaml v1.6.0
 )
 
