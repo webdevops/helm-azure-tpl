@@ -20,7 +20,7 @@ jobs:
           - task: release-assets-darwin
           - task: release-assets-windows
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Setup runner
         uses: ./.github/actions/setup-runner
