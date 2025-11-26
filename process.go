@@ -45,6 +45,7 @@ func run() {
 			"gitTag":    gitTag,
 			"gitCommit": gitCommit,
 			"goVersion": runtime.Version(),
+			"buildDate": buildDate,
 			"os":        runtime.GOOS,
 			"arch":      runtime.GOARCH,
 			"compiler":  runtime.Compiler,
@@ -106,7 +107,7 @@ func run() {
 }
 
 func printAppHeader() {
-	logger.Info(fmt.Sprintf("%v v%s (%s; %s; by %v)", argparser.Name, gitTag, gitCommit, runtime.Version(), Author))
+	logger.Info(fmt.Sprintf("%v v%s (%s; %s; by %v at %v)", argparser.Name, gitTag, gitCommit, runtime.Version(), Author, buildDate))
 	logger.Info(string(opts.GetJson()))
 }
 
