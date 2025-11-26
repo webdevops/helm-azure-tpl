@@ -1,41 +1,23 @@
 ---
+apiVersion: v1
+type: getter/v1
 name: "azure-tpl"
 version: "0.57.0"
 usage: "applies azure information into your helm files"
+runtime: subprocess
+config:
+  protocols:
+    - azuretpl
+    - azure-tpl
 description: |-
   see https://github.com/webdevops/helm-azure-tpl/blob/main/README.md
 ignoreFlags: false
-platformCommand:
-  ###########################
-  # Linux
-  - os: linux
-    arch: amd64
-    command: "$HELM_PLUGIN_DIR/helm-azure-tpl"
-  - os: linux
-    arch: arm64
-    command: "$HELM_PLUGIN_DIR/helm-azure-tpl"
-  ###########################
-  # osx
-  - os: darwin
-    arch: amd64
-    command: "$HELM_PLUGIN_DIR/helm-azure-tpl"
-  - os: darwin
-    arch: arm64
-    command: "$HELM_PLUGIN_DIR/helm-azure-tpl"
-  ###########################
-  # Windows
-  - os: windows
-    arch: amd64
-    command: "$HELM_PLUGIN_DIR/helm-azure-tpl.exe"
-  - os: windows
-    arch: arm64
-    command: "$HELM_PLUGIN_DIR/helm-azure-tpl.exe"
-hooks:
-  install: "bash $HELM_PLUGIN_DIR/helm-plugin-install.sh"
-  update: "bash $HELM_PLUGIN_DIR/helm-plugin-install.sh"
-
-downloaders:
-  - command: "helm-downloader.sh"
-    protocols:
-      - "azuretpl"
-      - "azure-tpl"
+runtimeConfig:
+  platformCommand:
+    - command: ${HELM_PLUGIN_DIR}/helm-azure-tpl
+  protocolCommands:
+    - protocols:
+        - azuretpl
+        - azure-tpl
+      platformCommand:
+        - command: helm-downloader.sh
