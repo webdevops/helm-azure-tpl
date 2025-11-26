@@ -31,7 +31,7 @@ case "$HOST_ARCH" in
         ;;
 esac
 
-PLUGIN_DOWNLOAD_FILE="helm-azure-tpl.${HOST_OS}.${HOST_ARCH}${FILE_SUFFIX}"
+PLUGIN_DOWNLOAD_FILE="helm-azure-tpl${FILE_SUFFIX}"
 PLUGIN_DOWNLOAD_URL="https://github.com/webdevops/helm-azure-tpl/releases/download/${HELM_AZURE_TPL_VERSION}/${PLUGIN_DOWNLOAD_FILE}"
 PLUGIN_TARGET_PATH="${HELM_PLUGIN_DIR}/${PLUGIN_DOWNLOAD_FILE}"
 
