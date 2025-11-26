@@ -17,7 +17,7 @@ requires `sed` and `curl` for installation
 helm plugin install https://github.com/webdevops/helm-azure-tpl.git
 
 # Installation of specific version
-helm plugin install https://github.com/webdevops/helm-azure-tpl.git --version=0.57.0
+helm plugin install https://github.com/webdevops/helm-azure-tpl.git --version=0.58.0
 
 # Update to latest version
 helm plugin update azure-tpl
@@ -45,7 +45,7 @@ for additional values files for azure-tpl you can use environment variabels:
 AZURETPL_VALUES=./path/to/azuretpl.yaml helm upgrade foobar123 -f azuretpl://config/values.yaml .
 ```
 
-### File processing
+### File processing (only Helm v3)
 
 `helm azure-tpl` uses AzureCLI authentication to talk to Azure
 
