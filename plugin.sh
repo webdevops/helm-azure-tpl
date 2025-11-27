@@ -2,9 +2,22 @@
 set -e
 set -o pipefail
 
->&2 echo ""
->&2 echo "executing azure-tpl for \"$4\":"
+println() {
+    >&2 echo "$*"
+}
+
+println ""
+if [[ -n "$GITHUB_ACTION" ]]; then
+    println "::group::$4"
+fi
+
+println "executing azure-tpl for \"$4\":"
 "${HELM_PLUGIN_DIR}/helm-azure-tpl" apply --stdout "$4"
 EXIT_CODE="$?"
->&2 echo ""
+
+if [[ -n "$GITHUB_ACTION" ]]; then
+    println "::endgroup::"
+fi
+
+println ""
 exit "$EXIT_CODE"
