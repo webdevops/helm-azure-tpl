@@ -17,7 +17,7 @@ requires `sed` and `curl` for installation
 helm plugin install https://github.com/webdevops/helm-azure-tpl.git
 
 # Installation of specific version
-helm plugin install https://github.com/webdevops/helm-azure-tpl.git --version=0.61.0
+helm plugin install https://github.com/webdevops/helm-azure-tpl.git --version=0.62.0
 
 # Update to latest version
 helm plugin update azure-tpl
@@ -67,41 +67,49 @@ helm azure-tpl apply --target.fileext=.yaml *.tpl
 General usage:
 ```
 Usage:
-  helm-azure-tpl [OPTIONS] [command] [files...]
+  helm-azure-tpl [OPTIONS] command [files...]
 
 Application Options:
-      --log.devel                        development mode [$LOG_DEVEL]
-      --log.json                         Switch log output to json format [$LOG_JSON]
-      --dry-run                          dry run, do not write any files [$AZURETPL_DRY_RUN]
-      --debug                            debug run, print generated content to stdout (WARNING: can expose secrets!) [$HELMHELM_DEBUG_DEBUG]
-      --stdout                           Print parsed content to stdout instead of file (logs will be written to stderr) [$AZURETPL_STDOUT]
-      --template.basepath=               sets custom base path (if empty, base path is set by base directory for each file. will be
-                                         appended to all root paths inside templates) [$AZURETPL_TEMPLATE_BASEPATH]
-      --target.prefix=                   adds this value as prefix to filename on save (not used if targetfile is specified in argument)
-                                         [$AZURETPL_TARGET_PREFIX]
-      --target.suffix=                   adds this value as suffix to filename on save (not used if targetfile is specified in argument)
-                                         [$AZURETPL_TARGET_SUFFIX]
-      --target.fileext=                  replaces file extension (or adds if empty) with this value (eg. '.yaml') [$AZURETPL_TARGET_FILEEXT]
-      --keyvault.expiry.warningduration= warn before soon expiring Azure KeyVault entries (default: 168h)
-                                         [$AZURETPL_KEYVAULT_EXPIRY_WARNING_DURATION]
-      --keyvault.expiry.ignore           ignore expiry date of Azure KeyVault entries and don't fail' [$AZURETPL_KEYVAULT_EXPIRY_IGNORE]
-      --values=                          path to yaml files for .Values [$AZURETPL_VALUES]
-      --set-json=                        set JSON values on the command line (can specify multiple or separate values with commas:
-                                         key1=jsonval1,key2=jsonval2)
-      --set=                             set values on the command line (can specify multiple or separate values with commas:
-                                         key1=val1,key2=val2)
-      --set-string=                      set STRING values on the command line (can specify multiple or separate values with commas:
-                                         key1=val1,key2=val2)
-      --set-file=                        set values from respective files specified via the command line (can specify multiple or separate
-                                         values with commas: key1=path1,key2=path2)
+      --log.level=[trace|debug|info|warning|error] Log level (default: info) [$AZURETPL_LOG_LEVEL]
+      --log.format=[logfmt|json]                   Log format (default: logfmt) [$AZURETPL_LOG_FORMAT]
+      --log.source=[|short|file|full]              Show source for every log message (useful for debugging and bug reports)
+                                                   [$AZURETPL_LOG_SOURCE]
+      --log.color=[|auto|yes|no]                   Enable color for logs [$AZURETPL_LOG_COLOR]
+      --log.time                                   Show log time [$AZURETPL_LOG_TIME]
+      --dry-run                                    dry run, do not write any files [$AZURETPL_DRY_RUN]
+      --debug                                      debug run, print generated content to stdout (WARNING: can expose secrets!)
+                                                   [$HELMHELM_DEBUG_DEBUG]
+      --stdout                                     Print parsed content to stdout instead of file (logs will be written to stderr)
+                                                   [$AZURETPL_STDOUT]
+      --template.basepath=                         sets custom base path (if empty, base path is set by base directory for each file. will
+                                                   be appended to all root paths inside templates) [$AZURETPL_TEMPLATE_BASEPATH]
+      --target.prefix=                             adds this value as prefix to filename on save (not used if targetfile is specified in
+                                                   argument) [$AZURETPL_TARGET_PREFIX]
+      --target.suffix=                             adds this value as suffix to filename on save (not used if targetfile is specified in
+                                                   argument) [$AZURETPL_TARGET_SUFFIX]
+      --target.fileext=                            replaces file extension (or adds if empty) with this value (eg. '.yaml')
+                                                   [$AZURETPL_TARGET_FILEEXT]
+      --keyvault.expiry.warningduration=           warn before soon expiring Azure KeyVault entries (default: 168h)
+                                                   [$AZURETPL_KEYVAULT_EXPIRY_WARNING_DURATION]
+      --keyvault.expiry.ignore                     ignore expiry date of Azure KeyVault entries and don't fail'
+                                                   [$AZURETPL_KEYVAULT_EXPIRY_IGNORE]
+      --values=                                    path to yaml files for .Values [$AZURETPL_VALUES]
+      --set-json=                                  set JSON values on the command line (can specify multiple or separate values with
+                                                   commas: key1=jsonval1,key2=jsonval2)
+      --set=                                       set values on the command line (can specify multiple or separate values with commas:
+                                                   key1=val1,key2=val2)
+      --set-string=                                set STRING values on the command line (can specify multiple or separate values with
+                                                   commas: key1=val1,key2=val2)
+      --set-file=                                  set values from respective files specified via the command line (can specify multiple or
+                                                   separate values with commas: key1=path1,key2=path2)
 
 Help Options:
-  -h, --help                             Show this help message
+  -h, --help                                       Show this help message
 
 Arguments:
-  command:                               specifies what to do (help, version, lint, apply)
-  files:                                 list of files to process (will overwrite files, different target file can be specified as
-                                         sourcefile:targetfile)
+  command:                                         specifies what to do (help, version, lint, apply)
+  files:                                           list of files to process (will overwrite files, different target file can be specified
+                                                   as sourcefile:targetfile)
 ```
 
 ## Build-in objects
