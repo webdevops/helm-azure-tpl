@@ -6,9 +6,10 @@ println() {
     >&2 echo "$*"
 }
 
-println ""
 if [[ -n "$GITHUB_ACTION" ]]; then
     println "::group::$4"
+else
+    println " "
 fi
 
 println "executing azure-tpl for \"$4\":"
@@ -17,7 +18,8 @@ EXIT_CODE="$?"
 
 if [[ -n "$GITHUB_ACTION" ]]; then
     println "::endgroup::"
+else
+    println " "
 fi
 
-println ""
 exit "$EXIT_CODE"
