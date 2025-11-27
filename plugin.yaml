@@ -10,26 +10,26 @@ platformCommand:
   # Linux
   - os: linux
     arch: amd64
-    command: "$HELM_PLUGIN_DIR/helm-azure-tpl.linux.amd64"
+    command: "$HELM_PLUGIN_DIR/helm-azure-tpl"
   - os: linux
     arch: arm64
-    command: "$HELM_PLUGIN_DIR/helm-azure-tpl.linux.arm64"
+    command: "$HELM_PLUGIN_DIR/helm-azure-tpl"
   ###########################
   # osx
   - os: darwin
     arch: amd64
-    command: "$HELM_PLUGIN_DIR/helm-azure-tpl.darwin.amd64"
+    command: "$HELM_PLUGIN_DIR/helm-azure-tpl"
   - os: darwin
     arch: arm64
-    command: "$HELM_PLUGIN_DIR/helm-azure-tpl.darwin.arm64"
+    command: "$HELM_PLUGIN_DIR/helm-azure-tpl"
   ###########################
   # Windows
   - os: windows
     arch: amd64
-    command: "$HELM_PLUGIN_DIR/helm-azure-tpl.windows.amd64.exe"
+    command: "$HELM_PLUGIN_DIR/helm-azure-tpl.exe"
   - os: windows
     arch: arm64
-    command: "$HELM_PLUGIN_DIR/helm-azure-tpl.windows.arm64.exe"
+    command: "$HELM_PLUGIN_DIR/helm-azure-tpl.exe"
 hooks:
   install: "bash $HELM_PLUGIN_DIR/helm-plugin-install.sh"
   update: "bash $HELM_PLUGIN_DIR/helm-plugin-install.sh"
