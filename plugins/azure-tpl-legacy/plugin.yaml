@@ -33,6 +33,7 @@ platformCommand:
 hooks:
   install: "bash $HELM_PLUGIN_DIR/install.sh"
   update: "bash $HELM_PLUGIN_DIR/install.sh"
+
 downloaders:
   - command: "plugin.sh"
     protocols:

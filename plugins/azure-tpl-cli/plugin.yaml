@@ -1,0 +1,30 @@
+---
+apiVersion: v1
+type: cli/v1
+name: "azure-tpl-cli"
+version: "0.62.0"
+runtime: subprocess
+config:
+  usage: azure-tpl
+  shortHelp: helm-azure-tpl is a helm plugin for Azure template functions.
+runtimeConfig:
+  platformCommand:
+    - os: windows
+      command: >-
+        cmd.exe /D /E:ON /V:ON /C !HELM_PLUGIN_DIR!\helm-azure-tpl.exe
+    - os: linux
+      command: "$HELM_PLUGIN_DIR/helm-azure-tpl"
+    - os: darwin
+      command: "$HELM_PLUGIN_DIR/helm-azure-tpl"
+    - command: "$HELM_PLUGIN_DIR/helm-azure-tpl"
+  platformHooks:
+    install:
+      - os: linux
+        command: "$HELM_PLUGIN_DIR/install.sh"
+      - os: darwin
+        command: "$HELM_PLUGIN_DIR/install.sh"
+    update:
+      - os: linux
+        command: "$HELM_PLUGIN_DIR/install.sh"
+      - os: darwin
+        command: "$HELM_PLUGIN_DIR/install.sh"

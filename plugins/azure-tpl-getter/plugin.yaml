@@ -1,0 +1,37 @@
+---
+apiVersion: v1
+type: getter/v1
+name: "azure-tpl-getter"
+version: "0.62.0"
+runtime: subprocess
+config:
+  protocols:
+    - "azuretpl"
+    - "azure-tpl"
+runtimeConfig:
+  protocolCommands:
+    - protocols:
+        - "azuretpl"
+        - "azure-tpl"
+      platformCommand:
+        - os: windows
+          command: >-
+            cmd.exe /D /E:ON /V:ON /C !HELM_PLUGIN_DIR!\plugin.cmd
+        - os: linux
+          command: "plugin.sh"
+        - os: darwin
+          command: "plugin.sh"
+        - command: "plugin.sh"
+  platformHooks:
+    install:
+      - os: linux
+        command: "$HELM_PLUGIN_DIR/install.sh"
+      - os: darwin
+        command: "$HELM_PLUGIN_DIR/install.sh"
+      - command: "$HELM_PLUGIN_DIR/install.sh"
+    update:
+      - os: linux
+        command: "$HELM_PLUGIN_DIR/install.sh"
+      - os: darwin
+        command: "$HELM_PLUGIN_DIR/install.sh"
+      - command: "$HELM_PLUGIN_DIR/install.sh"

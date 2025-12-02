@@ -65,6 +65,20 @@ $(GOLANGCI_LINT_BIN):
 #######################################
 # release assets
 #######################################
+.PHONY: plugins
+plugins: plugin/azure-tpl-legacy plugin/azure-tpl-cli plugin/azure-tpl-getter
+
+plugin/%: $(SOURCE)
+	echo 'package plugin $(call word-dot,$*,1)'
+	rm -rf ./tmp
+	mkdir -p ./tmp
+	helm plugin package 'plugins/$(call word-dot,$*,1)' -d ./tmp --sign=false
+	mv tmp/azure-tpl*.tgz 'release-assets/$(call word-dot,$*,1).tgz'
+	rm -rf ./tmp
+
+#######################################
+# release assets
+#######################################
 
 RELEASE_ASSETS_LINUX = \
 	$(foreach GOARCH,amd64 arm64,\

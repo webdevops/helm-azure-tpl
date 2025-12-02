@@ -8,17 +8,14 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
 
+env:
+  RELEASE_TAG: ${{ github.ref_name }}
+
+
 jobs:
-  release:
-    name: "${{ matrix.task }}"
+  executables:
+    name: "assets/executables"
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - task: release-assets-linux
-          - task: release-assets-darwin
-          - task: release-assets-windows
     steps:
       - uses: actions/checkout@v5
 
@@ -28,9 +25,87 @@ jobs:
       - name: Setup go
         uses: ./.github/actions/setup-go
 
-      - name: Build
+      - name: Build linux
         run: |
-          make "${{ matrix.task }}"
+          make release-assets-linux
+
+      - name: Build darwin
+        run: |
+          make release-assets-darwin
+
+      - name: Build windows
+        run: |
+          make release-assets-windows
+
+      - name: Upload assets to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./release-assets/*
+          tag: ${{ github.ref }}
+          overwrite: true
+          file_glob: true
+
+  plugins:
+    name: "assets/plugins"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup runner
+        uses: ./.github/actions/setup-runner
+
+      - name: Setup Helm
+        uses: azure/setup-helm@4
+
+      - name: Set up ORAS
+        uses: oras-project/setup-oras@v1.2.4
+
+      - name: Build plugins
+        run: |
+          make plugins
+        env:
+          GITHUB_TAG: ${{ github.ref }}
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Login to Quay
+        uses: docker/login-action@v3
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_TOKEN }}
+
+      - name: Publish azure-tpl-cli
+        run: |
+          oras push \
+            ghcr.io/${{ github.repository }}/azure-tpl-cli:${RELEASE_TAG} \
+            ghcr.io/${{ github.repository }}/azure-tpl-cli:latest \
+            --artifact-type application/vnd.helm.plugin.v1+json \
+            azure-tpl-cli.tgz
+        working-directory: release-assets/
+
+      - name: Publish azure-tpl-getter
+        run: |
+          oras push \
+            ghcr.io/${{ github.repository }}/azure-tpl-getter:${RELEASE_TAG} \
+            ghcr.io/${{ github.repository }}/azure-tpl-getter:latest \
+            --artifact-type application/vnd.helm.plugin.v1+json \
+            azure-tpl-getter.tgz
+        working-directory: release-assets/
+
+      - name: Publish azure-tpl-legacy
+        run: |
+          oras push \
+            ghcr.io/${{ github.repository }}/azure-tpl-legacy:${RELEASE_TAG} \
+            ghcr.io/${{ github.repository }}/azure-tpl-legacy:latest \
+            --artifact-type application/vnd.helm.plugin.v1+json \
+            azure-tpl-legacy.tgz
+        working-directory: release-assets/
 
       - name: Upload assets to release
         uses: svenstaro/upload-release-action@v2
