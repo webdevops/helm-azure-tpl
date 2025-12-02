@@ -98,13 +98,13 @@ word-dot = $(word $2,$(subst ., ,$1))
 release-assets: clean-release-assets vendor $(RELEASE_ASSETS_LINUX) $(RELEASE_ASSETS_DARWIN) $(RELEASE_ASSETS_WINDOWS) release-assets/helm-plugin
 
 .PHONY: release-assets-linux
-release-assets-linux: clean-release-assets vendor $(RELEASE_ASSETS_LINUX) release-assets/helm-plugin
+release-assets-linux: $(RELEASE_ASSETS_LINUX)
 
 .PHONY: release-assets-darwin
-release-assets-darwin: clean-release-assets vendor $(RELEASE_ASSETS_DARWIN) release-assets/helm-plugin
+release-assets-darwin: $(RELEASE_ASSETS_DARWIN)
 
 .PHONY: release-assets-windows
-release-assets-windows: clean-release-assets vendor $(RELEASE_ASSETS_WINDOWS) release-assets/helm-plugin
+release-assets-windows: $(RELEASE_ASSETS_WINDOWS)
 
 .PHONY: clean-release-assets
 clean-release-assets:

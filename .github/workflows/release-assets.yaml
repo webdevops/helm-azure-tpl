@@ -59,7 +59,7 @@ jobs:
         uses: ./.github/actions/setup-runner
 
       - name: Setup Helm
-        uses: azure/setup-helm@4
+        uses: azure/setup-helm@v4
 
       - name: Set up ORAS
         uses: oras-project/setup-oras@v1
