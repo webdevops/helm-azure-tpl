@@ -11,6 +11,10 @@ concurrency:
 env:
   RELEASE_TAG: ${{ github.ref_name }}
 
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   executables:
     name: "assets/executables"
@@ -58,7 +62,7 @@ jobs:
         uses: azure/setup-helm@4
 
       - name: Set up ORAS
-        uses: oras-project/setup-oras@v1.2.4
+        uses: oras-project/setup-oras@v1
 
       - name: Build plugins
         run: |
