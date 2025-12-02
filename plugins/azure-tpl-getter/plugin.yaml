@@ -2,7 +2,7 @@
 apiVersion: v1
 type: getter/v1
 name: "azure-tpl-getter"
-version: "0.62.0"
+version: "0.63.0"
 runtime: subprocess
 config:
   protocols:
