@@ -2,7 +2,7 @@
 apiVersion: v1
 type: cli/v1
 name: "azure-tpl-cli"
-version: "0.63.4"
+version: "0.63.5"
 runtime: subprocess
 config:
   usage: azure-tpl
