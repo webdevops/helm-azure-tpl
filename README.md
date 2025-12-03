@@ -22,7 +22,7 @@ requires `sed` and `curl` for installation
 # Installation of specific version
 - uses: webdevops/setup-helm-azure-tpl@v1
   with:
-    version: 0.63.8
+    version: 0.63.9
 
 ```
 
@@ -35,8 +35,8 @@ helm plugin install "oci://ghcr.io/webdevops/helm-azure-tpl/azure-tpl-cli:latest
 helm plugin install "oci://ghcr.io/webdevops/helm-azure-tpl/azure-tpl-getter:latest" --verify=false
 
 # Installation of specific version
-helm plugin install "oci://ghcr.io/webdevops/helm-azure-tpl/azure-tpl-cli:0.63.8" --verify=false
-helm plugin install "oci://ghcr.io/webdevops/helm-azure-tpl/azure-tpl-getter:0.63.8" --verify=false
+helm plugin install "oci://ghcr.io/webdevops/helm-azure-tpl/azure-tpl-cli:0.63.9" --verify=false
+helm plugin install "oci://ghcr.io/webdevops/helm-azure-tpl/azure-tpl-getter:0.63.9" --verify=false
 
 # Update
 # please do uninstall and install again, for now
@@ -52,7 +52,7 @@ helm plugin uninstall azure-tpl-getter
 helm plugin install https://github.com/webdevops/helm-azure-tpl.git
 
 # Installation of specific version
-helm plugin install https://github.com/webdevops/helm-azure-tpl.git --version=0.63.8
+helm plugin install https://github.com/webdevops/helm-azure-tpl.git --version=0.63.9
 
 # Update to latest version
 helm plugin update azure-tpl
