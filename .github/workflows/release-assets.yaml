@@ -92,10 +92,10 @@ jobs:
             azure-tpl-getter-*.tgz
         working-directory: ./release-assets/
 
-      - name: Publish azure-tpl-legacy
+      - name: Publish azure-tpl (legacy)
         run: |
           oras push \
-            ghcr.io/${{ github.repository }}/azure-tpl-legacy:${RELEASE_TAG},latest \
+            ghcr.io/${{ github.repository }}/azure-tpl:${RELEASE_TAG},latest \
             --artifact-type application/vnd.helm.plugin.v1+json \
             azure-tpl-*.tgz
         working-directory: ./release-assets/

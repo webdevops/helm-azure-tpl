@@ -66,7 +66,7 @@ $(GOLANGCI_LINT_BIN):
 # release assets
 #######################################
 .PHONY: plugins
-plugins: plugin/azure-tpl-legacy plugin/azure-tpl-cli plugin/azure-tpl-getter
+plugins: plugin/azure-tpl plugin/azure-tpl-cli plugin/azure-tpl-getter
 
 plugin/%: $(SOURCE)
 	echo 'package plugin $(call word-dot,$*,1)'
