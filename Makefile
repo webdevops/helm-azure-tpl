@@ -70,11 +70,8 @@ plugins: plugin/azure-tpl-legacy plugin/azure-tpl-cli plugin/azure-tpl-getter
 
 plugin/%: $(SOURCE)
 	echo 'package plugin $(call word-dot,$*,1)'
-	rm -rf ./tmp
-	mkdir -p ./tmp
-	helm plugin package 'plugins/$(call word-dot,$*,1)' -d ./tmp --sign=false
-	mv tmp/azure-tpl*.tgz 'release-assets/$(call word-dot,$*,1).tgz'
-	rm -rf ./tmp
+	mkdir -p ./release-assets/
+	helm plugin package 'plugins/$(call word-dot,$*,1)' -d ./release-assets --sign=false
 
 #######################################
 # release assets
@@ -95,7 +92,7 @@ RELEASE_ASSETS_DARWIN = \
 word-dot = $(word $2,$(subst ., ,$1))
 
 .PHONY: release-assets
-release-assets: clean-release-assets vendor $(RELEASE_ASSETS_LINUX) $(RELEASE_ASSETS_DARWIN) $(RELEASE_ASSETS_WINDOWS) release-assets/helm-plugin
+release-assets: clean-release-assets vendor $(RELEASE_ASSETS_LINUX) $(RELEASE_ASSETS_DARWIN) $(RELEASE_ASSETS_WINDOWS)
 
 .PHONY: release-assets-linux
 release-assets-linux: $(RELEASE_ASSETS_LINUX)
@@ -124,13 +121,3 @@ release-assets/%: $(SOURCE)
  	GOARCH=$(call word-dot,$*,2) \
 	CGO_ENABLED=0 \
 	time go build -ldflags '$(LDFLAGS)' -o './release-assets/$(PROJECT_NAME).$(call word-dot,$*,1).$(call word-dot,$*,2)' .
-
-.PHONY: release-assets/helm-plugin
-release-assets/helm-plugin:
-	echo 'build helm plugin'
-	rm -rf    ./tmp
-	mkdir -p  ./tmp/helm-azure-tpl
-	cp -- plugin.yaml  ./tmp/helm-azure-tpl
-	cp -a ./release-assets/* ./tmp/helm-azure-tpl
-	bash -c 'cd ./tmp/helm-azure-tpl/ && tar --exclude *.tgz -czvf ../../release-assets/helm-plugin.tgz *'
-	rm -rf ./tmp

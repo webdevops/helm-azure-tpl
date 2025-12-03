@@ -81,7 +81,7 @@ jobs:
           oras push \
             ghcr.io/${{ github.repository }}/azure-tpl-cli:${RELEASE_TAG},latest \
             --artifact-type application/vnd.helm.plugin.v1+json \
-            azure-tpl-cli.tgz
+            azure-tpl-cli-*.tgz
         working-directory: ./release-assets/
 
       - name: Publish azure-tpl-getter
@@ -89,7 +89,7 @@ jobs:
           oras push \
             ghcr.io/${{ github.repository }}/azure-tpl-getter:${RELEASE_TAG},latest \
             --artifact-type application/vnd.helm.plugin.v1+json \
-            azure-tpl-getter.tgz
+            azure-tpl-getter-*.tgz
         working-directory: ./release-assets/
 
       - name: Publish azure-tpl-legacy
@@ -97,7 +97,7 @@ jobs:
           oras push \
             ghcr.io/${{ github.repository }}/azure-tpl-legacy:${RELEASE_TAG},latest \
             --artifact-type application/vnd.helm.plugin.v1+json \
-            azure-tpl-legacy.tgz
+            azure-tpl-legacy-*.tgz
         working-directory: ./release-assets/
 
       - name: Upload assets to release
