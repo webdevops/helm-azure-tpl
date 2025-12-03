@@ -72,6 +72,7 @@ plugin/%: $(SOURCE)
 	echo 'package plugin $(call word-dot,$*,1)'
 	mkdir -p ./release-assets/
 	helm plugin package 'plugins/$(call word-dot,$*,1)' -d ./release-assets --sign=false
+	cp "./release-assets/$(call word-dot,$*,1)-"*.tgz "./release-assets/$(call word-dot,$*,1).tgz"
 
 #######################################
 # release assets
