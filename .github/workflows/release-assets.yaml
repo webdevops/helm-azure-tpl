@@ -97,7 +97,7 @@ jobs:
           oras push \
             ghcr.io/${{ github.repository }}/azure-tpl-legacy:${RELEASE_TAG},latest \
             --artifact-type application/vnd.helm.plugin.v1+json \
-            azure-tpl-legacy-*.tgz
+            azure-tpl-*.tgz
         working-directory: ./release-assets/
 
       - name: Upload assets to release
