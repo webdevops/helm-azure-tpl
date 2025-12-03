@@ -16,9 +16,16 @@ permissions:
   packages: write
 
 jobs:
-  executables:
-    name: "assets/executables"
+  build:
+    name: "${{ matrix.task }}"
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - task: release-assets-linux
+          - task: release-assets-darwin
+          - task: release-assets-windows
     steps:
       - uses: actions/checkout@v5
 
@@ -28,17 +35,9 @@ jobs:
       - name: Setup go
         uses: ./.github/actions/setup-go
 
-      - name: Build linux
+      - name: Build
         run: |
-          make release-assets-linux
-
-      - name: Build darwin
-        run: |
-          make release-assets-darwin
-
-      - name: Build windows
-        run: |
-          make release-assets-windows
+          make "${{ matrix.task }}"
 
       - name: Upload assets to release
         uses: svenstaro/upload-release-action@v2
@@ -48,10 +47,12 @@ jobs:
           tag: ${{ github.ref }}
           overwrite: true
           file_glob: true
+          promote: false
 
   plugins:
     name: "assets/plugins"
     runs-on: ubuntu-latest
+    needs: [build]
     steps:
       - uses: actions/checkout@v5
 
@@ -108,3 +109,5 @@ jobs:
           tag: ${{ github.ref }}
           overwrite: true
           file_glob: true
+          promote: true
+          make_latest: true

@@ -32,7 +32,7 @@ platformCommand:
     command: "$HELM_PLUGIN_DIR/helm-azure-tpl.exe"
 hooks:
   install: "bash $HELM_PLUGIN_DIR/install.sh"
-  update: "bash $HELM_PLUGIN_DIR/install.sh"
+  update: "bash $HELM_PLUGIN_DIR/install.sh force"
 downloaders:
   - command: "plugin.sh"
     protocols:

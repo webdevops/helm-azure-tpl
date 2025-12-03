@@ -25,6 +25,6 @@ runtimeConfig:
         command: "$HELM_PLUGIN_DIR/install.sh"
     update:
       - os: linux
-        command: "$HELM_PLUGIN_DIR/install.sh"
+        command: "$HELM_PLUGIN_DIR/install.sh force"
       - os: darwin
-        command: "$HELM_PLUGIN_DIR/install.sh"
+        command: "$HELM_PLUGIN_DIR/install.sh force"
