@@ -66,6 +66,7 @@ jobs:
 
       - name: Build plugins
         run: |
+          mkdir -p ./release-assets/
           make plugins
 
       - name: Publish azure-tpl-cli
