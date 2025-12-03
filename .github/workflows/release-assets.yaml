@@ -69,6 +69,13 @@ jobs:
           mkdir -p ./release-assets/
           make plugins
 
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GHCR_TOKEN }}
+
       - name: Publish azure-tpl-cli
         run: |
           oras push \
