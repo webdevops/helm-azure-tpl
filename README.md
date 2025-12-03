@@ -17,7 +17,7 @@ requires `sed` and `curl` for installation
 helm plugin install https://github.com/webdevops/helm-azure-tpl.git
 
 # Installation of specific version
-helm plugin install https://github.com/webdevops/helm-azure-tpl.git --version=0.63.6
+helm plugin install https://github.com/webdevops/helm-azure-tpl.git --version=0.63.7
 
 # Update to latest version
 helm plugin update azure-tpl
