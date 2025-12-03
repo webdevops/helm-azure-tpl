@@ -13,6 +13,24 @@ Also works as standalone executable outside of Helm.
 requires `sed` and `curl` for installation
 
 ```bash
+
+### Helm 4.x ####################################
+# Installation of latest version
+helm plugin install "oci://ghcr.io/webdevops/helm-azure-tpl/azure-tpl-cli:latest" --verify=false
+helm plugin install "oci://ghcr.io/webdevops/helm-azure-tpl/azure-tpl-getter:latest" --verify=false
+
+# Installation of specific version
+helm plugin install "oci://ghcr.io/webdevops/helm-azure-tpl/azure-tpl-cli:0.63.7" --verify=false
+helm plugin install "oci://ghcr.io/webdevops/helm-azure-tpl/azure-tpl-getter:0.63.7" --verify=false
+
+# Update
+# please do uninstall and install again, for now
+
+# Uninstall
+helm plugin uninstall azure-tpl-cli
+helm plugin uninstall azure-tpl-getter
+
+### Helm 3.x ####################################
 # Installation of latest version
 helm plugin install https://github.com/webdevops/helm-azure-tpl.git
 
@@ -22,7 +40,7 @@ helm plugin install https://github.com/webdevops/helm-azure-tpl.git --version=0.
 # Update to latest version
 helm plugin update azure-tpl
 
-# Deinstallation
+# Uninstall
 helm plugin uninstall azure-tpl
 ```
 
