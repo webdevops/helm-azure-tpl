@@ -72,29 +72,26 @@ jobs:
       - name: Publish azure-tpl-cli
         run: |
           oras push \
-            ghcr.io/${{ github.repository }}/azure-tpl-cli:${RELEASE_TAG} \
-            ghcr.io/${{ github.repository }}/azure-tpl-cli:latest \
+            ghcr.io/${{ github.repository }}/azure-tpl-cli:${RELEASE_TAG},latest \
             --artifact-type application/vnd.helm.plugin.v1+json \
             azure-tpl-cli.tgz
-        working-directory: release-assets/
+        working-directory: ./release-assets/
 
       - name: Publish azure-tpl-getter
         run: |
           oras push \
-            ghcr.io/${{ github.repository }}/azure-tpl-getter:${RELEASE_TAG} \
-            ghcr.io/${{ github.repository }}/azure-tpl-getter:latest \
+            ghcr.io/${{ github.repository }}/azure-tpl-getter:${RELEASE_TAG},latest \
             --artifact-type application/vnd.helm.plugin.v1+json \
             azure-tpl-getter.tgz
-        working-directory: release-assets/
+        working-directory: ./release-assets/
 
       - name: Publish azure-tpl-legacy
         run: |
           oras push \
-            ghcr.io/${{ github.repository }}/azure-tpl-legacy:${RELEASE_TAG} \
-            ghcr.io/${{ github.repository }}/azure-tpl-legacy:latest \
+            ghcr.io/${{ github.repository }}/azure-tpl-legacy:${RELEASE_TAG},latest \
             --artifact-type application/vnd.helm.plugin.v1+json \
             azure-tpl-legacy.tgz
-        working-directory: release-assets/
+        working-directory: ./release-assets/
 
       - name: Upload assets to release
         uses: svenstaro/upload-release-action@v2
