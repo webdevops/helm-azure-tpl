@@ -27,7 +27,7 @@ jobs:
           - task: release-assets-darwin
           - task: release-assets-windows
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Setup runner
         uses: ./.github/actions/setup-runner
@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Setup runner
         uses: ./.github/actions/setup-runner
