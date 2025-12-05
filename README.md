@@ -31,12 +31,12 @@ requires `sed` and `curl` for installation
 # Helm 4.x
 
 # Installation of latest version
-helm plugin install "oci://ghcr.io/webdevops/helm-azure-tpl/azure-tpl-cli:latest" --verify=false
-helm plugin install "oci://ghcr.io/webdevops/helm-azure-tpl/azure-tpl-getter:latest" --verify=false
+helm plugin install "https://github.com/webdevops/helm-azure-tpl/releases/latest/download/azure-tpl-cli.tgz" --verify=false
+helm plugin install "https://github.com/webdevops/helm-azure-tpl/releases/latest/download/azure-tpl-getter.tgz" --verify=false
 
 # Installation of specific version
-helm plugin install "oci://ghcr.io/webdevops/helm-azure-tpl/azure-tpl-cli:0.63.9" --verify=false
-helm plugin install "oci://ghcr.io/webdevops/helm-azure-tpl/azure-tpl-getter:0.63.9" --verify=false
+helm plugin install "https://github.com/webdevops/helm-azure-tpl/releases/0.63.9/download/azure-tpl-cli.tgz" --verify=false
+helm plugin install "https://github.com/webdevops/helm-azure-tpl/releases/0.63.9/download/azure-tpl-getter.tgz" --verify=false
 
 # Update
 # please do uninstall and install again, for now
