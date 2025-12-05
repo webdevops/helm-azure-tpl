@@ -35,8 +35,8 @@ helm plugin install "https://github.com/webdevops/helm-azure-tpl/releases/latest
 helm plugin install "https://github.com/webdevops/helm-azure-tpl/releases/latest/download/azure-tpl-getter.tgz" --verify=false
 
 # Installation of specific version
-helm plugin install "https://github.com/webdevops/helm-azure-tpl/releases/0.63.9/download/azure-tpl-cli.tgz" --verify=false
-helm plugin install "https://github.com/webdevops/helm-azure-tpl/releases/0.63.9/download/azure-tpl-getter.tgz" --verify=false
+helm plugin install "https://github.com/webdevops/helm-azure-tpl/releases/download/0.63.9/azure-tpl-cli.tgz" --verify=false
+helm plugin install "https://github.com/webdevops/helm-azure-tpl/releases/download/0.63.9/azure-tpl-getter.tgz" --verify=false
 
 # Update
 # please do uninstall and install again, for now
