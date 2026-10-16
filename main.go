@@ -9,6 +9,7 @@ import (
 	"os/exec"
 	"time"
 
+	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
 	"github.com/jessevdk/go-flags"
 	"github.com/webdevops/go-common/azuresdk/azidentity"
 
@@ -25,6 +26,7 @@ const (
 var (
 	argparser *flags.Parser
 
+	azureCred     *azcore.TokenCredential
 	azAccountInfo map[string]interface{}
 
 	startTime time.Time
@@ -124,6 +126,17 @@ func initAzureEnvironment() {
 			logger.Warn(`unable to set envvar AZURE_ENVIRONMENT`, slog.Any("error", err))
 		}
 	}
+}
+
+func getAzureCred() *azcore.TokenCredential {
+	if azureCred == nil {
+		cred, err := azidentity.NewAzCliCachedCredential()
+		if err != nil {
+			panic(err)
+		}
+		azureCred = &cred
+	}
+	return azureCred
 }
 
 func setOsEnvIfUnset(name, value string) {

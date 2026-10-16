@@ -31,6 +31,7 @@ var (
 )
 
 func run() {
+
 	// init template data
 	templateData = make(map[string]interface{})
 
@@ -97,7 +98,7 @@ func run() {
 
 		azuretpl.PostSummary(logger, opts)
 
-		logger.With(slog.Duration("duration", time.Since(startTime))).Info("finished")
+		logger.With(slog.String("duration", time.Since(startTime).String())).Info("finished")
 	default:
 		fmt.Printf("invalid command '%v'\n", opts.Args.Command)
 		fmt.Println()

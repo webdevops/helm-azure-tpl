@@ -13,10 +13,12 @@ import (
 	textTemplate "text/template"
 	"time"
 
+	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
 	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resources/armresources"
 	"github.com/Masterminds/sprig/v3"
 	cache "github.com/patrickmn/go-cache"
 	"github.com/webdevops/go-common/azuresdk/armclient"
+	"github.com/webdevops/go-common/azuresdk/azidentity"
 	"github.com/webdevops/go-common/log/slogger"
 	"github.com/webdevops/go-common/msgraphsdk/msgraphclient"
 
@@ -27,6 +29,8 @@ type (
 	AzureTemplateExecutor struct {
 		ctx    context.Context
 		logger *slogger.Logger
+
+		azureCredential *azcore.TokenCredential
 
 		cache    *cache.Cache
 		cacheTtl time.Duration
@@ -67,17 +71,29 @@ func (e *AzureTemplateExecutor) init() {
 	e.cache = globalCache
 }
 
+func (e *AzureTemplateExecutor) azureCred() *azcore.TokenCredential {
+	if e.azureCredential == nil {
+		cred, err := azidentity.NewAzCliCachedCredential()
+		if err != nil {
+			panic(err)
+		}
+		e.azureCredential = &cred
+	}
+
+	return e.azureCredential
+}
+
 func (e *AzureTemplateExecutor) azureClient() *armclient.ArmClient {
 	var err error
+
 	if azureClient == nil {
-		azureClient, err = armclient.NewArmClientFromEnvironment(e.logger.Slog())
+		azureClient, err = armclient.NewArmClientFromEnvironment(e.logger.Slog(), armclient.WithCred(e.azureCred()))
 		if err != nil {
 			e.logger.Error(err.Error())
 			os.Exit(1)
 		}
 
 		azureClient.SetUserAgent(e.UserAgent)
-		azureClient.UseAzCliAuth()
 		if err := azureClient.LazyConnect(); err != nil {
 			e.logger.Error(err.Error())
 			os.Exit(1)
@@ -94,16 +110,19 @@ func (e *AzureTemplateExecutor) msGraphClient() *msgraphclient.MsGraphClient {
 			e.azureClient()
 		}
 
-		msGraphClient, err = msgraphclient.NewMsGraphClientFromEnvironment(e.logger.Slog())
+		msGraphClient, err = msgraphclient.NewMsGraphClientFromEnvironment(e.logger.Slog(), msgraphclient.WithCred(e.azureCred()))
 		if err != nil {
 			e.logger.Error(err.Error())
 			os.Exit(1)
 		}
 
 		msGraphClient.SetUserAgent(e.UserAgent)
-		msGraphClient.UseAzCliAuth()
 	}
 	return msGraphClient
+}
+
+func (e *AzureTemplateExecutor) SetAzureCred(cred *azcore.TokenCredential) {
+	e.azureCredential = cred
 }
 
 func (e *AzureTemplateExecutor) SetUserAgent(val string) {

@@ -1,9 +1,5 @@
 package main
 
-import (
-	"github.com/webdevops/go-common/system"
-)
-
 func initSystem() {
-	system.AutoProcMemLimit(logger.Slog())
+	// system.AutoProcMemLimit(logger.Slog())
 }

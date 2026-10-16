@@ -19,12 +19,12 @@ type (
 
 		// Api option
 		Azure struct {
-			Tenant      *string `env:"AZURE_TENANT_ID"           description:"Azure tenant id"`
-			Environment *string `env:"AZURE_ENVIRONMENT"         description:"Azure environment name"`
+			Tenant        *string `env:"AZURE_TENANT_ID"                 description:"Azure tenant id"`
+			Environment   *string `env:"AZURE_ENVIRONMENT"               description:"Azure environment name"`
 		}
 
 		DryRun bool `long:"dry-run" env:"AZURETPL_DRY_RUN"      description:"dry run, do not write any files"`
-		Debug  bool `long:"debug"   env:"HELMHELM_DEBUG_DEBUG"  description:"debug run, print generated content to stdout (WARNING: can expose secrets!)"`
+		Debug  bool `long:"debug"   env:"HELM_DEBUG"            description:"debug run, print generated content to stdout (WARNING: can expose secrets!)"`
 		Stdout bool `long:"stdout"  env:"AZURETPL_STDOUT"       description:"Print parsed content to stdout instead of file (logs will be written to stderr)"`
 
 		Template struct {
