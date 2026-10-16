@@ -93,7 +93,12 @@ RELEASE_ASSETS_DARWIN = \
 word-dot = $(word $2,$(subst ., ,$1))
 
 .PHONY: release-assets
-release-assets: clean-release-assets vendor $(RELEASE_ASSETS_LINUX) $(RELEASE_ASSETS_DARWIN) $(RELEASE_ASSETS_WINDOWS)
+release-assets: clean-release-assets vendor $(RELEASE_ASSETS_LINUX) $(RELEASE_ASSETS_DARWIN) $(RELEASE_ASSETS_WINDOWS) release-upx
+
+.PHONY: release-upx
+release-upx:
+	upx -V|head -n1
+	upx ./release-assets/* || true
 
 .PHONY: release-assets-linux
 release-assets-linux: $(RELEASE_ASSETS_LINUX)
