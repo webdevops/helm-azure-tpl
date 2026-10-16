@@ -311,17 +311,32 @@ azResource
 | `include`       | `path` (string), `data` (interface) | Parses and includes template file            |
 | `required`      | `message` (string)                  | Throws error if passed object/value is empty |
 | `fail`          | `message` (string)                  | Throws error                                 |
-| `toToml`        |                                     | Convert object to toml                       |
-| `fromToml`      |                                     | Convert toml to object                       |
-| `toYaml`        |                                     | Convert object to yaml                       |
-| `toYamlPretty`  |                                     | Convert object to yaml (pretty format)       |
-| `mustToYaml`    |                                     | Convert object to yaml                       |
-| `fromYaml`      |                                     | Convert yaml to object                       |
-| `fromYamlArray` |                                     | Convert yaml array to array                  |
-| `toJson`        |                                     | Convert object to json                       |
-| `mustToJson`    |                                     | Convert object to json                       |
-| `fromJson`      |                                     | Convert json to object                       |
-| `fromJsonArray` |                                     | Convert json array to array                  |
+
+
+additional borrowed functions, see [helm documentation for more info](https://helm.sh/docs/chart_template_guide/function_list/)
+- `toToml`
+- `mustToToml`
+- `fromToml`
+- `toYaml`
+- `mustToYaml`
+- `toYamlPretty`
+- `fromYaml`
+- `fromYamlArray`
+- `toJson`
+- `mustToJson`
+- `fromJson`
+- `fromJsonArray`
+- `mustToDuration`
+- `durationSeconds`
+- `durationMilliseconds`
+- `durationMicroseconds`
+- `durationNanoseconds`
+- `durationMinutes`
+- `durationHours`
+- `durationDays`
+- `durationWeeks`
+- `durationRoundTo`
+- `durationTruncateTo`
 
 ## Sprig template functions
 
