@@ -94,10 +94,6 @@ func (e *AzureTemplateExecutor) azureClient() *armclient.ArmClient {
 		}
 
 		azureClient.SetUserAgent(e.UserAgent)
-		if err := azureClient.LazyConnect(); err != nil {
-			e.logger.Error(err.Error())
-			os.Exit(1)
-		}
 	}
 	return azureClient
 }
@@ -123,6 +119,8 @@ func (e *AzureTemplateExecutor) msGraphClient() *msgraphclient.MsGraphClient {
 
 func (e *AzureTemplateExecutor) SetAzureCred(cred *azcore.TokenCredential) {
 	e.azureCredential = cred
+	azureClient = nil
+	msGraphClient = nil
 }
 
 func (e *AzureTemplateExecutor) SetUserAgent(val string) {
