@@ -215,6 +215,7 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *textTemplate.Template) textTemp
 
 		// borrowed from github.com/helm/helm
 		"toToml":        toTOML,
+		"mustToToml":    mustToTOML,
 		"fromToml":      fromTOML,
 		"toYaml":        toYAML,
 		"mustToYaml":    mustToYAML,
@@ -225,6 +226,19 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *textTemplate.Template) textTemp
 		"mustToJson":    mustToJSON,
 		"fromJson":      fromJSON,
 		"fromJsonArray": fromJSONArray,
+
+		// Duration helpers
+		"mustToDuration":       mustToDuration,
+		"durationSeconds":      durationSeconds,
+		"durationMilliseconds": durationMilliseconds,
+		"durationMicroseconds": durationMicroseconds,
+		"durationNanoseconds":  durationNanoseconds,
+		"durationMinutes":      durationMinutes,
+		"durationHours":        durationHours,
+		"durationDays":         durationDays,
+		"durationWeeks":        durationWeeks,
+		"durationRoundTo":      durationRoundTo,
+		"durationTruncateTo":   durationTruncateTo,
 
 		// files
 		"filesGet":  e.filesGet,
