@@ -93,7 +93,7 @@ func PostSummary(logger *slogger.Logger, opts config.Opts) {
 		content := buildSummary(opts)
 
 		// If the file doesn't exist, create it, or append to the file
-		f, err := os.OpenFile(summaryPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+		f, err := os.OpenFile(summaryPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644) //nolint:gosec // only active when experimental active and GITHUB_STEP_SUMMARY available
 		if err != nil {
 			logger.Warn(`unable to post GITHUB step summary`, slog.Any("error", err))
 			return
