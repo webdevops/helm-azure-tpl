@@ -78,16 +78,6 @@ func run() {
 		}
 		templateFileList := buildSourceTargetList()
 
-		if !lintMode {
-			logger.Info("detecting Azure account information")
-			fetchAzAccountInfo()
-
-			azAccountInfoJson, err := json.Marshal(azAccountInfo)
-			if err == nil {
-				logger.Info(string(azAccountInfoJson))
-			}
-		}
-
 		for _, templateFile := range templateFileList {
 			if lintMode {
 				templateFile.Lint()

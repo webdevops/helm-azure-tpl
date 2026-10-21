@@ -1,17 +1,12 @@
 package main
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
-	"log/slog"
 	"os"
-	"os/exec"
 	"time"
 
-	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
 	"github.com/jessevdk/go-flags"
-	"github.com/webdevops/go-common/azuresdk/azidentity"
 
 	"github.com/webdevops/helm-azure-tpl/config"
 )
@@ -25,9 +20,6 @@ const (
 
 var (
 	argparser *flags.Parser
-
-	azureCred     *azcore.TokenCredential
-	azAccountInfo map[string]interface{}
 
 	startTime time.Time
 
@@ -45,7 +37,6 @@ func main() {
 	startTime = time.Now()
 	initArgparser()
 	initLogger()
-	initAzureEnvironment()
 	run()
 }
 
@@ -70,79 +61,6 @@ func initArgparser() {
 			fmt.Println()
 			argparser.WriteHelp(os.Stdout)
 			os.Exit(1)
-		}
-	}
-}
-
-func fetchAzAccountInfo() {
-	cmd := exec.Command("az", "account", "show", "-o", "json")
-	cmd.Stderr = os.Stderr
-
-	accountInfo, err := cmd.Output()
-	if err != nil {
-		logger.Error(`unable to detect Azure TenantID via 'az account show'`, slog.Any("error", err))
-		os.Exit(1)
-	}
-
-	err = json.Unmarshal(accountInfo, &azAccountInfo)
-	if err != nil {
-		logger.Error(`unable to parse 'az account show' output`, slog.Any("error", err))
-		os.Exit(1)
-	}
-
-	// auto set azure tenant id
-	if opts.Azure.Environment == nil || *opts.Azure.Environment == "" {
-		// autodetect tenant
-		if val, ok := azAccountInfo["environmentName"].(string); ok {
-			logger.Info(`detected Azure Environment from 'az account show'`, slog.String("azureEnvironment", val))
-			opts.Azure.Environment = &val
-		}
-	}
-
-	// auto set azure tenant id
-	if opts.Azure.Tenant == nil || *opts.Azure.Tenant == "" {
-		// autodetect tenant
-		if val, ok := azAccountInfo["tenantId"].(string); ok {
-			logger.Info(`detected Azure TenantID from 'az account show'`, slog.String("azureTenant", val))
-			opts.Azure.Tenant = &val
-		}
-	}
-
-	setOsEnvIfUnset(azidentity.EnvAzureEnvironment, *opts.Azure.Environment)
-	setOsEnvIfUnset(azidentity.EnvAzureTenantID, *opts.Azure.Tenant)
-}
-
-func initAzureEnvironment() {
-	if opts.Azure.Environment == nil || *opts.Azure.Environment == "" {
-		// autodetect tenant
-		if val, ok := azAccountInfo["environmentName"].(string); ok {
-			logger.Info(`detected Azure Environment '%v' from 'az account show'`, slog.String("azureEnvironment", val))
-			opts.Azure.Environment = &val
-		}
-	}
-
-	if opts.Azure.Environment != nil {
-		if err := os.Setenv(azidentity.EnvAzureEnvironment, *opts.Azure.Environment); err != nil {
-			logger.Warn(`unable to set envvar AZURE_ENVIRONMENT`, slog.Any("error", err))
-		}
-	}
-}
-
-func getAzureCred() *azcore.TokenCredential {
-	if azureCred == nil {
-		cred, err := azidentity.NewAzCliCachedCredential()
-		if err != nil {
-			panic(err)
-		}
-		azureCred = &cred
-	}
-	return azureCred
-}
-
-func setOsEnvIfUnset(name, value string) {
-	if envVal := os.Getenv(name); envVal == "" {
-		if err := os.Setenv(name, value); err != nil {
-			panic(err)
 		}
 	}
 }

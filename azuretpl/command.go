@@ -30,7 +30,13 @@ type (
 		ctx    context.Context
 		logger *slogger.Logger
 
-		azureCredential *azcore.TokenCredential
+		azureTokenCredential         *azcore.TokenCredential
+		azureTokenCredentialCallback func() *azcore.TokenCredential
+
+		clients struct {
+			azure   *armclient.ArmClient
+			msGraph *msgraphclient.MsGraphClient
+		}
 
 		cache    *cache.Cache
 		cacheTtl time.Duration
@@ -50,11 +56,6 @@ type (
 	}
 )
 
-var (
-	azureClient   *armclient.ArmClient
-	msGraphClient *msgraphclient.MsGraphClient
-)
-
 func New(ctx context.Context, opts models.Opts, logger *slogger.Logger) *AzureTemplateExecutor {
 	e := &AzureTemplateExecutor{
 		ctx:    ctx,
@@ -71,58 +72,78 @@ func (e *AzureTemplateExecutor) init() {
 	e.cache = globalCache
 }
 
-func (e *AzureTemplateExecutor) azureCred() *azcore.TokenCredential {
-	if e.azureCredential == nil {
+// getAzureTokenCredential creates on-demand azure armclient and returns it
+func (e *AzureTemplateExecutor) getAzureTokenCredential() *azcore.TokenCredential {
+	// use callback first
+	if e.azureTokenCredential == nil && e.azureTokenCredentialCallback != nil {
+		e.azureTokenCredential = e.azureTokenCredentialCallback()
+	}
+
+	// normal init last
+	if e.azureTokenCredential == nil {
 		cred, err := azidentity.NewAzCliCachedCredential()
 		if err != nil {
 			panic(err)
 		}
-		e.azureCredential = &cred
+		e.azureTokenCredential = &cred
 	}
 
-	return e.azureCredential
+	return e.azureTokenCredential
 }
 
+// azureClient creates on-demand azure armclient and returns it
 func (e *AzureTemplateExecutor) azureClient() *armclient.ArmClient {
 	var err error
 
-	if azureClient == nil {
-		azureClient, err = armclient.NewArmClientFromEnvironment(e.logger.Slog(), armclient.WithCred(e.azureCred()))
+	if e.clients.azure == nil {
+		// load az account details here
+		e.clients.azure, err = armclient.NewArmClientFromEnvironment(e.logger.Slog(), armclient.WithCred(e.getAzureTokenCredential()))
 		if err != nil {
 			e.logger.Error(err.Error())
 			os.Exit(1)
 		}
 
-		azureClient.SetUserAgent(e.UserAgent)
+		e.clients.azure.SetUserAgent(e.UserAgent)
 	}
-	return azureClient
+	return e.clients.azure
 }
 
+// msGraphClient creates on-demand azure msgraph and returns it
 func (e *AzureTemplateExecutor) msGraphClient() *msgraphclient.MsGraphClient {
 	var err error
-	if msGraphClient == nil {
+	if e.clients.msGraph == nil {
 		// ensure azureclient init
-		if azureClient == nil {
-			e.azureClient()
-		}
+		e.azureClient()
 
-		msGraphClient, err = msgraphclient.NewMsGraphClientFromEnvironment(e.logger.Slog(), msgraphclient.WithCred(e.azureCred()))
+		e.clients.msGraph, err = msgraphclient.NewMsGraphClientFromEnvironment(e.logger.Slog(), msgraphclient.WithCred(e.getAzureTokenCredential()))
 		if err != nil {
 			e.logger.Error(err.Error())
 			os.Exit(1)
 		}
 
-		msGraphClient.SetUserAgent(e.UserAgent)
+		e.clients.msGraph.SetUserAgent(e.UserAgent)
 	}
-	return msGraphClient
+	return e.clients.msGraph
 }
 
+// Deprecated: use SetAzureTokenCredential
 func (e *AzureTemplateExecutor) SetAzureCred(cred *azcore.TokenCredential) {
-	e.azureCredential = cred
-	azureClient = nil
-	msGraphClient = nil
+	e.SetAzureTokenCredential(cred)
 }
 
+// SetAzureTokenCredential sets Azure token credential (from azcore package)
+func (e *AzureTemplateExecutor) SetAzureTokenCredential(cred *azcore.TokenCredential) {
+	e.azureTokenCredential = cred
+	e.clients.azure = nil
+	e.clients.msGraph = nil
+}
+
+// SetAzureTokenCredentialCallback sets Azure token credential (from azcore package) using a callback function
+func (e *AzureTemplateExecutor) SetAzureTokenCredentialCallback(callback func() *azcore.TokenCredential) {
+	e.azureTokenCredentialCallback = callback
+}
+
+// SetUserAgent sets user agent for clients
 func (e *AzureTemplateExecutor) SetUserAgent(val string) {
 	e.UserAgent = val
 }
