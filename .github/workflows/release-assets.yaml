@@ -37,7 +37,7 @@ jobs:
 
       - name: Build
         run: |
-          make "${{ matrix.task }}"
+          make "${{ matrix.task }}" release-upx
 
       - name: Upload assets to release
         uses: svenstaro/upload-release-action@v2
