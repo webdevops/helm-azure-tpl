@@ -14,7 +14,7 @@ requires `sed` and `curl` for installation
 
 ```yaml
 #################################################
-# Github workflows
+# GitHub workflows
 
 # Installation of latest version
 - uses: webdevops/setup-helm-azure-tpl@v1
@@ -22,7 +22,7 @@ requires `sed` and `curl` for installation
 # Installation of specific version
 - uses: webdevops/setup-helm-azure-tpl@v1
   with:
-    version: 0.63.9
+    version: 0.64.0
 
 ```
 
@@ -35,8 +35,8 @@ helm plugin install "https://github.com/webdevops/helm-azure-tpl/releases/latest
 helm plugin install "https://github.com/webdevops/helm-azure-tpl/releases/latest/download/azure-tpl-getter.tgz" --verify=false
 
 # Installation of specific version
-helm plugin install "https://github.com/webdevops/helm-azure-tpl/releases/download/0.63.9/azure-tpl-cli.tgz" --verify=false
-helm plugin install "https://github.com/webdevops/helm-azure-tpl/releases/download/0.63.9/azure-tpl-getter.tgz" --verify=false
+helm plugin install "https://github.com/webdevops/helm-azure-tpl/releases/download/0.64.0/azure-tpl-cli.tgz" --verify=false
+helm plugin install "https://github.com/webdevops/helm-azure-tpl/releases/download/0.64.0/azure-tpl-getter.tgz" --verify=false
 
 # Update
 # please do uninstall and install again, for now
@@ -52,7 +52,7 @@ helm plugin uninstall azure-tpl-getter
 helm plugin install https://github.com/webdevops/helm-azure-tpl.git
 
 # Installation of specific version
-helm plugin install https://github.com/webdevops/helm-azure-tpl.git --version=0.63.9
+helm plugin install https://github.com/webdevops/helm-azure-tpl.git --version=0.64.0
 
 # Update to latest version
 helm plugin update azure-tpl
