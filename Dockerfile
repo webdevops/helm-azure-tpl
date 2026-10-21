@@ -30,6 +30,14 @@ RUN ["./helm-azure-tpl", "--help"]
 #############################################
 # final
 #############################################
+FROM gcr.io/distroless/static AS final-static
+WORKDIR /
+COPY --from=test /app .
+USER 1000:1000
+
+#############################################
+# final
+#############################################
 FROM mcr.microsoft.com/azure-cli:latest AS final-azcli
 WORKDIR /
 COPY --from=test /app .
