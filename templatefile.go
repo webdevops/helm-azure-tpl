@@ -10,7 +10,7 @@ import (
 
 	"github.com/webdevops/go-common/log/slogger"
 
-	"github.com/webdevops/helm-azure-tpl/azuretpl"
+	"github.com/webdevops/helm-azure-tpl/cloudtpl"
 )
 
 type (
@@ -61,7 +61,7 @@ func (f *TemplateFile) parse(buf *strings.Builder) {
 	ctx := f.Context
 	contextLogger := f.Logger
 
-	azureTemplate := azuretpl.New(ctx, opts.AzureTpl, contextLogger)
+	azureTemplate := cloudtpl.New(ctx, opts.AzureTpl, contextLogger)
 	azureTemplate.SetAzureTokenCredentialCallback(getAzureTokenCredential)
 	azureTemplate.SetUserAgent(UserAgent + gitTag)
 	azureTemplate.SetLintMode(lintMode)

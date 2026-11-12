@@ -1,4 +1,4 @@
-package azuretpl
+package cloudtpl
 
 import (
 	"time"

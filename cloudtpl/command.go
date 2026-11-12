@@ -1,4 +1,4 @@
-package azuretpl
+package cloudtpl
 
 import (
 	"bytes"
@@ -22,7 +22,7 @@ import (
 	"github.com/webdevops/go-common/log/slogger"
 	"github.com/webdevops/go-common/msgraphsdk/msgraphclient"
 
-	"github.com/webdevops/helm-azure-tpl/azuretpl/models"
+	"github.com/webdevops/helm-azure-tpl/cloudtpl/models"
 )
 
 type (

@@ -3,7 +3,7 @@ package config
 import (
 	"encoding/json"
 
-	"github.com/webdevops/helm-azure-tpl/azuretpl/models"
+	"github.com/webdevops/helm-azure-tpl/cloudtpl/models"
 )
 
 type (

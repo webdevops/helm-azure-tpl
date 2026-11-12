@@ -15,7 +15,7 @@ import (
 	yaml "gopkg.in/yaml.v3"
 	"helm.sh/helm/v3/pkg/strvals"
 
-	"github.com/webdevops/helm-azure-tpl/azuretpl"
+	"github.com/webdevops/helm-azure-tpl/cloudtpl"
 )
 
 const (
@@ -86,7 +86,7 @@ func run() {
 			}
 		}
 
-		azuretpl.PostSummary(logger, opts)
+		cloudtpl.PostSummary(logger, opts)
 
 		logger.With(slog.String("duration", time.Since(startTime).String())).Info("finished")
 	default:

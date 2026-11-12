@@ -1,4 +1,4 @@
-package azuretpl
+package cloudtpl
 
 const (
 	recursionMaxNums = 100
