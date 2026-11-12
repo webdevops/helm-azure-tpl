@@ -324,13 +324,15 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *textTemplate.Template) textTemp
 	tmp := map[string]interface{}{}
 	for funcName, funcCallback := range funcMap {
 		// azFunc -> azureFunc
-		if strings.HasPrefix(funcName, "az") {
-			tmp["azure"+strings.TrimPrefix(funcName, "az")] = funcCallback
+		if after, ok :=strings.CutPrefix(funcName, "az"); ok  {
+			oldFuncName := "azure" + after
+			tmp[oldFuncName] = e.deprecate(oldFuncName, funcCallback)
 		}
 
 		// mgFunc -> msGraphFunc
-		if strings.HasPrefix(funcName, "mg") {
-			tmp["msGraph"+strings.TrimPrefix(funcName, "mg")] = funcCallback
+		if after, ok :=strings.CutPrefix(funcName, "mg"); ok  {
+			oldFuncName := "msGraph" + after
+			tmp[oldFuncName] = e.deprecate(oldFuncName, funcCallback)
 		}
 
 		tmp[funcName] = funcCallback

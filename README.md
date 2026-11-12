@@ -157,8 +157,8 @@ Arguments:
 
 ### Azure template functions
 
-> [!NOTE]
-> Functions can also be used starting with `azure` prefix instead of `az`
+> [!WARNING]
+> Functions starting with `azure` prefix are deprecated and should be replaced with `az`
 
 | Function                                 | Parameters                                    | Description                                                                                                                                                                                                                             |
 |------------------------------------------|-----------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -262,8 +262,8 @@ response format:
 
 ### MsGraph (AzureAD) functions
 
-> [!NOTE]
-> Functions can also be used starting with `msGraph` prefix instead of `mg`
+> [!WARNING]
+> Functions starting with `msGraph` prefix are deprecated and should be replaced with `mg`
 
 | Function                          | Parameters             | Description                                                                                                                                                          |
 |-----------------------------------|------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
