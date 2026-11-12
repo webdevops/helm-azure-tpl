@@ -62,6 +62,14 @@ func New(ctx context.Context, opts models.Opts, logger *slogger.Logger) *AzureTe
 		logger: logger,
 		opts:   opts,
 
+		azureTokenCredentialCallback: func() *azcore.TokenCredential {
+			cred, err := azidentity.NewAzCliCachedCredential()
+			if err != nil {
+				panic(err)
+			}
+			return &cred
+		},
+
 		cacheTtl: 15 * time.Minute,
 	}
 	e.init()
@@ -75,17 +83,8 @@ func (e *AzureTemplateExecutor) init() {
 // getAzureTokenCredential creates on-demand azure armclient and returns it
 func (e *AzureTemplateExecutor) getAzureTokenCredential() *azcore.TokenCredential {
 	// use callback first
-	if e.azureTokenCredential == nil && e.azureTokenCredentialCallback != nil {
-		e.azureTokenCredential = e.azureTokenCredentialCallback()
-	}
-
-	// normal init last
 	if e.azureTokenCredential == nil {
-		cred, err := azidentity.NewAzCliCachedCredential()
-		if err != nil {
-			panic(err)
-		}
-		e.azureTokenCredential = &cred
+		e.azureTokenCredential = e.azureTokenCredentialCallback()
 	}
 
 	return e.azureTokenCredential
@@ -124,11 +123,6 @@ func (e *AzureTemplateExecutor) msGraphClient() *msgraphclient.MsGraphClient {
 		e.clients.msGraph.SetUserAgent(e.UserAgent)
 	}
 	return e.clients.msGraph
-}
-
-// Deprecated: use SetAzureTokenCredential
-func (e *AzureTemplateExecutor) SetAzureCred(cred *azcore.TokenCredential) {
-	e.SetAzureTokenCredential(cred)
 }
 
 // SetAzureTokenCredential sets Azure token credential (from azcore package)
