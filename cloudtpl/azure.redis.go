@@ -10,7 +10,7 @@ import (
 )
 
 // azRedisAccessKeys fetches accesskeys from redis cache
-func (e *AzureTemplateExecutor) azRedisAccessKeys(resourceID string) (interface{}, error) {
+func (e *CloudTpl) azRedisAccessKeys(resourceID string) (interface{}, error) {
 	e.logger.Info(`fetching Azure Redis accesskey`, slog.String("resourceID", resourceID))
 
 	if val, enabled := e.lintResult(); enabled {

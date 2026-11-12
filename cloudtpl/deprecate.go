@@ -7,7 +7,7 @@ import (
 
 // deprecate wraps any function, logs a warning when it is called,
 // and forwards the arguments and return values.
-func (e *AzureTemplateExecutor) deprecate(name string, fn interface{}) interface{} {
+func (e *CloudTpl) deprecate(name string, fn interface{}) interface{} {
 	v := reflect.ValueOf(fn)
 	if v.Kind() != reflect.Func {
 		panic("deprecate expects a function")

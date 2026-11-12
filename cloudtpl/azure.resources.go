@@ -10,7 +10,7 @@ import (
 )
 
 // azResource fetches resource json from Azure REST API using the specified apiVersion
-func (e *AzureTemplateExecutor) azResource(resourceID string, apiVersion string) (interface{}, error) {
+func (e *CloudTpl) azResource(resourceID string, apiVersion string) (interface{}, error) {
 	e.logger.Info(`fetching Azure Resource`, slog.String("resourceID", resourceID), slog.String("apiVersion", apiVersion))
 
 	cacheKey := generateCacheKey(`azResource`, resourceID, apiVersion)
@@ -20,7 +20,7 @@ func (e *AzureTemplateExecutor) azResource(resourceID string, apiVersion string)
 }
 
 // azResourceList fetches list of resources by scope (either subscription or resourcegroup) from Azure REST API
-func (e *AzureTemplateExecutor) azResourceList(scope string, opts ...string) (interface{}, error) {
+func (e *CloudTpl) azResourceList(scope string, opts ...string) (interface{}, error) {
 	filter := ""
 	if len(opts) >= 1 {
 		filter = opts[0]

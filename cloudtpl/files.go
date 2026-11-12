@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func (e *AzureTemplateExecutor) fileMakePathAbs(path string) string {
+func (e *CloudTpl) fileMakePathAbs(path string) string {
 	path = filepath.Clean(path)
 
 	if filepath.IsAbs(path) {
@@ -27,7 +27,7 @@ func (e *AzureTemplateExecutor) fileMakePathAbs(path string) string {
 	return path
 }
 
-func (e *AzureTemplateExecutor) filesGet(path string) (string, error) {
+func (e *CloudTpl) filesGet(path string) (string, error) {
 	sourcePath := e.fileMakePathAbs(path)
 
 	content, err := os.ReadFile(sourcePath)
@@ -38,7 +38,7 @@ func (e *AzureTemplateExecutor) filesGet(path string) (string, error) {
 	return string(content), nil
 }
 
-func (e *AzureTemplateExecutor) filesGlob(pattern string) (interface{}, error) {
+func (e *CloudTpl) filesGlob(pattern string) (interface{}, error) {
 	pattern = e.fileMakePathAbs(pattern)
 	matches, err := filepath.Glob(pattern)
 	if err != nil {

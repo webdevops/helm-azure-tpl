@@ -11,7 +11,7 @@ import (
 )
 
 // mgServicePrincipalByDisplayName fetches one servicePrincipal from MsGraph API using displayName
-func (e *AzureTemplateExecutor) mgServicePrincipalByDisplayName(displayName string) (interface{}, error) {
+func (e *CloudTpl) mgServicePrincipalByDisplayName(displayName string) (interface{}, error) {
 	e.logger.Info(`fetching MsGraph servicePrincipal by displayName`, slog.String("displayName", displayName))
 
 	if val, enabled := e.lintResult(); enabled {
@@ -48,7 +48,7 @@ func (e *AzureTemplateExecutor) mgServicePrincipalByDisplayName(displayName stri
 }
 
 // mgServicePrincipalList fetches list of servicePrincipals from MsGraph API using $filter query
-func (e *AzureTemplateExecutor) mgServicePrincipalList(filter string) (interface{}, error) {
+func (e *CloudTpl) mgServicePrincipalList(filter string) (interface{}, error) {
 	e.logger.Info(`fetching MsGraph servicePrincipal list with $filter`, slog.String("filter", filter))
 
 	if val, enabled := e.lintResult(); enabled {
@@ -71,7 +71,7 @@ func (e *AzureTemplateExecutor) mgServicePrincipalList(filter string) (interface
 	})
 }
 
-func (e *AzureTemplateExecutor) mgServicePrincipalCreateListFromResult(result models.ServicePrincipalCollectionResponseable) (list []interface{}, err error) {
+func (e *CloudTpl) mgServicePrincipalCreateListFromResult(result models.ServicePrincipalCollectionResponseable) (list []interface{}, err error) {
 	pageIterator, pageIteratorErr := msgraphcore.NewPageIterator[models.ServicePrincipalable](result, e.msGraphClient().RequestAdapter(), models.CreateServicePrincipalCollectionResponseFromDiscriminatorValue)
 	if pageIteratorErr != nil {
 		return list, pageIteratorErr

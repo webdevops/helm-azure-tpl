@@ -7,7 +7,7 @@ import (
 )
 
 // jsonPath executes jsonPath query on an object and returns the result
-func (e *AzureTemplateExecutor) jsonPath(jsonPath string, v interface{}) (interface{}, error) {
+func (e *CloudTpl) jsonPath(jsonPath string, v interface{}) (interface{}, error) {
 
 	if v, enabled := e.lintResult(); enabled {
 		// validate jsonpath

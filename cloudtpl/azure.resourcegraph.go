@@ -9,7 +9,7 @@ import (
 )
 
 // azResourceGraphQuery executes ResourceGraph query and returns result
-func (e *AzureTemplateExecutor) azResourceGraphQuery(scope interface{}, query string) (interface{}, error) {
+func (e *CloudTpl) azResourceGraphQuery(scope interface{}, query string) (interface{}, error) {
 	resourceGraphOptions := armclient.ResourceGraphOptions{}
 
 	// make query more readable in outputs

@@ -11,7 +11,7 @@ import (
 )
 
 // mgGroupByDisplayName fetches one group from MsGraph API using displayName
-func (e *AzureTemplateExecutor) mgGroupByDisplayName(displayName string) (interface{}, error) {
+func (e *CloudTpl) mgGroupByDisplayName(displayName string) (interface{}, error) {
 	e.logger.Info(`fetching MsGraph group by displayName`, slog.String("displayName", displayName))
 
 	if val, enabled := e.lintResult(); enabled {
@@ -47,7 +47,7 @@ func (e *AzureTemplateExecutor) mgGroupByDisplayName(displayName string) (interf
 }
 
 // mgGroupList fetches list of groups from MsGraph API using $filter query
-func (e *AzureTemplateExecutor) mgGroupList(filter string) (interface{}, error) {
+func (e *CloudTpl) mgGroupList(filter string) (interface{}, error) {
 	e.logger.Info(`fetching MsGraph group list with $filter`, slog.String("filter", filter))
 
 	if val, enabled := e.lintResult(); enabled {
@@ -70,7 +70,7 @@ func (e *AzureTemplateExecutor) mgGroupList(filter string) (interface{}, error) 
 
 }
 
-func (e *AzureTemplateExecutor) mgGroupCreateListFromResult(result models.GroupCollectionResponseable) (list []interface{}, err error) {
+func (e *CloudTpl) mgGroupCreateListFromResult(result models.GroupCollectionResponseable) (list []interface{}, err error) {
 	pageIterator, pageIteratorErr := msgraphcore.NewPageIterator[models.Groupable](result, e.msGraphClient().RequestAdapter(), models.CreateGroupCollectionResponseFromDiscriminatorValue)
 	if pageIteratorErr != nil {
 		return list, pageIteratorErr

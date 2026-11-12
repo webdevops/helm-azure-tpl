@@ -9,7 +9,7 @@ import (
 )
 
 // azRoleDefinition fetches Azure RoleDefinition by roleName
-func (e *AzureTemplateExecutor) azRoleDefinition(scope string, roleName string) (interface{}, error) {
+func (e *CloudTpl) azRoleDefinition(scope string, roleName string) (interface{}, error) {
 	e.logger.Info(`fetching Azure RoleDefinition`, slog.String("scope", scope), slog.String("role", roleName))
 
 	if val, enabled := e.lintResult(); enabled {
@@ -41,7 +41,7 @@ func (e *AzureTemplateExecutor) azRoleDefinition(scope string, roleName string) 
 }
 
 // azRoleDefinitionList fetches list of roleDefinitions using $filter
-func (e *AzureTemplateExecutor) azRoleDefinitionList(scope string, filter ...string) (interface{}, error) {
+func (e *CloudTpl) azRoleDefinitionList(scope string, filter ...string) (interface{}, error) {
 	var roleDefinitionFilter string
 
 	if len(filter) == 1 {
@@ -64,7 +64,7 @@ func (e *AzureTemplateExecutor) azRoleDefinitionList(scope string, filter ...str
 	})
 }
 
-func (e *AzureTemplateExecutor) fetchAzureRoleDefinitions(scope string, filter string) ([]armauthorization.RoleDefinition, error) {
+func (e *CloudTpl) fetchAzureRoleDefinitions(scope string, filter string) ([]armauthorization.RoleDefinition, error) {
 	client, err := armauthorization.NewRoleDefinitionsClient(e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
 	if err != nil {
 		return nil, err

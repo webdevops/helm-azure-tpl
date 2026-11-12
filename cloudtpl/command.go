@@ -26,7 +26,7 @@ import (
 )
 
 type (
-	AzureTemplateExecutor struct {
+	CloudTpl struct {
 		ctx    context.Context
 		logger *slogger.Logger
 
@@ -56,8 +56,8 @@ type (
 	}
 )
 
-func New(ctx context.Context, opts models.Opts, logger *slogger.Logger) *AzureTemplateExecutor {
-	e := &AzureTemplateExecutor{
+func New(ctx context.Context, opts models.Opts, logger *slogger.Logger) *CloudTpl {
+	e := &CloudTpl{
 		ctx:    ctx,
 		logger: logger,
 		opts:   opts,
@@ -76,12 +76,12 @@ func New(ctx context.Context, opts models.Opts, logger *slogger.Logger) *AzureTe
 	return e
 }
 
-func (e *AzureTemplateExecutor) init() {
+func (e *CloudTpl) init() {
 	e.cache = globalCache
 }
 
 // getAzureTokenCredential creates on-demand azure armclient and returns it
-func (e *AzureTemplateExecutor) getAzureTokenCredential() *azcore.TokenCredential {
+func (e *CloudTpl) getAzureTokenCredential() *azcore.TokenCredential {
 	// use callback first
 	if e.azureTokenCredential == nil {
 		e.azureTokenCredential = e.azureTokenCredentialCallback()
@@ -91,7 +91,7 @@ func (e *AzureTemplateExecutor) getAzureTokenCredential() *azcore.TokenCredentia
 }
 
 // azureClient creates on-demand azure armclient and returns it
-func (e *AzureTemplateExecutor) azureClient() *armclient.ArmClient {
+func (e *CloudTpl) azureClient() *armclient.ArmClient {
 	var err error
 
 	if e.clients.azure == nil {
@@ -108,7 +108,7 @@ func (e *AzureTemplateExecutor) azureClient() *armclient.ArmClient {
 }
 
 // msGraphClient creates on-demand azure msgraph and returns it
-func (e *AzureTemplateExecutor) msGraphClient() *msgraphclient.MsGraphClient {
+func (e *CloudTpl) msGraphClient() *msgraphclient.MsGraphClient {
 	var err error
 	if e.clients.msGraph == nil {
 		// ensure azureclient init
@@ -126,23 +126,23 @@ func (e *AzureTemplateExecutor) msGraphClient() *msgraphclient.MsGraphClient {
 }
 
 // SetAzureTokenCredential sets Azure token credential (from azcore package)
-func (e *AzureTemplateExecutor) SetAzureTokenCredential(cred *azcore.TokenCredential) {
+func (e *CloudTpl) SetAzureTokenCredential(cred *azcore.TokenCredential) {
 	e.azureTokenCredential = cred
 	e.clients.azure = nil
 	e.clients.msGraph = nil
 }
 
 // SetAzureTokenCredentialCallback sets Azure token credential (from azcore package) using a callback function
-func (e *AzureTemplateExecutor) SetAzureTokenCredentialCallback(callback func() *azcore.TokenCredential) {
+func (e *CloudTpl) SetAzureTokenCredentialCallback(callback func() *azcore.TokenCredential) {
 	e.azureTokenCredentialCallback = callback
 }
 
 // SetUserAgent sets user agent for clients
-func (e *AzureTemplateExecutor) SetUserAgent(val string) {
+func (e *CloudTpl) SetUserAgent(val string) {
 	e.UserAgent = val
 }
 
-func (e *AzureTemplateExecutor) SetTemplateRootPath(val string) {
+func (e *CloudTpl) SetTemplateRootPath(val string) {
 	path, err := filepath.Abs(filepath.Clean(val))
 	if err != nil {
 		e.logger.Error(`invalid base path`, slog.String("path", val), slog.Any("error", err))
@@ -151,7 +151,7 @@ func (e *AzureTemplateExecutor) SetTemplateRootPath(val string) {
 	e.TemplateRootPath = path
 }
 
-func (e *AzureTemplateExecutor) SetTemplateRelPath(val string) {
+func (e *CloudTpl) SetTemplateRelPath(val string) {
 	path, err := filepath.Abs(filepath.Clean(val))
 	if err != nil {
 		e.logger.Error(`invalid base path`, slog.String("path", val), slog.Any("error", err))
@@ -160,11 +160,11 @@ func (e *AzureTemplateExecutor) SetTemplateRelPath(val string) {
 	e.TemplateRelPath = path
 }
 
-func (e *AzureTemplateExecutor) SetLintMode(val bool) {
+func (e *CloudTpl) SetLintMode(val bool) {
 	e.LintMode = val
 }
 
-func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *textTemplate.Template) textTemplate.FuncMap {
+func (e *CloudTpl) TxtFuncMap(tmpl *textTemplate.Template) textTemplate.FuncMap {
 	includedNames := make(map[string]int)
 
 	funcMap := map[string]interface{}{
@@ -324,13 +324,13 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *textTemplate.Template) textTemp
 	tmp := map[string]interface{}{}
 	for funcName, funcCallback := range funcMap {
 		// azFunc -> azureFunc
-		if after, ok :=strings.CutPrefix(funcName, "az"); ok  {
+		if after, ok := strings.CutPrefix(funcName, "az"); ok {
 			oldFuncName := "azure" + after
 			tmp[oldFuncName] = e.deprecate(oldFuncName, funcCallback)
 		}
 
 		// mgFunc -> msGraphFunc
-		if after, ok :=strings.CutPrefix(funcName, "mg"); ok  {
+		if after, ok := strings.CutPrefix(funcName, "mg"); ok {
 			oldFuncName := "msGraph" + after
 			tmp[oldFuncName] = e.deprecate(oldFuncName, funcCallback)
 		}
@@ -342,7 +342,7 @@ func (e *AzureTemplateExecutor) TxtFuncMap(tmpl *textTemplate.Template) textTemp
 	return funcMap
 }
 
-func (e *AzureTemplateExecutor) TxtTemplate(name string) *textTemplate.Template {
+func (e *CloudTpl) TxtTemplate(name string) *textTemplate.Template {
 	tmpl := textTemplate.New(name).Funcs(sprig.TxtFuncMap())
 	tmpl = tmpl.Funcs(e.TxtFuncMap(tmpl))
 
@@ -355,7 +355,7 @@ func (e *AzureTemplateExecutor) TxtTemplate(name string) *textTemplate.Template 
 	return tmpl
 }
 
-func (e *AzureTemplateExecutor) Parse(path string, templateData interface{}, buf *strings.Builder) error {
+func (e *CloudTpl) Parse(path string, templateData interface{}, buf *strings.Builder) error {
 	e.currentPath = path
 
 	tmpl := e.TxtTemplate(path)
@@ -391,7 +391,7 @@ func (e *AzureTemplateExecutor) Parse(path string, templateData interface{}, buf
 }
 
 // lintResult checks if lint mode is active and returns example value
-func (e *AzureTemplateExecutor) lintResult() (interface{}, bool) {
+func (e *CloudTpl) lintResult() (interface{}, bool) {
 	if e.LintMode {
 		return nil, true
 	}
@@ -399,7 +399,7 @@ func (e *AzureTemplateExecutor) lintResult() (interface{}, bool) {
 }
 
 // cacheResult caches template function results (eg. Azure REST API resource information)
-func (e *AzureTemplateExecutor) cacheResult(cacheKey string, callback func() (interface{}, error)) (interface{}, error) {
+func (e *CloudTpl) cacheResult(cacheKey string, callback func() (interface{}, error)) (interface{}, error) {
 	if val, ok := e.cache.Get(cacheKey); ok {
 		e.logger.Info("found in cache", slog.String("cacheKey", cacheKey))
 		return val, nil
@@ -416,7 +416,7 @@ func (e *AzureTemplateExecutor) cacheResult(cacheKey string, callback func() (in
 }
 
 // fetchAzureResource fetches json representation of Azure resource by resourceID and apiVersion
-func (e *AzureTemplateExecutor) fetchAzureResource(resourceID string, apiVersion string) (interface{}, error) {
+func (e *CloudTpl) fetchAzureResource(resourceID string, apiVersion string) (interface{}, error) {
 	resourceInfo, err := armclient.ParseResourceId(resourceID)
 	if err != nil {
 		return nil, fmt.Errorf(`unable to parse Azure resourceID '%v': %w`, resourceID, err)

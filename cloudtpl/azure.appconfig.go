@@ -16,7 +16,7 @@ import (
 )
 
 // buildAppConfigUrl builds Azure AppConfig url in case value is supplied as AppConfig name only
-func (e *AzureTemplateExecutor) buildAppConfigUrl(appConfigUrl string) (string, error) {
+func (e *CloudTpl) buildAppConfigUrl(appConfigUrl string) (string, error) {
 	// do not build keyvault url in lint mode
 	if e.LintMode {
 		return appConfigUrl, nil
@@ -43,7 +43,7 @@ func (e *AzureTemplateExecutor) buildAppConfigUrl(appConfigUrl string) (string, 
 }
 
 // azAppConfigSetting fetches secret object from Azure KeyVault
-func (e *AzureTemplateExecutor) azAppConfigSetting(appConfigUrl string, settingName string, label string) (interface{}, error) {
+func (e *CloudTpl) azAppConfigSetting(appConfigUrl string, settingName string, label string) (interface{}, error) {
 	// azure keyvault url detection
 	if val, err := e.buildAppConfigUrl(appConfigUrl); err == nil {
 		appConfigUrl = val

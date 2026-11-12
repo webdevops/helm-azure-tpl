@@ -11,7 +11,7 @@ import (
 )
 
 // mgApplicationByDisplayName fetches one application from MsGraph API using displayName
-func (e *AzureTemplateExecutor) mgApplicationByDisplayName(displayName string) (interface{}, error) {
+func (e *CloudTpl) mgApplicationByDisplayName(displayName string) (interface{}, error) {
 	e.logger.Info(`fetching MsGraph application by displayName`, slog.String("displayName", displayName))
 
 	if val, enabled := e.lintResult(); enabled {
@@ -48,7 +48,7 @@ func (e *AzureTemplateExecutor) mgApplicationByDisplayName(displayName string) (
 }
 
 // mgApplicationList fetches list of applications from MsGraph API using $filter query
-func (e *AzureTemplateExecutor) mgApplicationList(filter string) (interface{}, error) {
+func (e *CloudTpl) mgApplicationList(filter string) (interface{}, error) {
 	e.logger.Info(`fetching MsGraph application list with $filter`, slog.String("filter", filter))
 
 	if val, enabled := e.lintResult(); enabled {
@@ -71,7 +71,7 @@ func (e *AzureTemplateExecutor) mgApplicationList(filter string) (interface{}, e
 	})
 }
 
-func (e *AzureTemplateExecutor) mgApplicationCreateListFromResult(result models.ApplicationCollectionResponseable) (list []interface{}, err error) {
+func (e *CloudTpl) mgApplicationCreateListFromResult(result models.ApplicationCollectionResponseable) (list []interface{}, err error) {
 	pageIterator, pageIteratorErr := msgraphcore.NewPageIterator[models.Applicationable](result, e.msGraphClient().RequestAdapter(), models.CreateApplicationCollectionResponseFromDiscriminatorValue)
 	if pageIteratorErr != nil {
 		return list, pageIteratorErr

@@ -17,7 +17,7 @@ import (
 )
 
 // buildAzKeyVaulUrl builds Azure KeyVault url in case value is supplied as KeyVault name only
-func (e *AzureTemplateExecutor) buildAzKeyVaulUrl(vaultUrl string) (string, error) {
+func (e *CloudTpl) buildAzKeyVaulUrl(vaultUrl string) (string, error) {
 	// do not build keyvault url in lint mode
 	if e.LintMode {
 		return vaultUrl, nil
@@ -44,7 +44,7 @@ func (e *AzureTemplateExecutor) buildAzKeyVaulUrl(vaultUrl string) (string, erro
 }
 
 // azKeyVaultSecret fetches secret object from Azure KeyVault
-func (e *AzureTemplateExecutor) azKeyVaultSecret(vaultUrl string, secretName string, opts ...string) (interface{}, error) {
+func (e *CloudTpl) azKeyVaultSecret(vaultUrl string, secretName string, opts ...string) (interface{}, error) {
 	// azure keyvault url detection
 	if val, err := e.buildAzKeyVaulUrl(vaultUrl); err == nil {
 		vaultUrl = val
@@ -124,7 +124,7 @@ func (e *AzureTemplateExecutor) azKeyVaultSecret(vaultUrl string, secretName str
 }
 
 // azKeyVaultSecretVersions fetches older versions of one secret from Azure KeyVault
-func (e *AzureTemplateExecutor) azKeyVaultSecretVersions(vaultUrl string, secretName string, count int) (interface{}, error) {
+func (e *CloudTpl) azKeyVaultSecretVersions(vaultUrl string, secretName string, count int) (interface{}, error) {
 	// azure keyvault url detection
 	if val, err := e.buildAzKeyVaulUrl(vaultUrl); err == nil {
 		vaultUrl = val
@@ -210,7 +210,7 @@ func (e *AzureTemplateExecutor) azKeyVaultSecretVersions(vaultUrl string, secret
 }
 
 // azKeyVaultSecretList fetches secrets from Azure KeyVault
-func (e *AzureTemplateExecutor) azKeyVaultSecretList(vaultUrl string, secretNamePattern string) (interface{}, error) {
+func (e *CloudTpl) azKeyVaultSecretList(vaultUrl string, secretNamePattern string) (interface{}, error) {
 	// azure keyvault url detection
 	if val, err := e.buildAzKeyVaulUrl(vaultUrl); err == nil {
 		vaultUrl = val

@@ -10,7 +10,7 @@ import (
 )
 
 // azManagementGroup fetches Azure ManagementGroup
-func (e *AzureTemplateExecutor) azManagementGroup(groupID string) (interface{}, error) {
+func (e *CloudTpl) azManagementGroup(groupID string) (interface{}, error) {
 	e.logger.Info(`fetching Azure ManagementGroup`, slog.String("mgmtgroup", groupID))
 
 	if val, enabled := e.lintResult(); enabled {
@@ -34,7 +34,7 @@ func (e *AzureTemplateExecutor) azManagementGroup(groupID string) (interface{}, 
 }
 
 // azManagementGroupSubscriptionList fetches list of Azure Subscriptions under Azure ManagementGroup
-func (e *AzureTemplateExecutor) azManagementGroupSubscriptionList(groupID string) (interface{}, error) {
+func (e *CloudTpl) azManagementGroupSubscriptionList(groupID string) (interface{}, error) {
 	e.logger.Info(`fetching subscriptions from Azure ManagementGroup`, slog.String("mgmtgroup", groupID))
 
 	if val, enabled := e.lintResult(); enabled {

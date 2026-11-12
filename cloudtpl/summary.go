@@ -23,7 +23,7 @@ var (
 	summary map[string][]string = map[string][]string{}
 )
 
-func (e *AzureTemplateExecutor) addSummaryLine(section, val string) {
+func (e *CloudTpl) addSummaryLine(section, val string) {
 	if _, ok := summary[section]; !ok {
 		summary[section] = []string{}
 	}
@@ -31,7 +31,7 @@ func (e *AzureTemplateExecutor) addSummaryLine(section, val string) {
 	summary[section] = append(summary[section], val)
 }
 
-func (e *AzureTemplateExecutor) addSummaryKeyvaultSecret(vaultUrl string, secret azsecrets.GetSecretResponse) {
+func (e *CloudTpl) addSummaryKeyvaultSecret(vaultUrl string, secret azsecrets.GetSecretResponse) {
 	section := "Azure Keyvault Secrets"
 	if _, ok := summary[section]; !ok {
 		summary[section] = []string{

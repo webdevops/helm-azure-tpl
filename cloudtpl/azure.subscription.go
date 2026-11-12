@@ -9,7 +9,7 @@ import (
 )
 
 // azSubscription fetches current or defined Azure subscription
-func (e *AzureTemplateExecutor) azSubscription(subscriptionID ...string) (interface{}, error) {
+func (e *CloudTpl) azSubscription(subscriptionID ...string) (interface{}, error) {
 	var selectedSubscriptionId string
 	if len(subscriptionID) > 1 {
 		return nil, fmt.Errorf(`{{azSubscription}} only supports zero or one subscriptionIDs`)
@@ -60,7 +60,7 @@ func (e *AzureTemplateExecutor) azSubscription(subscriptionID ...string) (interf
 }
 
 // azSubscriptionList fetches list of visible Azure subscriptions
-func (e *AzureTemplateExecutor) azSubscriptionList() (interface{}, error) {
+func (e *CloudTpl) azSubscriptionList() (interface{}, error) {
 	e.logger.Info(`fetching Azure subscriptions`)
 
 	if val, enabled := e.lintResult(); enabled {

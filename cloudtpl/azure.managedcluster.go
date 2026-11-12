@@ -9,7 +9,7 @@ import (
 )
 
 // azManagedClusterUserCredentials fetches user credentials object from managed cluster (AKS)
-func (e *AzureTemplateExecutor) azManagedClusterUserCredentials(resourceID string) (interface{}, error) {
+func (e *CloudTpl) azManagedClusterUserCredentials(resourceID string) (interface{}, error) {
 	e.logger.Info(`fetching Azure ManagedCluster user credentials`, slog.String("resourceID", resourceID))
 
 	if val, enabled := e.lintResult(); enabled {

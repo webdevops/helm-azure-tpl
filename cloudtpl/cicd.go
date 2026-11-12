@@ -12,7 +12,7 @@ var (
 	cicdMaskVarNumber atomic.Uint64
 )
 
-func (e *AzureTemplateExecutor) handleCicdMaskSecret(val string) {
+func (e *CloudTpl) handleCicdMaskSecret(val string) {
 	workflowLogMsgList := []string{}
 
 	// only show first line of error (could be a multi line error message)
@@ -46,7 +46,7 @@ func (e *AzureTemplateExecutor) handleCicdMaskSecret(val string) {
 	}
 }
 
-func (e *AzureTemplateExecutor) handleCicdWarning(err error) string {
+func (e *CloudTpl) handleCicdWarning(err error) string {
 	workflowLogMsg := ""
 
 	// only show first line of error (could be a multi line error message)
@@ -74,7 +74,7 @@ func (e *AzureTemplateExecutor) handleCicdWarning(err error) string {
 	return err.Error()
 }
 
-func (e *AzureTemplateExecutor) handleCicdError(err error) error {
+func (e *CloudTpl) handleCicdError(err error) error {
 	workflowLogMsg := ""
 
 	// only show first line of error (could be a multi line error message)

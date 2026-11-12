@@ -7,7 +7,7 @@ import (
 	"os/exec"
 )
 
-func (e *AzureTemplateExecutor) azAccountInfo() (interface{}, error) {
+func (e *CloudTpl) azAccountInfo() (interface{}, error) {
 	if e.azureCliAccountInfo == nil {
 		cmd := exec.Command("az", "account", "show", "-o", "json")
 		cmd.Stderr = os.Stderr

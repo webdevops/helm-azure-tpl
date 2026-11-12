@@ -9,7 +9,7 @@ import (
 )
 
 // azEventHubListByNamespace fetches list of Azure EventHubs by Namespace
-func (e *AzureTemplateExecutor) azEventHubListByNamespace(resourceID string) (interface{}, error) {
+func (e *CloudTpl) azEventHubListByNamespace(resourceID string) (interface{}, error) {
 	e.logger.Info(`fetching EventHub list by namespace`, slog.String("resourceID", resourceID))
 
 	if val, enabled := e.lintResult(); enabled {

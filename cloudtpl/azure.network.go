@@ -11,7 +11,7 @@ import (
 )
 
 // azPublicIpAddress fetches ipAddress from Azure Public IP Address
-func (e *AzureTemplateExecutor) azPublicIpAddress(resourceID string) (interface{}, error) {
+func (e *CloudTpl) azPublicIpAddress(resourceID string) (interface{}, error) {
 	e.logger.Info(`fetching Azure PublicIpAddress`, slog.String("resourceID", resourceID))
 
 	if val, enabled := e.lintResult(); enabled {
@@ -40,7 +40,7 @@ func (e *AzureTemplateExecutor) azPublicIpAddress(resourceID string) (interface{
 }
 
 // azPublicIpPrefixAddressPrefix fetches ipAddress prefix from Azure Public IP Address prefix
-func (e *AzureTemplateExecutor) azPublicIpPrefixAddressPrefix(resourceID string) (interface{}, error) {
+func (e *CloudTpl) azPublicIpPrefixAddressPrefix(resourceID string) (interface{}, error) {
 	e.logger.Info(`fetching Azure PublicIpPrefix`, slog.String("resourceID", resourceID))
 
 	if val, enabled := e.lintResult(); enabled {
@@ -69,7 +69,7 @@ func (e *AzureTemplateExecutor) azPublicIpPrefixAddressPrefix(resourceID string)
 }
 
 // azVirtualNetworkAddressPrefixes fetches ipAddress prefixes (array) from Azure VirtualNetwork
-func (e *AzureTemplateExecutor) azVirtualNetworkAddressPrefixes(resourceID string) (interface{}, error) {
+func (e *CloudTpl) azVirtualNetworkAddressPrefixes(resourceID string) (interface{}, error) {
 	e.logger.Info(`fetching AddressPrefixes from Azure VirtualNetwork '%v'`, slog.String("resourceID", resourceID))
 
 	if val, enabled := e.lintResult(); enabled {
@@ -101,7 +101,7 @@ func (e *AzureTemplateExecutor) azVirtualNetworkAddressPrefixes(resourceID strin
 }
 
 // azVirtualNetworkSubnetAddressPrefixes fetches ipAddress prefixes (array) from Azure VirtualNetwork subnet
-func (e *AzureTemplateExecutor) azVirtualNetworkSubnetAddressPrefixes(resourceID string, subnetName string) (interface{}, error) {
+func (e *CloudTpl) azVirtualNetworkSubnetAddressPrefixes(resourceID string, subnetName string) (interface{}, error) {
 	e.logger.Info(`fetching AddressPrefixes from Azure VirtualNetwork`, slog.String("resourceID", resourceID), slog.String("subnet", subnetName))
 
 	if val, enabled := e.lintResult(); enabled {

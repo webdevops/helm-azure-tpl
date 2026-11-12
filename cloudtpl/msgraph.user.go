@@ -11,7 +11,7 @@ import (
 )
 
 // mgUserByUserPrincipalName fetches one user from MsGraph API using userPrincipalName
-func (e *AzureTemplateExecutor) mgUserByUserPrincipalName(userPrincipalName string) (interface{}, error) {
+func (e *CloudTpl) mgUserByUserPrincipalName(userPrincipalName string) (interface{}, error) {
 	e.logger.Info(`fetching MsGraph user by userPrincipalName`, slog.String("upn", userPrincipalName))
 
 	if val, enabled := e.lintResult(); enabled {
@@ -50,7 +50,7 @@ func (e *AzureTemplateExecutor) mgUserByUserPrincipalName(userPrincipalName stri
 }
 
 // mgUserList fetches list of users from MsGraph API using $filter query
-func (e *AzureTemplateExecutor) mgUserList(filter string) (interface{}, error) {
+func (e *CloudTpl) mgUserList(filter string) (interface{}, error) {
 	e.logger.Info(`fetching MsGraph user list with $filter`, slog.String("filter", filter))
 
 	if val, enabled := e.lintResult(); enabled {
@@ -73,7 +73,7 @@ func (e *AzureTemplateExecutor) mgUserList(filter string) (interface{}, error) {
 	})
 }
 
-func (e *AzureTemplateExecutor) mgUserCreateListFromResult(result models.UserCollectionResponseable) (list []interface{}, err error) {
+func (e *CloudTpl) mgUserCreateListFromResult(result models.UserCollectionResponseable) (list []interface{}, err error) {
 	pageIterator, pageIteratorErr := msgraphcore.NewPageIterator[models.Userable](result, e.msGraphClient().RequestAdapter(), models.CreateUserCollectionResponseFromDiscriminatorValue)
 	if pageIteratorErr != nil {
 		return list, pageIteratorErr
