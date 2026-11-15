@@ -1,4 +1,4 @@
-package cloudtpl
+package azure
 
 import (
 	"fmt"
@@ -11,22 +11,22 @@ import (
 )
 
 // mgApplicationByDisplayName fetches one application from MsGraph API using displayName
-func (e *CloudTpl) mgApplicationByDisplayName(displayName string) (interface{}, error) {
-	e.logger.Info(`fetching MsGraph application by displayName`, slog.String("displayName", displayName))
+func (e *AzureEngine) mgApplicationByDisplayName(displayName string) (interface{}, error) {
+	e.Logger.Info(`fetching MsGraph application by displayName`, slog.String("displayName", displayName))
 
-	if val, enabled := e.lintResult(); enabled {
+	if val, enabled := e.LintResult(); enabled {
 		return val, nil
 	}
 
-	cacheKey := generateCacheKey(`mgApplicationByDisplayName`, displayName)
-	return e.cacheResult(cacheKey, func() (interface{}, error) {
+	cacheKey := e.GenerateCacheKey(`mgApplicationByDisplayName`, displayName)
+	return e.CacheResult(cacheKey, func() (interface{}, error) {
 		requestOpts := &applications.ApplicationsRequestBuilderGetRequestConfiguration{
 			QueryParameters: &applications.ApplicationsRequestBuilderGetQueryParameters{
 				Filter: to.StringPtr(fmt.Sprintf(`displayName eq '%v'`,
 					escapeMsGraphFilter(displayName))),
 			},
 		}
-		result, err := e.msGraphClient().ServiceClient().Applications().Get(e.ctx, requestOpts)
+		result, err := e.msGraphClient().ServiceClient().Applications().Get(e.Ctx, requestOpts)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to query MsGraph application: %w`, err)
 		}
@@ -48,16 +48,16 @@ func (e *CloudTpl) mgApplicationByDisplayName(displayName string) (interface{}, 
 }
 
 // mgApplicationList fetches list of applications from MsGraph API using $filter query
-func (e *CloudTpl) mgApplicationList(filter string) (interface{}, error) {
-	e.logger.Info(`fetching MsGraph application list with $filter`, slog.String("filter", filter))
+func (e *AzureEngine) mgApplicationList(filter string) (interface{}, error) {
+	e.Logger.Info(`fetching MsGraph application list with $filter`, slog.String("filter", filter))
 
-	if val, enabled := e.lintResult(); enabled {
+	if val, enabled := e.LintResult(); enabled {
 		return val, nil
 	}
 
-	cacheKey := generateCacheKey(`mgApplicationList`, filter)
-	return e.cacheResult(cacheKey, func() (interface{}, error) {
-		result, err := e.msGraphClient().ServiceClient().Applications().Get(e.ctx, nil)
+	cacheKey := e.GenerateCacheKey(`mgApplicationList`, filter)
+	return e.CacheResult(cacheKey, func() (interface{}, error) {
+		result, err := e.msGraphClient().ServiceClient().Applications().Get(e.Ctx, nil)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to query MsGraph applications: %w`, err)
 		}
@@ -71,13 +71,13 @@ func (e *CloudTpl) mgApplicationList(filter string) (interface{}, error) {
 	})
 }
 
-func (e *CloudTpl) mgApplicationCreateListFromResult(result models.ApplicationCollectionResponseable) (list []interface{}, err error) {
+func (e *AzureEngine) mgApplicationCreateListFromResult(result models.ApplicationCollectionResponseable) (list []interface{}, err error) {
 	pageIterator, pageIteratorErr := msgraphcore.NewPageIterator[models.Applicationable](result, e.msGraphClient().RequestAdapter(), models.CreateApplicationCollectionResponseFromDiscriminatorValue)
 	if pageIteratorErr != nil {
 		return list, pageIteratorErr
 	}
 
-	iterateErr := pageIterator.Iterate(e.ctx, func(application models.Applicationable) bool {
+	iterateErr := pageIterator.Iterate(e.Ctx, func(application models.Applicationable) bool {
 		obj, serializeErr := e.mgSerializeObject(application)
 		if serializeErr != nil {
 			err = serializeErr

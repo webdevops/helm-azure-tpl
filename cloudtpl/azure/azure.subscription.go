@@ -1,4 +1,4 @@
-package cloudtpl
+package azure
 
 import (
 	"fmt"
@@ -9,13 +9,13 @@ import (
 )
 
 // azSubscription fetches current or defined Azure subscription
-func (e *CloudTpl) azSubscription(subscriptionID ...string) (interface{}, error) {
+func (e *AzureEngine) azSubscription(subscriptionID ...string) (interface{}, error) {
 	var selectedSubscriptionId string
 	if len(subscriptionID) > 1 {
 		return nil, fmt.Errorf(`{{azSubscription}} only supports zero or one subscriptionIDs`)
 	}
 
-	if val, enabled := e.lintResult(); enabled {
+	if val, enabled := e.LintResult(); enabled {
 		return val, nil
 	}
 
@@ -37,21 +37,21 @@ func (e *CloudTpl) azSubscription(subscriptionID ...string) (interface{}, error)
 		}
 	}
 
-	e.logger.Info(`fetching Azure subscription`, slog.String("subscriptionID", selectedSubscriptionId))
+	e.Logger.Info(`fetching Azure subscription`, slog.String("subscriptionID", selectedSubscriptionId))
 
-	cacheKey := generateCacheKey(`azSubscription`, selectedSubscriptionId)
-	return e.cacheResult(cacheKey, func() (interface{}, error) {
+	cacheKey := e.GenerateCacheKey(`azSubscription`, selectedSubscriptionId)
+	return e.CacheResult(cacheKey, func() (interface{}, error) {
 		client, err := armsubscriptions.NewClient(e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
 		if err != nil {
 			return nil, err
 		}
 
-		resource, err := client.Get(e.ctx, selectedSubscriptionId, nil)
+		resource, err := client.Get(e.Ctx, selectedSubscriptionId, nil)
 		if err != nil {
 			return nil, fmt.Errorf(`unable to fetch Azure subscription '%v': %w`, selectedSubscriptionId, err)
 		}
 
-		subscriptionData, err := transformToInterface(resource)
+		subscriptionData, err := e.TransformToInterface(resource)
 		if err != nil {
 			return nil, fmt.Errorf(`unable to transform Azure subscription '%v': %w`, selectedSubscriptionId, err)
 		}
@@ -60,15 +60,15 @@ func (e *CloudTpl) azSubscription(subscriptionID ...string) (interface{}, error)
 }
 
 // azSubscriptionList fetches list of visible Azure subscriptions
-func (e *CloudTpl) azSubscriptionList() (interface{}, error) {
-	e.logger.Info(`fetching Azure subscriptions`)
+func (e *AzureEngine) azSubscriptionList() (interface{}, error) {
+	e.Logger.Info(`fetching Azure subscriptions`)
 
-	if val, enabled := e.lintResult(); enabled {
+	if val, enabled := e.LintResult(); enabled {
 		return val, nil
 	}
 
-	cacheKey := generateCacheKey(`azSubscriptionList`)
-	return e.cacheResult(cacheKey, func() (interface{}, error) {
+	cacheKey := e.GenerateCacheKey(`azSubscriptionList`)
+	return e.CacheResult(cacheKey, func() (interface{}, error) {
 		client, err := armsubscriptions.NewClient(e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
 		if err != nil {
 			panic(err.Error())
@@ -77,13 +77,13 @@ func (e *CloudTpl) azSubscriptionList() (interface{}, error) {
 		pager := client.NewListPager(nil)
 		var ret []interface{}
 		for pager.More() {
-			result, err := pager.NextPage(e.ctx)
+			result, err := pager.NextPage(e.Ctx)
 			if err != nil {
 				panic(err)
 			}
 
 			for _, subscription := range result.Value {
-				subscriptionData, err := transformToInterface(subscription)
+				subscriptionData, err := e.TransformToInterface(subscription)
 				if err != nil {
 					return nil, fmt.Errorf(`unable to transform Azure subscription '%v': %w`, to.String(subscription.SubscriptionID), err)
 				}

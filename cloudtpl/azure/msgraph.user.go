@@ -1,4 +1,4 @@
-package cloudtpl
+package azure
 
 import (
 	"fmt"
@@ -11,15 +11,15 @@ import (
 )
 
 // mgUserByUserPrincipalName fetches one user from MsGraph API using userPrincipalName
-func (e *CloudTpl) mgUserByUserPrincipalName(userPrincipalName string) (interface{}, error) {
-	e.logger.Info(`fetching MsGraph user by userPrincipalName`, slog.String("upn", userPrincipalName))
+func (e *AzureEngine) mgUserByUserPrincipalName(userPrincipalName string) (interface{}, error) {
+	e.Logger.Info(`fetching MsGraph user by userPrincipalName`, slog.String("upn", userPrincipalName))
 
-	if val, enabled := e.lintResult(); enabled {
+	if val, enabled := e.LintResult(); enabled {
 		return val, nil
 	}
 
-	cacheKey := generateCacheKey(`mgUserByUserPrincipalName`, userPrincipalName)
-	return e.cacheResult(cacheKey, func() (interface{}, error) {
+	cacheKey := e.GenerateCacheKey(`mgUserByUserPrincipalName`, userPrincipalName)
+	return e.CacheResult(cacheKey, func() (interface{}, error) {
 		requestOpts := &users.UsersRequestBuilderGetRequestConfiguration{
 			QueryParameters: &users.UsersRequestBuilderGetQueryParameters{
 				Filter: to.StringPtr(fmt.Sprintf(
@@ -28,7 +28,7 @@ func (e *CloudTpl) mgUserByUserPrincipalName(userPrincipalName string) (interfac
 				)),
 			},
 		}
-		result, err := e.msGraphClient().ServiceClient().Users().Get(e.ctx, requestOpts)
+		result, err := e.msGraphClient().ServiceClient().Users().Get(e.Ctx, requestOpts)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to query MsGraph user: %w`, err)
 		}
@@ -50,16 +50,16 @@ func (e *CloudTpl) mgUserByUserPrincipalName(userPrincipalName string) (interfac
 }
 
 // mgUserList fetches list of users from MsGraph API using $filter query
-func (e *CloudTpl) mgUserList(filter string) (interface{}, error) {
-	e.logger.Info(`fetching MsGraph user list with $filter`, slog.String("filter", filter))
+func (e *AzureEngine) mgUserList(filter string) (interface{}, error) {
+	e.Logger.Info(`fetching MsGraph user list with $filter`, slog.String("filter", filter))
 
-	if val, enabled := e.lintResult(); enabled {
+	if val, enabled := e.LintResult(); enabled {
 		return val, nil
 	}
 
-	cacheKey := generateCacheKey(`mgUserList`, filter)
-	return e.cacheResult(cacheKey, func() (interface{}, error) {
-		result, err := e.msGraphClient().ServiceClient().Users().Get(e.ctx, nil)
+	cacheKey := e.GenerateCacheKey(`mgUserList`, filter)
+	return e.CacheResult(cacheKey, func() (interface{}, error) {
+		result, err := e.msGraphClient().ServiceClient().Users().Get(e.Ctx, nil)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to query MsGraph users: %w`, err)
 		}
@@ -73,13 +73,13 @@ func (e *CloudTpl) mgUserList(filter string) (interface{}, error) {
 	})
 }
 
-func (e *CloudTpl) mgUserCreateListFromResult(result models.UserCollectionResponseable) (list []interface{}, err error) {
+func (e *AzureEngine) mgUserCreateListFromResult(result models.UserCollectionResponseable) (list []interface{}, err error) {
 	pageIterator, pageIteratorErr := msgraphcore.NewPageIterator[models.Userable](result, e.msGraphClient().RequestAdapter(), models.CreateUserCollectionResponseFromDiscriminatorValue)
 	if pageIteratorErr != nil {
 		return list, pageIteratorErr
 	}
 
-	iterateErr := pageIterator.Iterate(e.ctx, func(user models.Userable) bool {
+	iterateErr := pageIterator.Iterate(e.Ctx, func(user models.Userable) bool {
 		obj, serializeErr := e.mgSerializeObject(user)
 		if serializeErr != nil {
 			err = serializeErr

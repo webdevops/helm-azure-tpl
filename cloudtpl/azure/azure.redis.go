@@ -1,4 +1,4 @@
-package cloudtpl
+package azure
 
 import (
 	"fmt"
@@ -10,15 +10,15 @@ import (
 )
 
 // azRedisAccessKeys fetches accesskeys from redis cache
-func (e *CloudTpl) azRedisAccessKeys(resourceID string) (interface{}, error) {
-	e.logger.Info(`fetching Azure Redis accesskey`, slog.String("resourceID", resourceID))
+func (e *AzureEngine) azRedisAccessKeys(resourceID string) (interface{}, error) {
+	e.Logger.Info(`fetching Azure Redis accesskey`, slog.String("resourceID", resourceID))
 
-	if val, enabled := e.lintResult(); enabled {
+	if val, enabled := e.LintResult(); enabled {
 		return val, nil
 	}
 
-	cacheKey := generateCacheKey(`azRedisAccessKeys`, resourceID)
-	return e.cacheResult(cacheKey, func() (interface{}, error) {
+	cacheKey := e.GenerateCacheKey(`azRedisAccessKeys`, resourceID)
+	return e.CacheResult(cacheKey, func() (interface{}, error) {
 		resourceInfo, err := armclient.ParseResourceId(resourceID)
 		if err != nil {
 			return nil, fmt.Errorf(`unable to parse Azure resourceID '%v': %w`, resourceID, err)
@@ -29,7 +29,7 @@ func (e *CloudTpl) azRedisAccessKeys(resourceID string) (interface{}, error) {
 			return nil, err
 		}
 
-		result, err := client.ListKeys(e.ctx, resourceInfo.ResourceGroup, resourceInfo.ResourceName, nil)
+		result, err := client.ListKeys(e.Ctx, resourceInfo.ResourceGroup, resourceInfo.ResourceName, nil)
 		if err != nil {
 			return nil, err
 		}
@@ -39,6 +39,6 @@ func (e *CloudTpl) azRedisAccessKeys(resourceID string) (interface{}, error) {
 			to.String(result.SecondaryKey),
 		}
 
-		return transformToInterface(val)
+		return e.TransformToInterface(val)
 	})
 }

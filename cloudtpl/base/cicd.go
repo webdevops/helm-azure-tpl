@@ -1,4 +1,4 @@
-package cloudtpl
+package base
 
 import (
 	"encoding/base64"
@@ -12,7 +12,7 @@ var (
 	cicdMaskVarNumber atomic.Uint64
 )
 
-func (e *CloudTpl) handleCicdMaskSecret(val string) {
+func (e *BaseEngine) HandleCicdMaskSecret(val string) {
 	workflowLogMsgList := []string{}
 
 	// only show first line of error (could be a multi line error message)
@@ -46,7 +46,7 @@ func (e *CloudTpl) handleCicdMaskSecret(val string) {
 	}
 }
 
-func (e *CloudTpl) handleCicdWarning(err error) string {
+func (e *BaseEngine) HandleCicdWarning(err error) string {
 	workflowLogMsg := ""
 
 	// only show first line of error (could be a multi line error message)
@@ -55,7 +55,7 @@ func (e *CloudTpl) handleCicdWarning(err error) string {
 	switch {
 	case os.Getenv("SYSTEM_TEAMFOUNDATIONSERVERURI") != "":
 		// Azure DevOps
-		workflowLogMsg = fmt.Sprintf(`##vso[task.logissue type=warning;sourcepath=%v]%v`, e.currentPath, workflowLogError)
+		workflowLogMsg = fmt.Sprintf(`##vso[task.logissue type=warning;sourcepath=%v]%v`, e.CurrentPath, workflowLogError)
 	case os.Getenv("GITLAB_CI") != "":
 		// GitLab
 		// no error logging available
@@ -64,7 +64,7 @@ func (e *CloudTpl) handleCicdWarning(err error) string {
 		// no error logging available
 	case os.Getenv("GITHUB_ACTION") != "":
 		// GitHub
-		workflowLogMsg = fmt.Sprintf(`::warning file=%v,title=helm-azure-tpl::%v`, e.currentPath, workflowLogError)
+		workflowLogMsg = fmt.Sprintf(`::warning file=%v,title=helm-azure-tpl::%v`, e.CurrentPath, workflowLogError)
 	}
 
 	if workflowLogMsg != "" {
@@ -74,7 +74,7 @@ func (e *CloudTpl) handleCicdWarning(err error) string {
 	return err.Error()
 }
 
-func (e *CloudTpl) handleCicdError(err error) error {
+func (e *BaseEngine) HandleCicdError(err error) error {
 	workflowLogMsg := ""
 
 	// only show first line of error (could be a multi line error message)
@@ -83,7 +83,7 @@ func (e *CloudTpl) handleCicdError(err error) error {
 	switch {
 	case os.Getenv("SYSTEM_TEAMFOUNDATIONSERVERURI") != "":
 		// Azure DevOps
-		workflowLogMsg = fmt.Sprintf(`##vso[task.logissue type=error;sourcepath=%v]%v`, e.currentPath, workflowLogError)
+		workflowLogMsg = fmt.Sprintf(`##vso[task.logissue type=error;sourcepath=%v]%v`, e.CurrentPath, workflowLogError)
 	case os.Getenv("GITLAB_CI") != "":
 		// GitLab
 		// no error logging available
@@ -92,7 +92,7 @@ func (e *CloudTpl) handleCicdError(err error) error {
 		// no error logging available
 	case os.Getenv("GITHUB_ACTION") != "":
 		// GitHub
-		workflowLogMsg = fmt.Sprintf(`::error file=%v,title=helm-azure-tpl::%v`, e.currentPath, workflowLogError)
+		workflowLogMsg = fmt.Sprintf(`::error file=%v,title=helm-azure-tpl::%v`, e.CurrentPath, workflowLogError)
 	}
 
 	if workflowLogMsg != "" {

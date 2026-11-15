@@ -1,4 +1,4 @@
-package cloudtpl
+package azure
 
 import (
 	"fmt"
@@ -11,22 +11,22 @@ import (
 )
 
 // mgServicePrincipalByDisplayName fetches one servicePrincipal from MsGraph API using displayName
-func (e *CloudTpl) mgServicePrincipalByDisplayName(displayName string) (interface{}, error) {
-	e.logger.Info(`fetching MsGraph servicePrincipal by displayName`, slog.String("displayName", displayName))
+func (e *AzureEngine) mgServicePrincipalByDisplayName(displayName string) (interface{}, error) {
+	e.Logger.Info(`fetching MsGraph servicePrincipal by displayName`, slog.String("displayName", displayName))
 
-	if val, enabled := e.lintResult(); enabled {
+	if val, enabled := e.LintResult(); enabled {
 		return val, nil
 	}
 
-	cacheKey := generateCacheKey(`mgServicePrincipalByDisplayName`, displayName)
-	return e.cacheResult(cacheKey, func() (interface{}, error) {
+	cacheKey := e.GenerateCacheKey(`mgServicePrincipalByDisplayName`, displayName)
+	return e.CacheResult(cacheKey, func() (interface{}, error) {
 		requestOpts := &serviceprincipals.ServicePrincipalsRequestBuilderGetRequestConfiguration{
 			QueryParameters: &serviceprincipals.ServicePrincipalsRequestBuilderGetQueryParameters{
 				Filter: to.StringPtr(fmt.Sprintf(`displayName eq '%v'`,
 					escapeMsGraphFilter(displayName))),
 			},
 		}
-		result, err := e.msGraphClient().ServiceClient().ServicePrincipals().Get(e.ctx, requestOpts)
+		result, err := e.msGraphClient().ServiceClient().ServicePrincipals().Get(e.Ctx, requestOpts)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to query MsGraph servicePrincipal: %w`, err)
 		}
@@ -48,16 +48,16 @@ func (e *CloudTpl) mgServicePrincipalByDisplayName(displayName string) (interfac
 }
 
 // mgServicePrincipalList fetches list of servicePrincipals from MsGraph API using $filter query
-func (e *CloudTpl) mgServicePrincipalList(filter string) (interface{}, error) {
-	e.logger.Info(`fetching MsGraph servicePrincipal list with $filter`, slog.String("filter", filter))
+func (e *AzureEngine) mgServicePrincipalList(filter string) (interface{}, error) {
+	e.Logger.Info(`fetching MsGraph servicePrincipal list with $filter`, slog.String("filter", filter))
 
-	if val, enabled := e.lintResult(); enabled {
+	if val, enabled := e.LintResult(); enabled {
 		return val, nil
 	}
 
-	cacheKey := generateCacheKey(`mgServicePrincipalList`, filter)
-	return e.cacheResult(cacheKey, func() (interface{}, error) {
-		result, err := e.msGraphClient().ServiceClient().ServicePrincipals().Get(e.ctx, nil)
+	cacheKey := e.GenerateCacheKey(`mgServicePrincipalList`, filter)
+	return e.CacheResult(cacheKey, func() (interface{}, error) {
+		result, err := e.msGraphClient().ServiceClient().ServicePrincipals().Get(e.Ctx, nil)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to query MsGraph servicePrincipal: %w`, err)
 		}
@@ -71,13 +71,13 @@ func (e *CloudTpl) mgServicePrincipalList(filter string) (interface{}, error) {
 	})
 }
 
-func (e *CloudTpl) mgServicePrincipalCreateListFromResult(result models.ServicePrincipalCollectionResponseable) (list []interface{}, err error) {
+func (e *AzureEngine) mgServicePrincipalCreateListFromResult(result models.ServicePrincipalCollectionResponseable) (list []interface{}, err error) {
 	pageIterator, pageIteratorErr := msgraphcore.NewPageIterator[models.ServicePrincipalable](result, e.msGraphClient().RequestAdapter(), models.CreateServicePrincipalCollectionResponseFromDiscriminatorValue)
 	if pageIteratorErr != nil {
 		return list, pageIteratorErr
 	}
 
-	iterateErr := pageIterator.Iterate(e.ctx, func(servicePrincipal models.ServicePrincipalable) bool {
+	iterateErr := pageIterator.Iterate(e.Ctx, func(servicePrincipal models.ServicePrincipalable) bool {
 		obj, serializeErr := e.mgSerializeObject(servicePrincipal)
 		if serializeErr != nil {
 			err = serializeErr

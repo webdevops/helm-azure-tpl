@@ -1,4 +1,4 @@
-package cloudtpl
+package azure
 
 import (
 	"encoding/json"
@@ -16,7 +16,7 @@ import (
 )
 
 // buildAppConfigUrl builds Azure AppConfig url in case value is supplied as AppConfig name only
-func (e *CloudTpl) buildAppConfigUrl(appConfigUrl string) (string, error) {
+func (e *AzureEngine) buildAppConfigUrl(appConfigUrl string) (string, error) {
 	// do not build keyvault url in lint mode
 	if e.LintMode {
 		return appConfigUrl, nil
@@ -43,7 +43,7 @@ func (e *CloudTpl) buildAppConfigUrl(appConfigUrl string) (string, error) {
 }
 
 // azAppConfigSetting fetches secret object from Azure KeyVault
-func (e *CloudTpl) azAppConfigSetting(appConfigUrl string, settingName string, label string) (interface{}, error) {
+func (e *AzureEngine) azAppConfigSetting(appConfigUrl string, settingName string, label string) (interface{}, error) {
 	// azure keyvault url detection
 	if val, err := e.buildAppConfigUrl(appConfigUrl); err == nil {
 		appConfigUrl = val
@@ -51,13 +51,13 @@ func (e *CloudTpl) azAppConfigSetting(appConfigUrl string, settingName string, l
 		return nil, err
 	}
 
-	e.logger.Info(`fetching AppConfig value`, slog.String("url", appConfigUrl), slog.String("setting", settingName))
+	e.Logger.Info(`fetching AppConfig value`, slog.String("url", appConfigUrl), slog.String("setting", settingName))
 
-	if val, enabled := e.lintResult(); enabled {
+	if val, enabled := e.LintResult(); enabled {
 		return val, nil
 	}
-	cacheKey := generateCacheKey(`azAppConfigSetting`, appConfigUrl, settingName, label)
-	return e.cacheResult(cacheKey, func() (interface{}, error) {
+	cacheKey := e.GenerateCacheKey(`azAppConfigSetting`, appConfigUrl, settingName, label)
+	return e.CacheResult(cacheKey, func() (interface{}, error) {
 		client, err := azappconfig.NewClient(appConfigUrl, e.azureClient().GetCred(), nil)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to create appconfig client for instance "%v": %w`, appConfigUrl, err)
@@ -68,7 +68,7 @@ func (e *CloudTpl) azAppConfigSetting(appConfigUrl string, settingName string, l
 			options.Label = to.StringPtr(label)
 		}
 
-		appConfigValue, err := client.GetSetting(e.ctx, settingName, &options)
+		appConfigValue, err := client.GetSetting(e.Ctx, settingName, &options)
 		if err != nil {
 			return nil, fmt.Errorf(`unable to fetch app setting value "%[2]v" from appconfig instance "%[1]v": %[3]w`, appConfigUrl, settingName, err)
 		}
@@ -111,6 +111,6 @@ func (e *CloudTpl) azAppConfigSetting(appConfigUrl string, settingName string, l
 			appConfigValue.Value = to.StringPtr(secretMap["value"].(string))
 		}
 
-		return transformToInterface(models.NewAzAppconfigSettingFromReponse(appConfigValue))
+		return e.TransformToInterface(models.NewAzAppconfigSettingFromReponse(appConfigValue))
 	})
 }

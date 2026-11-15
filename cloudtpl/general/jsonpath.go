@@ -1,4 +1,4 @@
-package cloudtpl
+package general
 
 import (
 	"fmt"
@@ -7,11 +7,11 @@ import (
 )
 
 // jsonPath executes jsonPath query on an object and returns the result
-func (e *CloudTpl) jsonPath(jsonPath string, v interface{}) (interface{}, error) {
+func (e *GeneralEngine) jsonPath(jsonPath string, v interface{}) (interface{}, error) {
 
-	if v, enabled := e.lintResult(); enabled {
+	if v, enabled := e.LintResult(); enabled {
 		// validate jsonpath
-		_, err := jsonpath.Language().NewEvaluableWithContext(e.ctx, jsonPath)
+		_, err := jsonpath.Language().NewEvaluableWithContext(e.Ctx, jsonPath)
 		return v, err
 	}
 

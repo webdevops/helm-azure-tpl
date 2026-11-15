@@ -1,4 +1,4 @@
-package cloudtpl
+package azure
 
 import (
 	"fmt"
@@ -14,10 +14,11 @@ import (
 	"github.com/webdevops/go-common/utils/to"
 
 	"github.com/webdevops/helm-azure-tpl/cloudtpl/models"
+	"github.com/webdevops/helm-azure-tpl/cloudtpl/summary"
 )
 
 // buildAzKeyVaulUrl builds Azure KeyVault url in case value is supplied as KeyVault name only
-func (e *CloudTpl) buildAzKeyVaulUrl(vaultUrl string) (string, error) {
+func (e *AzureEngine) buildAzKeyVaulUrl(vaultUrl string) (string, error) {
 	// do not build keyvault url in lint mode
 	if e.LintMode {
 		return vaultUrl, nil
@@ -44,7 +45,7 @@ func (e *CloudTpl) buildAzKeyVaulUrl(vaultUrl string) (string, error) {
 }
 
 // azKeyVaultSecret fetches secret object from Azure KeyVault
-func (e *CloudTpl) azKeyVaultSecret(vaultUrl string, secretName string, opts ...string) (interface{}, error) {
+func (e *AzureEngine) azKeyVaultSecret(vaultUrl string, secretName string, opts ...string) (interface{}, error) {
 	// azure keyvault url detection
 	if val, err := e.buildAzKeyVaulUrl(vaultUrl); err == nil {
 		vaultUrl = val
@@ -52,13 +53,13 @@ func (e *CloudTpl) azKeyVaultSecret(vaultUrl string, secretName string, opts ...
 		return nil, err
 	}
 
-	e.logger.Info(`fetching Azure KeyVault secret`, slog.String("keyvault", vaultUrl), slog.String("secret", secretName))
+	e.Logger.Info(`fetching Azure KeyVault secret`, slog.String("keyvault", vaultUrl), slog.String("secret", secretName))
 
-	if val, enabled := e.lintResult(); enabled {
+	if val, enabled := e.LintResult(); enabled {
 		return val, nil
 	}
-	cacheKey := generateCacheKey(`azKeyVaultSecret`, vaultUrl, secretName, strings.Join(opts, ";"))
-	return e.cacheResult(cacheKey, func() (interface{}, error) {
+	cacheKey := e.GenerateCacheKey(`azKeyVaultSecret`, vaultUrl, secretName, strings.Join(opts, ";"))
+	return e.CacheResult(cacheKey, func() (interface{}, error) {
 		secretClient, err := azsecrets.NewClient(vaultUrl, e.azureClient().GetCred(), nil)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to create keyvault client for vault "%v": %w`, vaultUrl, err)
@@ -69,7 +70,7 @@ func (e *CloudTpl) azKeyVaultSecret(vaultUrl string, secretName string, opts ...
 			version = opts[0]
 		}
 
-		secret, err := secretClient.GetSecret(e.ctx, secretName, version, nil)
+		secret, err := secretClient.GetSecret(e.Ctx, secretName, version, nil)
 		if err != nil {
 			return nil, fmt.Errorf(`unable to fetch secret "%[2]v" from vault "%[1]v": %[3]w`, vaultUrl, secretName, err)
 		}
@@ -89,25 +90,24 @@ func (e *CloudTpl) azKeyVaultSecret(vaultUrl string, secretName string, opts ...
 
 			if time.Now().After(*secret.Attributes.Expires) {
 				// secret is expired
-				if !e.opts.Keyvault.IgnoreExpiry {
+				if !e.Opts.Keyvault.IgnoreExpiry {
 					return nil, fmt.Errorf(`unable to use Azure KeyVault secret '%v' -> '%v': secret is expired (expires: %v, set env AZURETPL_KEYVAULT_EXPIRY_IGNORE=1 to ignore)`, vaultUrl, secretName, secret.Attributes.Expires.Format(time.RFC3339))
 				} else {
-					e.logger.Warn(
-						e.handleCicdWarning(
+					e.Logger.Warn(
+						e.HandleCicdWarning(
 							fmt.Errorf(`found expiring Azure KeyVault secret '%v' -> '%v': secret is expired, but env AZURETPL_KEYVAULT_EXPIRY_IGNORE=1 is active (expires: %v)`, vaultUrl, secretName, secret.Attributes.Expires.Format(time.RFC3339)),
 						),
 					)
 				}
-			} else if time.Now().Add(e.opts.Keyvault.ExpiryWarning).After(*secret.Attributes.Expires) {
+			} else if time.Now().Add(e.Opts.Keyvault.ExpiryWarning).After(*secret.Attributes.Expires) {
 				// secret is expiring soon
-				e.logger.Warn(
-					e.handleCicdWarning(
+				e.Logger.Warn(
+					e.HandleCicdWarning(
 						fmt.Errorf(`found expiring Azure KeyVault secret '%v' -> '%v': secret is expiring soon (expires: %v)`, vaultUrl, secretName, secret.Attributes.Expires.Format(time.RFC3339)),
 					),
 				)
 
-				e.addSummaryLine(
-					"warnings",
+				summary.Section("warnings").AddBody(
 					fmt.Sprintf(
 						` - found expiring Azure KeyVault secret '%v' -> '%v': secret is expiring soon (expires: %v)`,
 						vaultUrl, secretName, secret.Attributes.Expires.Format(time.RFC3339),
@@ -116,15 +116,15 @@ func (e *CloudTpl) azKeyVaultSecret(vaultUrl string, secretName string, opts ...
 			}
 		}
 
-		e.logger.Info(`using Azure KeyVault secret`, slog.String("keyvault", vaultUrl), slog.String("secret", secretName), slog.String("version", secret.ID.Version()))
-		e.handleCicdMaskSecret(to.String(secret.Value))
+		e.Logger.Info(`using Azure KeyVault secret`, slog.String("keyvault", vaultUrl), slog.String("secret", secretName), slog.String("version", secret.ID.Version()))
+		e.HandleCicdMaskSecret(to.String(secret.Value))
 
-		return transformToInterface(models.NewAzSecretItem(secret.Secret))
+		return e.TransformToInterface(models.NewAzSecretItem(secret.Secret))
 	})
 }
 
 // azKeyVaultSecretVersions fetches older versions of one secret from Azure KeyVault
-func (e *CloudTpl) azKeyVaultSecretVersions(vaultUrl string, secretName string, count int) (interface{}, error) {
+func (e *AzureEngine) azKeyVaultSecretVersions(vaultUrl string, secretName string, count int) (interface{}, error) {
 	// azure keyvault url detection
 	if val, err := e.buildAzKeyVaulUrl(vaultUrl); err == nil {
 		vaultUrl = val
@@ -132,13 +132,13 @@ func (e *CloudTpl) azKeyVaultSecretVersions(vaultUrl string, secretName string, 
 		return nil, err
 	}
 
-	e.logger.Info(`fetching Azure KeyVault secret history`, slog.String("keyvault", vaultUrl), slog.String("secret", secretName), slog.Int("count", count))
+	e.Logger.Info(`fetching Azure KeyVault secret history`, slog.String("keyvault", vaultUrl), slog.String("secret", secretName), slog.Int("count", count))
 
-	if val, enabled := e.lintResult(); enabled {
+	if val, enabled := e.LintResult(); enabled {
 		return val, nil
 	}
-	cacheKey := generateCacheKey(`azKeyVaultSecretHistory`, vaultUrl, secretName, strconv.Itoa(count))
-	return e.cacheResult(cacheKey, func() (interface{}, error) {
+	cacheKey := e.GenerateCacheKey(`azKeyVaultSecretHistory`, vaultUrl, secretName, strconv.Itoa(count))
+	return e.CacheResult(cacheKey, func() (interface{}, error) {
 		secretClient, err := azsecrets.NewClient(vaultUrl, e.azureClient().GetCred(), nil)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to create keyvault client for vault "%v": %w`, vaultUrl, err)
@@ -149,7 +149,7 @@ func (e *CloudTpl) azKeyVaultSecretVersions(vaultUrl string, secretName string, 
 		// get secrets first
 		secretList := []*azsecrets.SecretProperties{}
 		for pager.More() {
-			result, err := pager.NextPage(e.ctx)
+			result, err := pager.NextPage(e.Ctx)
 			if err != nil {
 				panic(err)
 			}
@@ -185,16 +185,16 @@ func (e *CloudTpl) azKeyVaultSecretVersions(vaultUrl string, secretName string, 
 		// process list
 		ret := []interface{}{}
 		for _, secretVersion := range secretList {
-			secret, err := secretClient.GetSecret(e.ctx, secretVersion.ID.Name(), secretVersion.ID.Version(), nil)
+			secret, err := secretClient.GetSecret(e.Ctx, secretVersion.ID.Name(), secretVersion.ID.Version(), nil)
 			if err != nil {
 				return nil, fmt.Errorf(`unable to fetch secret "%[2]v" with version "%[3]v" from vault "%[1]v": %[4]w`, vaultUrl, secretVersion.ID.Name(), secretVersion.ID.Version(), err)
 			}
 
 			e.addSummaryKeyvaultSecret(vaultUrl, secret)
 
-			e.handleCicdMaskSecret(to.String(secret.Value))
+			e.HandleCicdMaskSecret(to.String(secret.Value))
 
-			if val, err := transformToInterface(models.NewAzSecretItem(secret.Secret)); err == nil {
+			if val, err := e.TransformToInterface(models.NewAzSecretItem(secret.Secret)); err == nil {
 				ret = append(ret, val)
 			} else {
 				return nil, err
@@ -210,7 +210,7 @@ func (e *CloudTpl) azKeyVaultSecretVersions(vaultUrl string, secretName string, 
 }
 
 // azKeyVaultSecretList fetches secrets from Azure KeyVault
-func (e *CloudTpl) azKeyVaultSecretList(vaultUrl string, secretNamePattern string) (interface{}, error) {
+func (e *AzureEngine) azKeyVaultSecretList(vaultUrl string, secretNamePattern string) (interface{}, error) {
 	// azure keyvault url detection
 	if val, err := e.buildAzKeyVaulUrl(vaultUrl); err == nil {
 		vaultUrl = val
@@ -218,18 +218,18 @@ func (e *CloudTpl) azKeyVaultSecretList(vaultUrl string, secretNamePattern strin
 		return nil, err
 	}
 
-	e.logger.Info(`fetching Azure KeyVault secret list from vault`, slog.String("keyvault", vaultUrl))
+	e.Logger.Info(`fetching Azure KeyVault secret list from vault`, slog.String("keyvault", vaultUrl))
 
 	secretNamePatternRegExp, err := regexp.Compile(secretNamePattern)
 	if err != nil {
 		return nil, fmt.Errorf(`unable to compile Regular Expression "%v": %w`, secretNamePattern, err)
 	}
 
-	if val, enabled := e.lintResult(); enabled {
+	if val, enabled := e.LintResult(); enabled {
 		return val, nil
 	}
-	cacheKey := generateCacheKey(`azKeyVaultSecretList`, vaultUrl)
-	list, err := e.cacheResult(cacheKey, func() (interface{}, error) {
+	cacheKey := e.GenerateCacheKey(`azKeyVaultSecretList`, vaultUrl)
+	list, err := e.CacheResult(cacheKey, func() (interface{}, error) {
 		secretClient, err := azsecrets.NewClient(vaultUrl, e.azureClient().GetCred(), nil)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to create keyvault client for vault "%v": %w`, vaultUrl, err)
@@ -239,13 +239,13 @@ func (e *CloudTpl) azKeyVaultSecretList(vaultUrl string, secretNamePattern strin
 
 		ret := map[string]interface{}{}
 		for pager.More() {
-			result, err := pager.NextPage(e.ctx)
+			result, err := pager.NextPage(e.Ctx)
 			if err != nil {
 				panic(err)
 			}
 
 			for _, secret := range result.Value {
-				secretData, err := transformToInterface(models.NewAzSecretItemFromSecretproperties(*secret))
+				secretData, err := e.TransformToInterface(models.NewAzSecretItemFromSecretproperties(*secret))
 				if err != nil {
 					return nil, fmt.Errorf(`unable to transform KeyVault secret '%v': %w`, secret.ID.Name(), err)
 				}
@@ -253,7 +253,7 @@ func (e *CloudTpl) azKeyVaultSecretList(vaultUrl string, secretNamePattern strin
 			}
 		}
 
-		return transformToInterface(ret)
+		return e.TransformToInterface(ret)
 	})
 	if err != nil {
 		return list, err
@@ -271,4 +271,35 @@ func (e *CloudTpl) azKeyVaultSecretList(vaultUrl string, secretNamePattern strin
 	}
 
 	return list, nil
+}
+
+func (e *AzureEngine) addSummaryKeyvaultSecret(vaultUrl string, secret azsecrets.GetSecretResponse) {
+
+	sectionName := "Azure Keyvault Secrets"
+	section := summary.Section(sectionName)
+	section.SetHeader(
+		"| KeyVault | Secret | Version | ContentType | Expiry |",
+		"|----------|--------|---------|-------------|--------|",
+	)
+
+	expiryDate := summary.ValueNotSet
+	if secret.Attributes != nil && secret.Attributes.Expires != nil {
+		expiryDate = secret.Attributes.Expires.Format(time.RFC3339)
+	}
+
+	contentType := to.String(secret.ContentType)
+	if contentType == "" {
+		contentType = summary.ValueNotSet
+	}
+
+	val := fmt.Sprintf(
+		"| %s | %s | %s | %s | %s |",
+		vaultUrl,
+		secret.ID.Name(),
+		secret.ID.Version(),
+		contentType,
+		expiryDate,
+	)
+
+	section.AddBody(val)
 }

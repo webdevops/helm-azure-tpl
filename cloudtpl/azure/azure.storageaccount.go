@@ -1,4 +1,4 @@
-package cloudtpl
+package azure
 
 import (
 	"fmt"
@@ -11,15 +11,15 @@ import (
 )
 
 // azStorageAccountAccessKeys fetches container blob from StorageAccount
-func (e *CloudTpl) azStorageAccountAccessKeys(resourceID string) (interface{}, error) {
-	e.logger.Info(`fetching Azure StorageAccount accesskey`, slog.String("resourceID", resourceID))
+func (e *AzureEngine) azStorageAccountAccessKeys(resourceID string) (interface{}, error) {
+	e.Logger.Info(`fetching Azure StorageAccount accesskey`, slog.String("resourceID", resourceID))
 
-	if val, enabled := e.lintResult(); enabled {
+	if val, enabled := e.LintResult(); enabled {
 		return val, nil
 	}
 
-	cacheKey := generateCacheKey(`azStorageAccountAccessKeys`, resourceID)
-	return e.cacheResult(cacheKey, func() (interface{}, error) {
+	cacheKey := e.GenerateCacheKey(`azStorageAccountAccessKeys`, resourceID)
+	return e.CacheResult(cacheKey, func() (interface{}, error) {
 		resourceInfo, err := armclient.ParseResourceId(resourceID)
 		if err != nil {
 			return nil, fmt.Errorf(`unable to parse Azure resourceID '%v': %w`, resourceID, err)
@@ -30,20 +30,20 @@ func (e *CloudTpl) azStorageAccountAccessKeys(resourceID string) (interface{}, e
 			return nil, err
 		}
 
-		result, err := client.ListKeys(e.ctx, resourceInfo.ResourceGroup, resourceInfo.ResourceName, nil)
+		result, err := client.ListKeys(e.Ctx, resourceInfo.ResourceGroup, resourceInfo.ResourceName, nil)
 		if err != nil {
 			return nil, err
 		}
 
-		return transformToInterface(result.Keys)
+		return e.TransformToInterface(result.Keys)
 	})
 }
 
 // azStorageAccountContainerBlob fetches container blob from StorageAccount
-func (e *CloudTpl) azStorageAccountContainerBlob(containerBlobUrl string) (interface{}, error) {
-	e.logger.Info(`fetching Azure StorageAccount container blob`, slog.String("containerBlobUrl", containerBlobUrl))
+func (e *AzureEngine) azStorageAccountContainerBlob(containerBlobUrl string) (interface{}, error) {
+	e.Logger.Info(`fetching Azure StorageAccount container blob`, slog.String("containerBlobUrl", containerBlobUrl))
 
-	if val, enabled := e.lintResult(); enabled {
+	if val, enabled := e.LintResult(); enabled {
 		return val, nil
 	}
 
@@ -52,8 +52,8 @@ func (e *CloudTpl) azStorageAccountContainerBlob(containerBlobUrl string) (inter
 		return nil, err
 	}
 
-	cacheKey := generateCacheKey(`azStorageAccountContainerBlob`, containerBlobUrl)
-	return e.cacheResult(cacheKey, func() (interface{}, error) {
+	cacheKey := e.GenerateCacheKey(`azStorageAccountContainerBlob`, containerBlobUrl)
+	return e.CacheResult(cacheKey, func() (interface{}, error) {
 		azblobOpts := azblob.ClientOptions{ClientOptions: *e.azureClient().NewAzCoreClientOptions()}
 
 		storageAccountUrl := fmt.Sprintf("%s://%s", pathUrl.Scheme, pathUrl.Host)
@@ -62,7 +62,7 @@ func (e *CloudTpl) azStorageAccountContainerBlob(containerBlobUrl string) (inter
 			return nil, err
 		}
 
-		response, err := client.DownloadStream(e.ctx, pathUrl.ContainerName, pathUrl.BlobName, nil)
+		response, err := client.DownloadStream(e.Ctx, pathUrl.ContainerName, pathUrl.BlobName, nil)
 		if err != nil {
 			return nil, err
 		}

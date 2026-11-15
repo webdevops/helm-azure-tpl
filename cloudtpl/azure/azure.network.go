@@ -1,4 +1,4 @@
-package cloudtpl
+package azure
 
 import (
 	"fmt"
@@ -11,15 +11,15 @@ import (
 )
 
 // azPublicIpAddress fetches ipAddress from Azure Public IP Address
-func (e *CloudTpl) azPublicIpAddress(resourceID string) (interface{}, error) {
-	e.logger.Info(`fetching Azure PublicIpAddress`, slog.String("resourceID", resourceID))
+func (e *AzureEngine) azPublicIpAddress(resourceID string) (interface{}, error) {
+	e.Logger.Info(`fetching Azure PublicIpAddress`, slog.String("resourceID", resourceID))
 
-	if val, enabled := e.lintResult(); enabled {
+	if val, enabled := e.LintResult(); enabled {
 		return val, nil
 	}
 
-	cacheKey := generateCacheKey(`azPublicIpAddress`, resourceID)
-	return e.cacheResult(cacheKey, func() (interface{}, error) {
+	cacheKey := e.GenerateCacheKey(`azPublicIpAddress`, resourceID)
+	return e.CacheResult(cacheKey, func() (interface{}, error) {
 		resourceInfo, err := armclient.ParseResourceId(resourceID)
 		if err != nil {
 			return nil, fmt.Errorf(`unable to parse Azure resourceID '%v': %w`, resourceID, err)
@@ -30,7 +30,7 @@ func (e *CloudTpl) azPublicIpAddress(resourceID string) (interface{}, error) {
 			return nil, err
 		}
 
-		pipAddress, err := client.Get(e.ctx, resourceInfo.ResourceGroup, resourceInfo.ResourceName, nil)
+		pipAddress, err := client.Get(e.Ctx, resourceInfo.ResourceGroup, resourceInfo.ResourceName, nil)
 		if err != nil {
 			return nil, fmt.Errorf(`unable to fetch Azure resource '%v': %w`, resourceID, err)
 		}
@@ -40,15 +40,15 @@ func (e *CloudTpl) azPublicIpAddress(resourceID string) (interface{}, error) {
 }
 
 // azPublicIpPrefixAddressPrefix fetches ipAddress prefix from Azure Public IP Address prefix
-func (e *CloudTpl) azPublicIpPrefixAddressPrefix(resourceID string) (interface{}, error) {
-	e.logger.Info(`fetching Azure PublicIpPrefix`, slog.String("resourceID", resourceID))
+func (e *AzureEngine) azPublicIpPrefixAddressPrefix(resourceID string) (interface{}, error) {
+	e.Logger.Info(`fetching Azure PublicIpPrefix`, slog.String("resourceID", resourceID))
 
-	if val, enabled := e.lintResult(); enabled {
+	if val, enabled := e.LintResult(); enabled {
 		return val, nil
 	}
 
-	cacheKey := generateCacheKey(`azPublicIpPrefixAddressPrefix`, resourceID)
-	return e.cacheResult(cacheKey, func() (interface{}, error) {
+	cacheKey := e.GenerateCacheKey(`azPublicIpPrefixAddressPrefix`, resourceID)
+	return e.CacheResult(cacheKey, func() (interface{}, error) {
 		resourceInfo, err := armclient.ParseResourceId(resourceID)
 		if err != nil {
 			return nil, fmt.Errorf(`unable to parse Azure resourceID '%v': %w`, resourceID, err)
@@ -59,7 +59,7 @@ func (e *CloudTpl) azPublicIpPrefixAddressPrefix(resourceID string) (interface{}
 			return nil, err
 		}
 
-		pipAddress, err := client.Get(e.ctx, resourceInfo.ResourceGroup, resourceInfo.ResourceName, nil)
+		pipAddress, err := client.Get(e.Ctx, resourceInfo.ResourceGroup, resourceInfo.ResourceName, nil)
 		if err != nil {
 			return nil, fmt.Errorf(`unable to fetch Azure resource '%v': %w`, resourceID, err)
 		}
@@ -69,15 +69,15 @@ func (e *CloudTpl) azPublicIpPrefixAddressPrefix(resourceID string) (interface{}
 }
 
 // azVirtualNetworkAddressPrefixes fetches ipAddress prefixes (array) from Azure VirtualNetwork
-func (e *CloudTpl) azVirtualNetworkAddressPrefixes(resourceID string) (interface{}, error) {
-	e.logger.Info(`fetching AddressPrefixes from Azure VirtualNetwork '%v'`, slog.String("resourceID", resourceID))
+func (e *AzureEngine) azVirtualNetworkAddressPrefixes(resourceID string) (interface{}, error) {
+	e.Logger.Info(`fetching AddressPrefixes from Azure VirtualNetwork '%v'`, slog.String("resourceID", resourceID))
 
-	if val, enabled := e.lintResult(); enabled {
+	if val, enabled := e.LintResult(); enabled {
 		return val, nil
 	}
 
-	cacheKey := generateCacheKey(`azVirtualNetworkAddressPrefixes`, resourceID)
-	return e.cacheResult(cacheKey, func() (interface{}, error) {
+	cacheKey := e.GenerateCacheKey(`azVirtualNetworkAddressPrefixes`, resourceID)
+	return e.CacheResult(cacheKey, func() (interface{}, error) {
 		resourceInfo, err := armclient.ParseResourceId(resourceID)
 		if err != nil {
 			return nil, fmt.Errorf(`unable to parse Azure resourceID '%v': %w`, resourceID, err)
@@ -88,7 +88,7 @@ func (e *CloudTpl) azVirtualNetworkAddressPrefixes(resourceID string) (interface
 			return nil, err
 		}
 
-		vnet, err := client.Get(e.ctx, resourceInfo.ResourceGroup, resourceInfo.ResourceName, nil)
+		vnet, err := client.Get(e.Ctx, resourceInfo.ResourceGroup, resourceInfo.ResourceName, nil)
 		if err != nil {
 			return nil, fmt.Errorf(`unable to fetch Azure resource '%v': %w`, resourceID, err)
 		}
@@ -101,15 +101,15 @@ func (e *CloudTpl) azVirtualNetworkAddressPrefixes(resourceID string) (interface
 }
 
 // azVirtualNetworkSubnetAddressPrefixes fetches ipAddress prefixes (array) from Azure VirtualNetwork subnet
-func (e *CloudTpl) azVirtualNetworkSubnetAddressPrefixes(resourceID string, subnetName string) (interface{}, error) {
-	e.logger.Info(`fetching AddressPrefixes from Azure VirtualNetwork`, slog.String("resourceID", resourceID), slog.String("subnet", subnetName))
+func (e *AzureEngine) azVirtualNetworkSubnetAddressPrefixes(resourceID string, subnetName string) (interface{}, error) {
+	e.Logger.Info(`fetching AddressPrefixes from Azure VirtualNetwork`, slog.String("resourceID", resourceID), slog.String("subnet", subnetName))
 
-	if val, enabled := e.lintResult(); enabled {
+	if val, enabled := e.LintResult(); enabled {
 		return val, nil
 	}
 
-	cacheKey := generateCacheKey(`azVirtualNetworkSubnetAddressPrefixes`, resourceID, subnetName)
-	return e.cacheResult(cacheKey, func() (interface{}, error) {
+	cacheKey := e.GenerateCacheKey(`azVirtualNetworkSubnetAddressPrefixes`, resourceID, subnetName)
+	return e.CacheResult(cacheKey, func() (interface{}, error) {
 		resourceInfo, err := armclient.ParseResourceId(resourceID)
 		if err != nil {
 			return nil, fmt.Errorf(`unable to parse Azure resourceID '%v': %w`, resourceID, err)
@@ -120,7 +120,7 @@ func (e *CloudTpl) azVirtualNetworkSubnetAddressPrefixes(resourceID string, subn
 			return nil, err
 		}
 
-		vnet, err := client.Get(e.ctx, resourceInfo.ResourceGroup, resourceInfo.ResourceName, nil)
+		vnet, err := client.Get(e.Ctx, resourceInfo.ResourceGroup, resourceInfo.ResourceName, nil)
 		if err != nil {
 			return nil, fmt.Errorf(`unable to fetch Azure resource '%v': %w`, resourceID, err)
 		}

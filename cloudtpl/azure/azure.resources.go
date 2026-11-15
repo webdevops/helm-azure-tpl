@@ -1,4 +1,4 @@
-package cloudtpl
+package azure
 
 import (
 	"fmt"
@@ -10,30 +10,30 @@ import (
 )
 
 // azResource fetches resource json from Azure REST API using the specified apiVersion
-func (e *CloudTpl) azResource(resourceID string, apiVersion string) (interface{}, error) {
-	e.logger.Info(`fetching Azure Resource`, slog.String("resourceID", resourceID), slog.String("apiVersion", apiVersion))
+func (e *AzureEngine) azResource(resourceID string, apiVersion string) (interface{}, error) {
+	e.Logger.Info(`fetching Azure Resource`, slog.String("resourceID", resourceID), slog.String("apiVersion", apiVersion))
 
-	cacheKey := generateCacheKey(`azResource`, resourceID, apiVersion)
-	return e.cacheResult(cacheKey, func() (interface{}, error) {
+	cacheKey := e.GenerateCacheKey(`azResource`, resourceID, apiVersion)
+	return e.CacheResult(cacheKey, func() (interface{}, error) {
 		return e.fetchAzureResource(resourceID, apiVersion)
 	})
 }
 
 // azResourceList fetches list of resources by scope (either subscription or resourcegroup) from Azure REST API
-func (e *CloudTpl) azResourceList(scope string, opts ...string) (interface{}, error) {
+func (e *AzureEngine) azResourceList(scope string, opts ...string) (interface{}, error) {
 	filter := ""
 	if len(opts) >= 1 {
 		filter = opts[0]
 	}
 
-	e.logger.Info(`fetching Azure Resource list`, slog.String("scope", scope), slog.String("filter", filter))
+	e.Logger.Info(`fetching Azure Resource list`, slog.String("scope", scope), slog.String("filter", filter))
 
-	if val, enabled := e.lintResult(); enabled {
+	if val, enabled := e.LintResult(); enabled {
 		return val, nil
 	}
 
-	cacheKey := generateCacheKey(`azResourceList`, scope, filter)
-	return e.cacheResult(cacheKey, func() (interface{}, error) {
+	cacheKey := e.GenerateCacheKey(`azResourceList`, scope, filter)
+	return e.CacheResult(cacheKey, func() (interface{}, error) {
 		scopeInfo, err := armclient.ParseResourceId(scope)
 		if err != nil {
 			return nil, fmt.Errorf(`unable to parse Azure resourceID '%v': %w`, scope, err)
@@ -54,13 +54,13 @@ func (e *CloudTpl) azResourceList(scope string, opts ...string) (interface{}, er
 
 			pager := client.NewListByResourceGroupPager(scopeInfo.ResourceGroup, &options)
 			for pager.More() {
-				result, err := pager.NextPage(e.ctx)
+				result, err := pager.NextPage(e.Ctx)
 				if err != nil {
 					panic(err)
 				}
 
 				for _, resource := range result.Value {
-					resourceData, err := transformToInterface(resource)
+					resourceData, err := e.TransformToInterface(resource)
 					if err != nil {
 						return nil, fmt.Errorf(`unable to transform Azure resource '%v': %w`, to.String(resource.ID), err)
 					}
@@ -76,13 +76,13 @@ func (e *CloudTpl) azResourceList(scope string, opts ...string) (interface{}, er
 
 			pager := client.NewListPager(&options)
 			for pager.More() {
-				result, err := pager.NextPage(e.ctx)
+				result, err := pager.NextPage(e.Ctx)
 				if err != nil {
 					panic(err)
 				}
 
 				for _, resource := range result.Value {
-					resourceData, err := transformToInterface(resource)
+					resourceData, err := e.TransformToInterface(resource)
 					if err != nil {
 						return nil, fmt.Errorf(`unable to transform Azure resource '%v': %w`, to.String(resource.ID), err)
 					}

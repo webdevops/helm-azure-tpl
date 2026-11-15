@@ -1,4 +1,4 @@
-package cloudtpl
+package azure
 
 import (
 	"encoding/json"
@@ -6,7 +6,7 @@ import (
 	"github.com/microsoft/kiota-abstractions-go/serialization"
 )
 
-func (e *CloudTpl) mgSerializeObject(resultObj serialization.Parsable) (obj interface{}, err error) {
+func (e *AzureEngine) mgSerializeObject(resultObj serialization.Parsable) (obj interface{}, err error) {
 	writer, err := e.msGraphClient().RequestAdapter().GetSerializationWriterFactory().GetSerializationWriter("application/json")
 	if err != nil {
 		return nil, err

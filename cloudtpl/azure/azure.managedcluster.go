@@ -1,4 +1,4 @@
-package cloudtpl
+package azure
 
 import (
 	"fmt"
@@ -9,14 +9,14 @@ import (
 )
 
 // azManagedClusterUserCredentials fetches user credentials object from managed cluster (AKS)
-func (e *CloudTpl) azManagedClusterUserCredentials(resourceID string) (interface{}, error) {
-	e.logger.Info(`fetching Azure ManagedCluster user credentials`, slog.String("resourceID", resourceID))
+func (e *AzureEngine) azManagedClusterUserCredentials(resourceID string) (interface{}, error) {
+	e.Logger.Info(`fetching Azure ManagedCluster user credentials`, slog.String("resourceID", resourceID))
 
-	if val, enabled := e.lintResult(); enabled {
+	if val, enabled := e.LintResult(); enabled {
 		return val, nil
 	}
-	cacheKey := generateCacheKey(`azManagedClusterUserCredentials`, resourceID)
-	return e.cacheResult(cacheKey, func() (interface{}, error) {
+	cacheKey := e.GenerateCacheKey(`azManagedClusterUserCredentials`, resourceID)
+	return e.CacheResult(cacheKey, func() (interface{}, error) {
 		resourceInfo, err := armclient.ParseResourceId(resourceID)
 		if err != nil {
 			return nil, fmt.Errorf(`unable to parse Azure resourceID '%v': %w`, resourceID, err)
@@ -27,11 +27,11 @@ func (e *CloudTpl) azManagedClusterUserCredentials(resourceID string) (interface
 			return nil, fmt.Errorf(`failed to create ManagedCluster client for cluster "%v": %w`, resourceID, err)
 		}
 
-		userCreds, err := client.ListClusterUserCredentials(e.ctx, resourceInfo.ResourceGroup, resourceInfo.ResourceName, nil)
+		userCreds, err := client.ListClusterUserCredentials(e.Ctx, resourceInfo.ResourceGroup, resourceInfo.ResourceName, nil)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to fetch ManagedCluster user credentials for cluster "%v": %w`, resourceID, err)
 		}
 
-		return transformToInterface(userCreds)
+		return e.TransformToInterface(userCreds)
 	})
 }

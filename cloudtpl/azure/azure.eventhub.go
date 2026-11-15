@@ -1,4 +1,4 @@
-package cloudtpl
+package azure
 
 import (
 	"fmt"
@@ -9,15 +9,15 @@ import (
 )
 
 // azEventHubListByNamespace fetches list of Azure EventHubs by Namespace
-func (e *CloudTpl) azEventHubListByNamespace(resourceID string) (interface{}, error) {
-	e.logger.Info(`fetching EventHub list by namespace`, slog.String("resourceID", resourceID))
+func (e *AzureEngine) azEventHubListByNamespace(resourceID string) (interface{}, error) {
+	e.Logger.Info(`fetching EventHub list by namespace`, slog.String("resourceID", resourceID))
 
-	if val, enabled := e.lintResult(); enabled {
+	if val, enabled := e.LintResult(); enabled {
 		return val, nil
 	}
 
-	cacheKey := generateCacheKey(`azEventHubListByNamespace`, resourceID)
-	return e.cacheResult(cacheKey, func() (interface{}, error) {
+	cacheKey := e.GenerateCacheKey(`azEventHubListByNamespace`, resourceID)
+	return e.CacheResult(cacheKey, func() (interface{}, error) {
 		resourceInfo, err := armclient.ParseResourceId(resourceID)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to parse resourceID "%v": %w`, resourceID, err)
@@ -32,7 +32,7 @@ func (e *CloudTpl) azEventHubListByNamespace(resourceID string) (interface{}, er
 
 		ret := []*armeventhub.Eventhub{}
 		for pager.More() {
-			result, err := pager.NextPage(e.ctx)
+			result, err := pager.NextPage(e.Ctx)
 			if err != nil {
 				return nil, err
 			}
@@ -40,6 +40,6 @@ func (e *CloudTpl) azEventHubListByNamespace(resourceID string) (interface{}, er
 			ret = append(ret, result.Value...)
 		}
 
-		return transformToInterface(ret)
+		return e.TransformToInterface(ret)
 	})
 }

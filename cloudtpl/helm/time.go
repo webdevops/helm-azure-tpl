@@ -1,4 +1,4 @@
-package cloudtpl
+package helm
 
 import (
 	"fmt"

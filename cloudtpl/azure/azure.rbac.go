@@ -1,4 +1,4 @@
-package cloudtpl
+package azure
 
 import (
 	"fmt"
@@ -9,15 +9,15 @@ import (
 )
 
 // azRoleDefinition fetches Azure RoleDefinition by roleName
-func (e *CloudTpl) azRoleDefinition(scope string, roleName string) (interface{}, error) {
-	e.logger.Info(`fetching Azure RoleDefinition`, slog.String("scope", scope), slog.String("role", roleName))
+func (e *AzureEngine) azRoleDefinition(scope string, roleName string) (interface{}, error) {
+	e.Logger.Info(`fetching Azure RoleDefinition`, slog.String("scope", scope), slog.String("role", roleName))
 
-	if val, enabled := e.lintResult(); enabled {
+	if val, enabled := e.LintResult(); enabled {
 		return val, nil
 	}
 
-	cacheKey := generateCacheKey(`azRoleDefinition`, scope, roleName)
-	return e.cacheResult(cacheKey, func() (interface{}, error) {
+	cacheKey := e.GenerateCacheKey(`azRoleDefinition`, scope, roleName)
+	return e.CacheResult(cacheKey, func() (interface{}, error) {
 		filter := fmt.Sprintf(
 			`roleName eq '%s'`,
 			roleName,
@@ -36,35 +36,35 @@ func (e *CloudTpl) azRoleDefinition(scope string, roleName string) (interface{},
 			return nil, fmt.Errorf(`multiple Azure RoleDefinitions for roleName '%v' for scope '%v' found`, roleName, scope)
 		}
 
-		return transformToInterface(result[0])
+		return e.TransformToInterface(result[0])
 	})
 }
 
 // azRoleDefinitionList fetches list of roleDefinitions using $filter
-func (e *CloudTpl) azRoleDefinitionList(scope string, filter ...string) (interface{}, error) {
+func (e *AzureEngine) azRoleDefinitionList(scope string, filter ...string) (interface{}, error) {
 	var roleDefinitionFilter string
 
 	if len(filter) == 1 {
 		roleDefinitionFilter = filter[0]
 	}
 
-	e.logger.Info(`fetching Azure RoleDefinitions`, slog.String("scope", scope), slog.String("filter", roleDefinitionFilter))
+	e.Logger.Info(`fetching Azure RoleDefinitions`, slog.String("scope", scope), slog.String("filter", roleDefinitionFilter))
 
-	if val, enabled := e.lintResult(); enabled {
+	if val, enabled := e.LintResult(); enabled {
 		return val, nil
 	}
 
-	cacheKey := generateCacheKey(`azRoleDefinitionList`, scope, roleDefinitionFilter)
-	return e.cacheResult(cacheKey, func() (interface{}, error) {
+	cacheKey := e.GenerateCacheKey(`azRoleDefinitionList`, scope, roleDefinitionFilter)
+	return e.CacheResult(cacheKey, func() (interface{}, error) {
 		result, err := e.fetchAzureRoleDefinitions(scope, roleDefinitionFilter)
 		if err != nil {
 			return nil, err
 		}
-		return transformToInterface(result)
+		return e.TransformToInterface(result)
 	})
 }
 
-func (e *CloudTpl) fetchAzureRoleDefinitions(scope string, filter string) ([]armauthorization.RoleDefinition, error) {
+func (e *AzureEngine) fetchAzureRoleDefinitions(scope string, filter string) ([]armauthorization.RoleDefinition, error) {
 	client, err := armauthorization.NewRoleDefinitionsClient(e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
 	if err != nil {
 		return nil, err
@@ -77,7 +77,7 @@ func (e *CloudTpl) fetchAzureRoleDefinitions(scope string, filter string) ([]arm
 
 	list := []armauthorization.RoleDefinition{}
 	for pager.More() {
-		result, err := pager.NextPage(e.ctx)
+		result, err := pager.NextPage(e.Ctx)
 		if err != nil {
 			return nil, err
 		}

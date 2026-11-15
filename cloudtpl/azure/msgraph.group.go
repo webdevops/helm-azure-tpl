@@ -1,4 +1,4 @@
-package cloudtpl
+package azure
 
 import (
 	"fmt"
@@ -11,21 +11,21 @@ import (
 )
 
 // mgGroupByDisplayName fetches one group from MsGraph API using displayName
-func (e *CloudTpl) mgGroupByDisplayName(displayName string) (interface{}, error) {
-	e.logger.Info(`fetching MsGraph group by displayName`, slog.String("displayName", displayName))
+func (e *AzureEngine) mgGroupByDisplayName(displayName string) (interface{}, error) {
+	e.Logger.Info(`fetching MsGraph group by displayName`, slog.String("displayName", displayName))
 
-	if val, enabled := e.lintResult(); enabled {
+	if val, enabled := e.LintResult(); enabled {
 		return val, nil
 	}
-	cacheKey := generateCacheKey(`mgGroupByDisplayName`, displayName)
-	return e.cacheResult(cacheKey, func() (interface{}, error) {
+	cacheKey := e.GenerateCacheKey(`mgGroupByDisplayName`, displayName)
+	return e.CacheResult(cacheKey, func() (interface{}, error) {
 		requestOpts := &groups.GroupsRequestBuilderGetRequestConfiguration{
 			QueryParameters: &groups.GroupsRequestBuilderGetQueryParameters{
 				Filter: to.StringPtr(fmt.Sprintf(`displayName eq '%v'`,
 					escapeMsGraphFilter(displayName))),
 			},
 		}
-		result, err := e.msGraphClient().ServiceClient().Groups().Get(e.ctx, requestOpts)
+		result, err := e.msGraphClient().ServiceClient().Groups().Get(e.Ctx, requestOpts)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to query MsGraph group: %w`, err)
 		}
@@ -47,15 +47,15 @@ func (e *CloudTpl) mgGroupByDisplayName(displayName string) (interface{}, error)
 }
 
 // mgGroupList fetches list of groups from MsGraph API using $filter query
-func (e *CloudTpl) mgGroupList(filter string) (interface{}, error) {
-	e.logger.Info(`fetching MsGraph group list with $filter`, slog.String("filter", filter))
+func (e *AzureEngine) mgGroupList(filter string) (interface{}, error) {
+	e.Logger.Info(`fetching MsGraph group list with $filter`, slog.String("filter", filter))
 
-	if val, enabled := e.lintResult(); enabled {
+	if val, enabled := e.LintResult(); enabled {
 		return val, nil
 	}
-	cacheKey := generateCacheKey(`mgGroupList`, filter)
-	return e.cacheResult(cacheKey, func() (interface{}, error) {
-		result, err := e.msGraphClient().ServiceClient().Groups().Get(e.ctx, nil)
+	cacheKey := e.GenerateCacheKey(`mgGroupList`, filter)
+	return e.CacheResult(cacheKey, func() (interface{}, error) {
+		result, err := e.msGraphClient().ServiceClient().Groups().Get(e.Ctx, nil)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to query MsGraph group: %w`, err)
 		}
@@ -70,13 +70,13 @@ func (e *CloudTpl) mgGroupList(filter string) (interface{}, error) {
 
 }
 
-func (e *CloudTpl) mgGroupCreateListFromResult(result models.GroupCollectionResponseable) (list []interface{}, err error) {
+func (e *AzureEngine) mgGroupCreateListFromResult(result models.GroupCollectionResponseable) (list []interface{}, err error) {
 	pageIterator, pageIteratorErr := msgraphcore.NewPageIterator[models.Groupable](result, e.msGraphClient().RequestAdapter(), models.CreateGroupCollectionResponseFromDiscriminatorValue)
 	if pageIteratorErr != nil {
 		return list, pageIteratorErr
 	}
 
-	iterateErr := pageIterator.Iterate(e.ctx, func(group models.Groupable) bool {
+	iterateErr := pageIterator.Iterate(e.Ctx, func(group models.Groupable) bool {
 		obj, serializeErr := e.mgSerializeObject(group)
 		if serializeErr != nil {
 			err = serializeErr

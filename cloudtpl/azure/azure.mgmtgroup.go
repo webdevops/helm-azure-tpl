@@ -1,4 +1,4 @@
-package cloudtpl
+package azure
 
 import (
 	"fmt"
@@ -10,39 +10,39 @@ import (
 )
 
 // azManagementGroup fetches Azure ManagementGroup
-func (e *CloudTpl) azManagementGroup(groupID string) (interface{}, error) {
-	e.logger.Info(`fetching Azure ManagementGroup`, slog.String("mgmtgroup", groupID))
+func (e *AzureEngine) azManagementGroup(groupID string) (interface{}, error) {
+	e.Logger.Info(`fetching Azure ManagementGroup`, slog.String("mgmtgroup", groupID))
 
-	if val, enabled := e.lintResult(); enabled {
+	if val, enabled := e.LintResult(); enabled {
 		return val, nil
 	}
 
-	cacheKey := generateCacheKey(`azManagementGroup`, groupID)
-	return e.cacheResult(cacheKey, func() (interface{}, error) {
+	cacheKey := e.GenerateCacheKey(`azManagementGroup`, groupID)
+	return e.CacheResult(cacheKey, func() (interface{}, error) {
 		client, err := armmanagementgroups.NewClient(e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
 		if err != nil {
 			return nil, fmt.Errorf(`failed to create ManagementGroup "%v": %w`, groupID, err)
 		}
 
-		managementGroup, err := client.Get(e.ctx, groupID, nil)
+		managementGroup, err := client.Get(e.Ctx, groupID, nil)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to fetch ManagementGroup "%v": %w`, groupID, err)
 		}
 
-		return transformToInterface(managementGroup)
+		return e.TransformToInterface(managementGroup)
 	})
 }
 
 // azManagementGroupSubscriptionList fetches list of Azure Subscriptions under Azure ManagementGroup
-func (e *CloudTpl) azManagementGroupSubscriptionList(groupID string) (interface{}, error) {
-	e.logger.Info(`fetching subscriptions from Azure ManagementGroup`, slog.String("mgmtgroup", groupID))
+func (e *AzureEngine) azManagementGroupSubscriptionList(groupID string) (interface{}, error) {
+	e.Logger.Info(`fetching subscriptions from Azure ManagementGroup`, slog.String("mgmtgroup", groupID))
 
-	if val, enabled := e.lintResult(); enabled {
+	if val, enabled := e.LintResult(); enabled {
 		return val, nil
 	}
 
-	cacheKey := generateCacheKey(`azManagementGroupSubscriptionList`, groupID)
-	return e.cacheResult(cacheKey, func() (interface{}, error) {
+	cacheKey := e.GenerateCacheKey(`azManagementGroupSubscriptionList`, groupID)
+	return e.CacheResult(cacheKey, func() (interface{}, error) {
 		client, err := armmanagementgroups.NewClient(e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
 		if err != nil {
 			return nil, fmt.Errorf(`failed to create ManagementGroup "%v": %w`, groupID, err)
@@ -51,7 +51,7 @@ func (e *CloudTpl) azManagementGroupSubscriptionList(groupID string) (interface{
 		pager := client.NewGetDescendantsPager(groupID, nil)
 		ret := []interface{}{}
 		for pager.More() {
-			result, err := pager.NextPage(e.ctx)
+			result, err := pager.NextPage(e.Ctx)
 			if err != nil {
 				panic(err)
 			}
@@ -62,6 +62,6 @@ func (e *CloudTpl) azManagementGroupSubscriptionList(groupID string) (interface{
 				}
 			}
 		}
-		return transformToInterface(ret)
+		return e.TransformToInterface(ret)
 	})
 }

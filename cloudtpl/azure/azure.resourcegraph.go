@@ -1,4 +1,4 @@
-package cloudtpl
+package azure
 
 import (
 	"fmt"
@@ -9,7 +9,7 @@ import (
 )
 
 // azResourceGraphQuery executes ResourceGraph query and returns result
-func (e *CloudTpl) azResourceGraphQuery(scope interface{}, query string) (interface{}, error) {
+func (e *AzureEngine) azResourceGraphQuery(scope interface{}, query string) (interface{}, error) {
 	resourceGraphOptions := armclient.ResourceGraphOptions{}
 
 	// make query more readable in outputs
@@ -44,20 +44,20 @@ func (e *CloudTpl) azResourceGraphQuery(scope interface{}, query string) (interf
 		return nil, fmt.Errorf(`{{azResourceGraphQuery}} needs at least one subscription ID or managementGroup ID`)
 	}
 
-	if val, enabled := e.lintResult(); enabled {
+	if val, enabled := e.LintResult(); enabled {
 		return val, nil
 	}
 
-	e.logger.Info(`executing ResourceGraph query '%v' for scopes '%v'`, slog.String("query", query), slog.Any("scopes", scopeList))
+	e.Logger.Info(`executing ResourceGraph query '%v' for scopes '%v'`, slog.String("query", query), slog.Any("scopes", scopeList))
 
-	cacheKey := generateCacheKey(`azResourceGraphQuery`, query, strings.Join(scopeList, ","))
-	return e.cacheResult(cacheKey, func() (interface{}, error) {
-		result, err := e.azureClient().ExecuteResourceGraphQuery(e.ctx, query, resourceGraphOptions)
+	cacheKey := e.GenerateCacheKey(`azResourceGraphQuery`, query, strings.Join(scopeList, ","))
+	return e.CacheResult(cacheKey, func() (interface{}, error) {
+		result, err := e.azureClient().ExecuteResourceGraphQuery(e.Ctx, query, resourceGraphOptions)
 		if err != nil {
 			return nil, err
 		}
 
-		return transformToInterface(result)
+		return e.TransformToInterface(result)
 	})
 }
 
