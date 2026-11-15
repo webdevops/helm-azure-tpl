@@ -18,12 +18,14 @@ import (
 	"github.com/webdevops/helm-azure-tpl/pkg/engine/base"
 	"github.com/webdevops/helm-azure-tpl/pkg/engine/general"
 	"github.com/webdevops/helm-azure-tpl/pkg/engine/helm"
+	"github.com/webdevops/helm-azure-tpl/pkg/engine/k8s"
 )
 
 const (
-	EngineGeneral = 0
-	EngineHelm    = 1
-	EngineAzure   = 2
+	EngineGeneral int = iota
+	EngineHelm
+	EngineAzure
+	EngineKubernetes
 )
 
 type (
@@ -50,9 +52,10 @@ func New(ctx context.Context, opts config.Opts, logger *slogger.Logger) *CloudTp
 
 func (e *CloudTpl) init() {
 	e.engines = map[int]base.Engine{
-		EngineGeneral: general.New(e.BaseEngine),
-		EngineHelm:    helm.New(e.BaseEngine),
-		EngineAzure:   azure.New(e.BaseEngine),
+		EngineGeneral:    general.New(e.BaseEngine),
+		EngineHelm:       helm.New(e.BaseEngine),
+		EngineAzure:      azure.New(e.BaseEngine),
+		EngineKubernetes: k8s.New(e.BaseEngine),
 	}
 }
 

@@ -21,7 +21,6 @@ const (
 	CommandProcess = "apply"
 )
 
-
 func printAppHeader() {
 	logger.Info(fmt.Sprintf("%v v%s (%s; %s; by %v at %v)", argparser.Name, gitTag, gitCommit, runtime.Version(), Author, buildDate))
 	logger.Info(string(opts.GetJson()))
