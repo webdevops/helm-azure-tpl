@@ -8,7 +8,7 @@ import (
 	"github.com/patrickmn/go-cache"
 	"github.com/webdevops/go-common/log/slogger"
 
-	"github.com/webdevops/helm-azure-tpl/cloudtpl/models"
+	"github.com/webdevops/helm-azure-tpl/pkg/config"
 )
 
 type (
@@ -17,7 +17,7 @@ type (
 		Cache     *cache.Cache
 		Logger    *slogger.Logger
 		UserAgent string
-		Opts      models.Opts
+		Opts      config.Opts
 		LintMode  bool
 
 		TemplateRootPath string

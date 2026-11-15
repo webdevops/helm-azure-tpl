@@ -12,7 +12,7 @@ import (
 	"github.com/webdevops/go-common/azuresdk/armclient"
 	"github.com/webdevops/go-common/msgraphsdk/msgraphclient"
 
-	"github.com/webdevops/helm-azure-tpl/cloudtpl/base"
+	"github.com/webdevops/helm-azure-tpl/pkg/engine/base"
 )
 
 type (

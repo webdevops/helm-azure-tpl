@@ -10,7 +10,7 @@ import (
 
 	"github.com/webdevops/go-common/log/slogger"
 
-	"github.com/webdevops/helm-azure-tpl/cloudtpl"
+	"github.com/webdevops/helm-azure-tpl/pkg/cloudtpl"
 )
 
 type (
@@ -21,6 +21,10 @@ type (
 		TemplateBaseDir string
 		Logger          *slogger.Logger
 	}
+)
+
+var (
+	cloudTpl *cloudtpl.CloudTpl
 )
 
 func (f *TemplateFile) Lint() {
@@ -61,13 +65,16 @@ func (f *TemplateFile) parse(buf *strings.Builder) {
 	ctx := f.Context
 	contextLogger := f.Logger
 
-	azureTemplate := cloudtpl.New(ctx, opts.AzureTpl, contextLogger)
-	azureTemplate.SetAzureTokenCredentialCallback(getAzureTokenCredential)
-	azureTemplate.SetUserAgent(UserAgent + gitTag)
-	azureTemplate.SetLintMode(lintMode)
-	azureTemplate.SetTemplateRootPath(f.TemplateBaseDir)
-	azureTemplate.SetTemplateRelPath(filepath.Dir(f.SourceFile))
-	err := azureTemplate.Parse(f.SourceFile, templateData, buf)
+	if cloudTpl == nil {
+		cloudTpl = cloudtpl.New(ctx, opts.AzureTpl, contextLogger)
+		cloudTpl.SetAzureTokenCredentialCallback(getAzureTokenCredential)
+		cloudTpl.SetUserAgent(UserAgent + gitTag)
+		cloudTpl.SetLintMode(lintMode)
+	}
+
+	cloudTpl.SetTemplateRootPath(f.TemplateBaseDir)
+	cloudTpl.SetTemplateRelPath(filepath.Dir(f.SourceFile))
+	err := cloudTpl.Parse(f.SourceFile, templateData, buf)
 	if err != nil {
 		f.Logger.Error(err.Error())
 		os.Exit(1)

@@ -3,7 +3,7 @@ package helm
 import (
 	textTemplate "text/template"
 
-	"github.com/webdevops/helm-azure-tpl/cloudtpl/base"
+	"github.com/webdevops/helm-azure-tpl/pkg/engine/base"
 )
 
 type (

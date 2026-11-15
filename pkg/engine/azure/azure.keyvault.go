@@ -13,8 +13,8 @@ import (
 	"github.com/webdevops/go-common/azuresdk/cloudconfig"
 	"github.com/webdevops/go-common/utils/to"
 
-	"github.com/webdevops/helm-azure-tpl/cloudtpl/models"
-	"github.com/webdevops/helm-azure-tpl/cloudtpl/summary"
+	"github.com/webdevops/helm-azure-tpl/pkg/engine/azure/models"
+	"github.com/webdevops/helm-azure-tpl/pkg/summary"
 )
 
 // buildAzKeyVaulUrl builds Azure KeyVault url in case value is supplied as KeyVault name only

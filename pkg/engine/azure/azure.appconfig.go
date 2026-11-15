@@ -12,7 +12,7 @@ import (
 	"github.com/webdevops/go-common/azuresdk/cloudconfig"
 	"github.com/webdevops/go-common/utils/to"
 
-	"github.com/webdevops/helm-azure-tpl/cloudtpl/models"
+	"github.com/webdevops/helm-azure-tpl/pkg/engine/azure/models"
 )
 
 // buildAppConfigUrl builds Azure AppConfig url in case value is supplied as AppConfig name only

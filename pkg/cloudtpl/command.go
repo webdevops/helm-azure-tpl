@@ -13,11 +13,11 @@ import (
 	"github.com/Masterminds/sprig/v3"
 	"github.com/webdevops/go-common/log/slogger"
 
-	"github.com/webdevops/helm-azure-tpl/cloudtpl/azure"
-	"github.com/webdevops/helm-azure-tpl/cloudtpl/base"
-	"github.com/webdevops/helm-azure-tpl/cloudtpl/general"
-	"github.com/webdevops/helm-azure-tpl/cloudtpl/helm"
-	"github.com/webdevops/helm-azure-tpl/cloudtpl/models"
+	"github.com/webdevops/helm-azure-tpl/pkg/config"
+	"github.com/webdevops/helm-azure-tpl/pkg/engine/azure"
+	"github.com/webdevops/helm-azure-tpl/pkg/engine/base"
+	"github.com/webdevops/helm-azure-tpl/pkg/engine/general"
+	"github.com/webdevops/helm-azure-tpl/pkg/engine/helm"
 )
 
 const (
@@ -33,7 +33,7 @@ type (
 	}
 )
 
-func New(ctx context.Context, opts models.Opts, logger *slogger.Logger) *CloudTpl {
+func New(ctx context.Context, opts config.Opts, logger *slogger.Logger) *CloudTpl {
 	e := &CloudTpl{
 		BaseEngine: &base.BaseEngine{
 			Logger: logger,
