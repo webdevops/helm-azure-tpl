@@ -29,10 +29,7 @@ const (
 type (
 	CloudTpl struct {
 		*base.BaseEngine
-
 		engines map[int]base.Engine
-
-		opts models.Opts
 	}
 )
 
@@ -42,7 +39,7 @@ func New(ctx context.Context, opts models.Opts, logger *slogger.Logger) *CloudTp
 			Logger: logger,
 			Opts:   opts,
 			Ctx:    ctx,
-			Cache: globalCache,
+			Cache:  globalCache,
 		},
 		engines: map[int]base.Engine{},
 	}
