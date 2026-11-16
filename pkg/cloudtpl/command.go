@@ -59,6 +59,11 @@ func (e *CloudTpl) init() {
 	}
 }
 
+// Reset resets all settings for the next run
+func (e *CloudTpl) Reset() {
+	e.CurrentPath = ""
+}
+
 // SetUserAgent sets user agent for clients
 func (e *CloudTpl) SetUserAgent(val string) {
 	e.UserAgent = val

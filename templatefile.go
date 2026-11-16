@@ -72,6 +72,7 @@ func (f *TemplateFile) parse(buf *strings.Builder) {
 		cloudTpl.SetLintMode(lintMode)
 	}
 
+	cloudTpl.Reset()
 	cloudTpl.SetTemplateRootPath(f.TemplateBaseDir)
 	cloudTpl.SetTemplateRelPath(filepath.Dir(f.SourceFile))
 	err := cloudTpl.Parse(f.SourceFile, templateData, buf)
