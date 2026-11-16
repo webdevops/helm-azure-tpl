@@ -5,8 +5,9 @@ import (
 	"encoding/json"
 	textTemplate "text/template"
 
-	"github.com/patrickmn/go-cache"
 	"github.com/webdevops/go-common/log/slogger"
+
+	"github.com/webdevops/helm-azure-tpl/pkg/cache"
 
 	"github.com/webdevops/helm-azure-tpl/pkg/config"
 )
@@ -31,7 +32,22 @@ type (
 	}
 )
 
-// lintResult checks if lint mode is active and returns example value
+func (e *BaseEngine) Clone() *BaseEngine {
+	return &BaseEngine{
+		Ctx:       e.Ctx,
+		Cache:     e.Cache,
+		Logger:    e.Logger,
+		UserAgent: e.UserAgent,
+		Opts:      e.Opts,
+		LintMode:  e.LintMode,
+
+		TemplateRootPath: e.TemplateRootPath,
+		TemplateRelPath:  e.TemplateRelPath,
+		CurrentPath:      e.CurrentPath,
+	}
+}
+
+// LintResult checks if lint mode is active and returns example value
 func (e *BaseEngine) LintResult() (interface{}, bool) {
 	if e.LintMode {
 		return nil, true

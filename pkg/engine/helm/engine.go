@@ -17,6 +17,7 @@ func New(base *base.BaseEngine) *HelmEngine {
 	ret := HelmEngine{
 		BaseEngine: base,
 	}
+	ret.Cache = ret.Cache.Sub("helm")
 	return &ret
 }
 

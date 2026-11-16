@@ -25,6 +25,7 @@ func New(base *base.BaseEngine) *GeneralEngine {
 	ret := GeneralEngine{
 		BaseEngine: base,
 	}
+	ret.Cache = ret.Cache.Sub("general")
 	return &ret
 }
 

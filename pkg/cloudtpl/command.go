@@ -52,10 +52,10 @@ func New(ctx context.Context, opts config.Opts, logger *slogger.Logger) *CloudTp
 
 func (e *CloudTpl) init() {
 	e.engines = map[int]base.Engine{
-		EngineGeneral:    general.New(e.BaseEngine),
-		EngineHelm:       helm.New(e.BaseEngine),
-		EngineAzure:      azure.New(e.BaseEngine),
-		EngineKubernetes: k8s.New(e.BaseEngine),
+		EngineGeneral:    general.New(e.BaseEngine.Clone()), // nolint:staticcheck // want to make obvious what we're cloning here
+		EngineHelm:       helm.New(e.BaseEngine.Clone()),    // nolint:staticcheck // want to make obvious what we're cloning here
+		EngineAzure:      azure.New(e.BaseEngine.Clone()),   // nolint:staticcheck // want to make obvious what we're cloning here
+		EngineKubernetes: k8s.New(e.BaseEngine.Clone()),     // nolint:staticcheck // want to make obvious what we're cloning here
 	}
 }
 

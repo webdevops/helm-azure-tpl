@@ -36,6 +36,7 @@ func New(base *base.BaseEngine) *AzureEngine {
 	ret := AzureEngine{
 		BaseEngine: base,
 	}
+	ret.Cache = ret.Cache.Sub("azure")
 	return &ret
 }
 

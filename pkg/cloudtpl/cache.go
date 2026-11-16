@@ -1,9 +1,7 @@
 package cloudtpl
 
 import (
-	"time"
-
-	"github.com/patrickmn/go-cache"
+	"github.com/webdevops/helm-azure-tpl/pkg/cache"
 )
 
 var (
@@ -11,5 +9,5 @@ var (
 )
 
 func init() {
-	globalCache = cache.New(15*time.Minute, 1*time.Minute)
+	globalCache = cache.New()
 }
