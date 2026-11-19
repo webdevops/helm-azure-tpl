@@ -18,6 +18,7 @@ import (
 	"github.com/webdevops/helm-azure-tpl/pkg/engine/azure"
 	"github.com/webdevops/helm-azure-tpl/pkg/engine/base"
 	"github.com/webdevops/helm-azure-tpl/pkg/engine/general"
+	"github.com/webdevops/helm-azure-tpl/pkg/engine/hashicorp"
 	"github.com/webdevops/helm-azure-tpl/pkg/engine/helm"
 	"github.com/webdevops/helm-azure-tpl/pkg/engine/k8s"
 )
@@ -28,6 +29,7 @@ const (
 	EngineAzure
 	EngineAws
 	EngineKubernetes
+	EngineHashicorp
 )
 
 type (
@@ -54,11 +56,12 @@ func New(ctx context.Context, opts config.Opts, logger *slogger.Logger) *CloudTp
 
 func (e *CloudTpl) init() {
 	e.engines = map[int]base.Engine{
-		EngineGeneral:    general.New(e.BaseEngine.Clone()), // nolint:staticcheck // want to make obvious what we're cloning here
-		EngineHelm:       helm.New(e.BaseEngine.Clone()),    // nolint:staticcheck // want to make obvious what we're cloning here
-		EngineAzure:      azure.New(e.BaseEngine.Clone()),   // nolint:staticcheck // want to make obvious what we're cloning here
-		EngineAws:        aws.New(e.BaseEngine.Clone()),     // nolint:staticcheck // want to make obvious what we're cloning here
-		EngineKubernetes: k8s.New(e.BaseEngine.Clone()),     // nolint:staticcheck // want to make obvious what we're cloning here
+		EngineGeneral:    general.New(e.BaseEngine.Clone()),   // nolint:staticcheck // want to make obvious what we're cloning here
+		EngineHelm:       helm.New(e.BaseEngine.Clone()),      // nolint:staticcheck // want to make obvious what we're cloning here
+		EngineAzure:      azure.New(e.BaseEngine.Clone()),     // nolint:staticcheck // want to make obvious what we're cloning here
+		EngineAws:        aws.New(e.BaseEngine.Clone()),       // nolint:staticcheck // want to make obvious what we're cloning here
+		EngineKubernetes: k8s.New(e.BaseEngine.Clone()),       // nolint:staticcheck // want to make obvious what we're cloning here
+		EngineHashicorp:  hashicorp.New(e.BaseEngine.Clone()), // nolint:staticcheck // want to make obvious what we're cloning here
 	}
 }
 
