@@ -28,7 +28,7 @@ func (e *AzureEngine) mgUserByUserPrincipalName(userPrincipalName string) (inter
 				)),
 			},
 		}
-		result, err := e.msGraphClient().ServiceClient().Users().Get(e.Ctx, requestOpts)
+		result, err := e.MsGraphClient().ServiceClient().Users().Get(e.Ctx, requestOpts)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to query MsGraph user: %w`, err)
 		}
@@ -59,7 +59,7 @@ func (e *AzureEngine) mgUserList(filter string) (interface{}, error) {
 
 	cacheKey := e.GenerateCacheKey(`mgUserList`, filter)
 	return e.CacheResult(cacheKey, func() (interface{}, error) {
-		result, err := e.msGraphClient().ServiceClient().Users().Get(e.Ctx, nil)
+		result, err := e.MsGraphClient().ServiceClient().Users().Get(e.Ctx, nil)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to query MsGraph users: %w`, err)
 		}
@@ -74,7 +74,7 @@ func (e *AzureEngine) mgUserList(filter string) (interface{}, error) {
 }
 
 func (e *AzureEngine) mgUserCreateListFromResult(result models.UserCollectionResponseable) (list []interface{}, err error) {
-	pageIterator, pageIteratorErr := msgraphcore.NewPageIterator[models.Userable](result, e.msGraphClient().RequestAdapter(), models.CreateUserCollectionResponseFromDiscriminatorValue)
+	pageIterator, pageIteratorErr := msgraphcore.NewPageIterator[models.Userable](result, e.MsGraphClient().RequestAdapter(), models.CreateUserCollectionResponseFromDiscriminatorValue)
 	if pageIteratorErr != nil {
 		return list, pageIteratorErr
 	}

@@ -126,8 +126,8 @@ func (e *AzureEngine) getAzureTokenCredential() *azcore.TokenCredential {
 	return e.azureTokenCredential
 }
 
-// azureClient creates on-demand azure armclient and returns it
-func (e *AzureEngine) azureClient() *armclient.ArmClient {
+// AzureClient creates on-demand azure armclient and returns it
+func (e *AzureEngine) AzureClient() *armclient.ArmClient {
 	var err error
 
 	if e.clients.azure == nil {
@@ -143,12 +143,12 @@ func (e *AzureEngine) azureClient() *armclient.ArmClient {
 	return e.clients.azure
 }
 
-// msGraphClient creates on-demand azure msgraph and returns it
-func (e *AzureEngine) msGraphClient() *msgraphclient.MsGraphClient {
+// MsGraphClient creates on-demand azure msgraph and returns it
+func (e *AzureEngine) MsGraphClient() *msgraphclient.MsGraphClient {
 	var err error
 	if e.clients.msGraph == nil {
 		// ensure azureclient init
-		e.azureClient()
+		e.AzureClient()
 
 		e.clients.msGraph, err = msgraphclient.NewMsGraphClientFromEnvironment(e.Logger.Slog(), msgraphclient.WithCred(e.getAzureTokenCredential()))
 		if err != nil {
@@ -184,7 +184,7 @@ func (e *AzureEngine) fetchAzureResource(resourceID string, apiVersion string) (
 		return val, nil
 	}
 
-	client, err := armresources.NewClient(resourceInfo.Subscription, e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
+	client, err := armresources.NewClient(resourceInfo.Subscription, e.AzureClient().GetCred(), e.AzureClient().NewArmClientOptions())
 	if err != nil {
 		return nil, err
 	}

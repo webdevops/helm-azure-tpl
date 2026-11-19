@@ -25,7 +25,7 @@ func (e *AzureEngine) azPublicIpAddress(resourceID string) (interface{}, error) 
 			return nil, fmt.Errorf(`unable to parse Azure resourceID '%v': %w`, resourceID, err)
 		}
 
-		client, err := armnetwork.NewPublicIPAddressesClient(resourceInfo.Subscription, e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
+		client, err := armnetwork.NewPublicIPAddressesClient(resourceInfo.Subscription, e.AzureClient().GetCred(), e.AzureClient().NewArmClientOptions())
 		if err != nil {
 			return nil, err
 		}
@@ -54,7 +54,7 @@ func (e *AzureEngine) azPublicIpPrefixAddressPrefix(resourceID string) (interfac
 			return nil, fmt.Errorf(`unable to parse Azure resourceID '%v': %w`, resourceID, err)
 		}
 
-		client, err := armnetwork.NewPublicIPPrefixesClient(resourceInfo.Subscription, e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
+		client, err := armnetwork.NewPublicIPPrefixesClient(resourceInfo.Subscription, e.AzureClient().GetCred(), e.AzureClient().NewArmClientOptions())
 		if err != nil {
 			return nil, err
 		}
@@ -83,7 +83,7 @@ func (e *AzureEngine) azVirtualNetworkAddressPrefixes(resourceID string) (interf
 			return nil, fmt.Errorf(`unable to parse Azure resourceID '%v': %w`, resourceID, err)
 		}
 
-		client, err := armnetwork.NewVirtualNetworksClient(resourceInfo.Subscription, e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
+		client, err := armnetwork.NewVirtualNetworksClient(resourceInfo.Subscription, e.AzureClient().GetCred(), e.AzureClient().NewArmClientOptions())
 		if err != nil {
 			return nil, err
 		}
@@ -115,7 +115,7 @@ func (e *AzureEngine) azVirtualNetworkSubnetAddressPrefixes(resourceID string, s
 			return nil, fmt.Errorf(`unable to parse Azure resourceID '%v': %w`, resourceID, err)
 		}
 
-		client, err := armnetwork.NewVirtualNetworksClient(resourceInfo.Subscription, e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
+		client, err := armnetwork.NewVirtualNetworksClient(resourceInfo.Subscription, e.AzureClient().GetCred(), e.AzureClient().NewArmClientOptions())
 		if err != nil {
 			return nil, err
 		}

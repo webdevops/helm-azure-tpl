@@ -22,7 +22,7 @@ func (e *AzureEngine) azManagedClusterUserCredentials(resourceID string) (interf
 			return nil, fmt.Errorf(`unable to parse Azure resourceID '%v': %w`, resourceID, err)
 		}
 
-		client, err := armcontainerservice.NewManagedClustersClient(resourceInfo.Subscription, e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
+		client, err := armcontainerservice.NewManagedClustersClient(resourceInfo.Subscription, e.AzureClient().GetCred(), e.AzureClient().NewArmClientOptions())
 		if err != nil {
 			return nil, fmt.Errorf(`failed to create ManagedCluster client for cluster "%v": %w`, resourceID, err)
 		}

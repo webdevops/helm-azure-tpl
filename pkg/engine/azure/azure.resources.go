@@ -39,7 +39,7 @@ func (e *AzureEngine) azResourceList(scope string, opts ...string) (interface{},
 			return nil, fmt.Errorf(`unable to parse Azure resourceID '%v': %w`, scope, err)
 		}
 
-		client, err := armresources.NewClient(scopeInfo.Subscription, e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
+		client, err := armresources.NewClient(scopeInfo.Subscription, e.AzureClient().GetCred(), e.AzureClient().NewArmClientOptions())
 		if err != nil {
 			return nil, err
 		}

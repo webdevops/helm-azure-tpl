@@ -23,7 +23,7 @@ func (e *AzureEngine) azEventHubListByNamespace(resourceID string) (interface{},
 			return nil, fmt.Errorf(`failed to parse resourceID "%v": %w`, resourceID, err)
 		}
 
-		client, err := armeventhub.NewEventHubsClient(resourceInfo.Subscription, e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
+		client, err := armeventhub.NewEventHubsClient(resourceInfo.Subscription, e.AzureClient().GetCred(), e.AzureClient().NewArmClientOptions())
 		if err != nil {
 			return nil, fmt.Errorf(`failed to create EventHubsClient "%v": %w`, resourceID, err)
 		}

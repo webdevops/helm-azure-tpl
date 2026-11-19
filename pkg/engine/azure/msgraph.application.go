@@ -26,7 +26,7 @@ func (e *AzureEngine) mgApplicationByDisplayName(displayName string) (interface{
 					escapeMsGraphFilter(displayName))),
 			},
 		}
-		result, err := e.msGraphClient().ServiceClient().Applications().Get(e.Ctx, requestOpts)
+		result, err := e.MsGraphClient().ServiceClient().Applications().Get(e.Ctx, requestOpts)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to query MsGraph application: %w`, err)
 		}
@@ -57,7 +57,7 @@ func (e *AzureEngine) mgApplicationList(filter string) (interface{}, error) {
 
 	cacheKey := e.GenerateCacheKey(`mgApplicationList`, filter)
 	return e.CacheResult(cacheKey, func() (interface{}, error) {
-		result, err := e.msGraphClient().ServiceClient().Applications().Get(e.Ctx, nil)
+		result, err := e.MsGraphClient().ServiceClient().Applications().Get(e.Ctx, nil)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to query MsGraph applications: %w`, err)
 		}
@@ -72,7 +72,7 @@ func (e *AzureEngine) mgApplicationList(filter string) (interface{}, error) {
 }
 
 func (e *AzureEngine) mgApplicationCreateListFromResult(result models.ApplicationCollectionResponseable) (list []interface{}, err error) {
-	pageIterator, pageIteratorErr := msgraphcore.NewPageIterator[models.Applicationable](result, e.msGraphClient().RequestAdapter(), models.CreateApplicationCollectionResponseFromDiscriminatorValue)
+	pageIterator, pageIteratorErr := msgraphcore.NewPageIterator[models.Applicationable](result, e.MsGraphClient().RequestAdapter(), models.CreateApplicationCollectionResponseFromDiscriminatorValue)
 	if pageIteratorErr != nil {
 		return list, pageIteratorErr
 	}

@@ -65,7 +65,7 @@ func (e *AzureEngine) azRoleDefinitionList(scope string, filter ...string) (inte
 }
 
 func (e *AzureEngine) fetchAzureRoleDefinitions(scope string, filter string) ([]armauthorization.RoleDefinition, error) {
-	client, err := armauthorization.NewRoleDefinitionsClient(e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
+	client, err := armauthorization.NewRoleDefinitionsClient(e.AzureClient().GetCred(), e.AzureClient().NewArmClientOptions())
 	if err != nil {
 		return nil, err
 	}

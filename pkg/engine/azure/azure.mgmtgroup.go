@@ -19,7 +19,7 @@ func (e *AzureEngine) azManagementGroup(groupID string) (interface{}, error) {
 
 	cacheKey := e.GenerateCacheKey(`azManagementGroup`, groupID)
 	return e.CacheResult(cacheKey, func() (interface{}, error) {
-		client, err := armmanagementgroups.NewClient(e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
+		client, err := armmanagementgroups.NewClient(e.AzureClient().GetCred(), e.AzureClient().NewArmClientOptions())
 		if err != nil {
 			return nil, fmt.Errorf(`failed to create ManagementGroup "%v": %w`, groupID, err)
 		}
@@ -43,7 +43,7 @@ func (e *AzureEngine) azManagementGroupSubscriptionList(groupID string) (interfa
 
 	cacheKey := e.GenerateCacheKey(`azManagementGroupSubscriptionList`, groupID)
 	return e.CacheResult(cacheKey, func() (interface{}, error) {
-		client, err := armmanagementgroups.NewClient(e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
+		client, err := armmanagementgroups.NewClient(e.AzureClient().GetCred(), e.AzureClient().NewArmClientOptions())
 		if err != nil {
 			return nil, fmt.Errorf(`failed to create ManagementGroup "%v": %w`, groupID, err)
 		}

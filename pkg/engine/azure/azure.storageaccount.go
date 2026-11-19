@@ -25,7 +25,7 @@ func (e *AzureEngine) azStorageAccountAccessKeys(resourceID string) (interface{}
 			return nil, fmt.Errorf(`unable to parse Azure resourceID '%v': %w`, resourceID, err)
 		}
 
-		client, err := armstorage.NewAccountsClient(resourceInfo.Subscription, e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
+		client, err := armstorage.NewAccountsClient(resourceInfo.Subscription, e.AzureClient().GetCred(), e.AzureClient().NewArmClientOptions())
 		if err != nil {
 			return nil, err
 		}
@@ -54,10 +54,10 @@ func (e *AzureEngine) azStorageAccountContainerBlob(containerBlobUrl string) (in
 
 	cacheKey := e.GenerateCacheKey(`azStorageAccountContainerBlob`, containerBlobUrl)
 	return e.CacheResult(cacheKey, func() (interface{}, error) {
-		azblobOpts := azblob.ClientOptions{ClientOptions: *e.azureClient().NewAzCoreClientOptions()}
+		azblobOpts := azblob.ClientOptions{ClientOptions: *e.AzureClient().NewAzCoreClientOptions()}
 
 		storageAccountUrl := fmt.Sprintf("%s://%s", pathUrl.Scheme, pathUrl.Host)
-		client, err := azblob.NewClient(storageAccountUrl, e.azureClient().GetCred(), &azblobOpts)
+		client, err := azblob.NewClient(storageAccountUrl, e.AzureClient().GetCred(), &azblobOpts)
 		if err != nil {
 			return nil, err
 		}

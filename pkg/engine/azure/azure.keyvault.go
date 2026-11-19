@@ -26,7 +26,7 @@ func (e *AzureEngine) buildAzKeyVaulUrl(vaultUrl string) (string, error) {
 
 	// vault url generation (if only vault name is specified)
 	if !strings.HasPrefix(strings.ToLower(vaultUrl), "https://") {
-		switch cloudName := e.azureClient().GetCloudName(); cloudName {
+		switch cloudName := e.AzureClient().GetCloudName(); cloudName {
 		case cloudconfig.AzurePublicCloud:
 			vaultUrl = fmt.Sprintf(`https://%s.vault.azure.net`, vaultUrl)
 		case cloudconfig.AzureChinaCloud:
@@ -60,7 +60,7 @@ func (e *AzureEngine) azKeyVaultSecret(vaultUrl string, secretName string, opts 
 	}
 	cacheKey := e.GenerateCacheKey(`azKeyVaultSecret`, vaultUrl, secretName, strings.Join(opts, ";"))
 	return e.CacheResult(cacheKey, func() (interface{}, error) {
-		secretClient, err := azsecrets.NewClient(vaultUrl, e.azureClient().GetCred(), nil)
+		secretClient, err := azsecrets.NewClient(vaultUrl, e.AzureClient().GetCred(), nil)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to create keyvault client for vault "%v": %w`, vaultUrl, err)
 		}
@@ -139,7 +139,7 @@ func (e *AzureEngine) azKeyVaultSecretVersions(vaultUrl string, secretName strin
 	}
 	cacheKey := e.GenerateCacheKey(`azKeyVaultSecretHistory`, vaultUrl, secretName, strconv.Itoa(count))
 	return e.CacheResult(cacheKey, func() (interface{}, error) {
-		secretClient, err := azsecrets.NewClient(vaultUrl, e.azureClient().GetCred(), nil)
+		secretClient, err := azsecrets.NewClient(vaultUrl, e.AzureClient().GetCred(), nil)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to create keyvault client for vault "%v": %w`, vaultUrl, err)
 		}
@@ -230,7 +230,7 @@ func (e *AzureEngine) azKeyVaultSecretList(vaultUrl string, secretNamePattern st
 	}
 	cacheKey := e.GenerateCacheKey(`azKeyVaultSecretList`, vaultUrl)
 	list, err := e.CacheResult(cacheKey, func() (interface{}, error) {
-		secretClient, err := azsecrets.NewClient(vaultUrl, e.azureClient().GetCred(), nil)
+		secretClient, err := azsecrets.NewClient(vaultUrl, e.AzureClient().GetCred(), nil)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to create keyvault client for vault "%v": %w`, vaultUrl, err)
 		}

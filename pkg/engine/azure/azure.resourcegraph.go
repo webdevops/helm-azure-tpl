@@ -52,7 +52,7 @@ func (e *AzureEngine) azResourceGraphQuery(scope interface{}, query string) (int
 
 	cacheKey := e.GenerateCacheKey(`azResourceGraphQuery`, query, strings.Join(scopeList, ","))
 	return e.CacheResult(cacheKey, func() (interface{}, error) {
-		result, err := e.azureClient().ExecuteResourceGraphQuery(e.Ctx, query, resourceGraphOptions)
+		result, err := e.AzureClient().ExecuteResourceGraphQuery(e.Ctx, query, resourceGraphOptions)
 		if err != nil {
 			return nil, err
 		}

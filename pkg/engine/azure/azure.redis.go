@@ -24,7 +24,7 @@ func (e *AzureEngine) azRedisAccessKeys(resourceID string) (interface{}, error) 
 			return nil, fmt.Errorf(`unable to parse Azure resourceID '%v': %w`, resourceID, err)
 		}
 
-		client, err := armredis.NewClient(resourceInfo.Subscription, e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
+		client, err := armredis.NewClient(resourceInfo.Subscription, e.AzureClient().GetCred(), e.AzureClient().NewArmClientOptions())
 		if err != nil {
 			return nil, err
 		}

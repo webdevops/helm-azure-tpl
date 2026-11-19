@@ -41,7 +41,7 @@ func (e *AzureEngine) azSubscription(subscriptionID ...string) (interface{}, err
 
 	cacheKey := e.GenerateCacheKey(`azSubscription`, selectedSubscriptionId)
 	return e.CacheResult(cacheKey, func() (interface{}, error) {
-		client, err := armsubscriptions.NewClient(e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
+		client, err := armsubscriptions.NewClient(e.AzureClient().GetCred(), e.AzureClient().NewArmClientOptions())
 		if err != nil {
 			return nil, err
 		}
@@ -69,7 +69,7 @@ func (e *AzureEngine) azSubscriptionList() (interface{}, error) {
 
 	cacheKey := e.GenerateCacheKey(`azSubscriptionList`)
 	return e.CacheResult(cacheKey, func() (interface{}, error) {
-		client, err := armsubscriptions.NewClient(e.azureClient().GetCred(), e.azureClient().NewArmClientOptions())
+		client, err := armsubscriptions.NewClient(e.AzureClient().GetCred(), e.AzureClient().NewArmClientOptions())
 		if err != nil {
 			panic(err.Error())
 		}

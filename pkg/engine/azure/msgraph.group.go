@@ -25,7 +25,7 @@ func (e *AzureEngine) mgGroupByDisplayName(displayName string) (interface{}, err
 					escapeMsGraphFilter(displayName))),
 			},
 		}
-		result, err := e.msGraphClient().ServiceClient().Groups().Get(e.Ctx, requestOpts)
+		result, err := e.MsGraphClient().ServiceClient().Groups().Get(e.Ctx, requestOpts)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to query MsGraph group: %w`, err)
 		}
@@ -55,7 +55,7 @@ func (e *AzureEngine) mgGroupList(filter string) (interface{}, error) {
 	}
 	cacheKey := e.GenerateCacheKey(`mgGroupList`, filter)
 	return e.CacheResult(cacheKey, func() (interface{}, error) {
-		result, err := e.msGraphClient().ServiceClient().Groups().Get(e.Ctx, nil)
+		result, err := e.MsGraphClient().ServiceClient().Groups().Get(e.Ctx, nil)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to query MsGraph group: %w`, err)
 		}
@@ -71,7 +71,7 @@ func (e *AzureEngine) mgGroupList(filter string) (interface{}, error) {
 }
 
 func (e *AzureEngine) mgGroupCreateListFromResult(result models.GroupCollectionResponseable) (list []interface{}, err error) {
-	pageIterator, pageIteratorErr := msgraphcore.NewPageIterator[models.Groupable](result, e.msGraphClient().RequestAdapter(), models.CreateGroupCollectionResponseFromDiscriminatorValue)
+	pageIterator, pageIteratorErr := msgraphcore.NewPageIterator[models.Groupable](result, e.MsGraphClient().RequestAdapter(), models.CreateGroupCollectionResponseFromDiscriminatorValue)
 	if pageIteratorErr != nil {
 		return list, pageIteratorErr
 	}

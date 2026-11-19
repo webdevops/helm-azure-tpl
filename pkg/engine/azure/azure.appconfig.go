@@ -24,7 +24,7 @@ func (e *AzureEngine) buildAppConfigUrl(appConfigUrl string) (string, error) {
 
 	// vault url generation (if only vault name is specified)
 	if !strings.HasPrefix(strings.ToLower(appConfigUrl), "https://") {
-		switch cloudName := e.azureClient().GetCloudName(); cloudName {
+		switch cloudName := e.AzureClient().GetCloudName(); cloudName {
 		case cloudconfig.AzurePublicCloud:
 			appConfigUrl = fmt.Sprintf(`https://%s.azconfig.io`, appConfigUrl)
 		case cloudconfig.AzureChinaCloud:
@@ -58,7 +58,7 @@ func (e *AzureEngine) azAppConfigSetting(appConfigUrl string, settingName string
 	}
 	cacheKey := e.GenerateCacheKey(`azAppConfigSetting`, appConfigUrl, settingName, label)
 	return e.CacheResult(cacheKey, func() (interface{}, error) {
-		client, err := azappconfig.NewClient(appConfigUrl, e.azureClient().GetCred(), nil)
+		client, err := azappconfig.NewClient(appConfigUrl, e.AzureClient().GetCred(), nil)
 		if err != nil {
 			return nil, fmt.Errorf(`failed to create appconfig client for instance "%v": %w`, appConfigUrl, err)
 		}
