@@ -14,6 +14,7 @@ import (
 	"github.com/webdevops/go-common/log/slogger"
 
 	"github.com/webdevops/helm-azure-tpl/pkg/config"
+	"github.com/webdevops/helm-azure-tpl/pkg/engine/aws"
 	"github.com/webdevops/helm-azure-tpl/pkg/engine/azure"
 	"github.com/webdevops/helm-azure-tpl/pkg/engine/base"
 	"github.com/webdevops/helm-azure-tpl/pkg/engine/general"
@@ -25,6 +26,7 @@ const (
 	EngineGeneral int = iota
 	EngineHelm
 	EngineAzure
+	EngineAws
 	EngineKubernetes
 )
 
@@ -55,6 +57,7 @@ func (e *CloudTpl) init() {
 		EngineGeneral:    general.New(e.BaseEngine.Clone()), // nolint:staticcheck // want to make obvious what we're cloning here
 		EngineHelm:       helm.New(e.BaseEngine.Clone()),    // nolint:staticcheck // want to make obvious what we're cloning here
 		EngineAzure:      azure.New(e.BaseEngine.Clone()),   // nolint:staticcheck // want to make obvious what we're cloning here
+		EngineAws:        aws.New(e.BaseEngine.Clone()),     // nolint:staticcheck // want to make obvious what we're cloning here
 		EngineKubernetes: k8s.New(e.BaseEngine.Clone()),     // nolint:staticcheck // want to make obvious what we're cloning here
 	}
 }
