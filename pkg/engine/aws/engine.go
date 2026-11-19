@@ -29,8 +29,8 @@ func New(base *base.BaseEngine) *AwsEngine {
 
 func (e *AwsEngine) TxtFuncMap(tmpl *textTemplate.Template) textTemplate.FuncMap {
 	funcMap := textTemplate.FuncMap{
-		// General
-		`awsResource`: e.awsResource,
+		// Cloudcontrol
+		`awsCloudControlResource`:  e.awsCloudControlResource,
 
 		// SecretsManager
 		`awsSecretsManagerSecret`:         e.awsSecretsManagerSecret,
