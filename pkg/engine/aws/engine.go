@@ -32,6 +32,11 @@ func (e *AwsEngine) TxtFuncMap(tmpl *textTemplate.Template) textTemplate.FuncMap
 		// Cloudcontrol
 		`awsCloudControlResource`: e.awsCloudControlResource,
 
+		// EC2
+		`awsEc2Vpc`:    e.awsEc2Vpc,
+		`awsEc2Subnet`: e.awsEc2Subnet,
+		`awsEc2Ipam`:   e.awsEc2Ipam,
+
 		// SecretsManager
 		`awsSecretsManagerSecret`:         e.awsSecretsManagerSecret,
 		`awsSecretsManagerSecretVersions`: e.awsSecretsManagerSecretVersions,
