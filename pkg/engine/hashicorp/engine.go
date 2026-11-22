@@ -29,8 +29,8 @@ func New(base *base.BaseEngine) *HashicorpEngine {
 func (e *HashicorpEngine) TxtFuncMap(tmpl *textTemplate.Template) textTemplate.FuncMap {
 	funcMap := textTemplate.FuncMap{
 		// Vault
-		`HashicorpVaultSecret`: e.HashicorpVaultSecret,
-		`HashicorpVaultGet`:    e.HashicorpVaultGet,
+		`hashicorpVaultSecret`: e.hashicorpVaultSecret,
+		`hashicorpVaultGet`:    e.hashicorpVaultGet,
 	}
 
 	return funcMap

@@ -5,13 +5,13 @@ import (
 	"log/slog"
 )
 
-// HashicorpVaultSecret fetches an secret from Hashicorp vault
-func (e *HashicorpEngine) HashicorpVaultSecret(secretPath string) (interface{}, error) {
-	return e.HashicorpVaultGet("secret", secretPath)
+// hashicorpVaultSecret fetches an secret from Hashicorp vault
+func (e *HashicorpEngine) hashicorpVaultSecret(secretPath string) (interface{}, error) {
+	return e.hashicorpVaultGet("secret", secretPath)
 }
 
 // hashicorpVaultGet fetches an object from Hashicorp vault
-func (e *HashicorpEngine) HashicorpVaultGet(mountPath, secretPath string) (interface{}, error) {
+func (e *HashicorpEngine) hashicorpVaultGet(mountPath, secretPath string) (interface{}, error) {
 	e.Logger.Info(`fetching Hashicorp Vault item`, slog.String("mountPath", mountPath), slog.String("secretPath", secretPath))
 
 	if val, enabled := e.LintResult(); enabled {
