@@ -17,6 +17,7 @@ import (
 	"github.com/webdevops/helm-azure-tpl/pkg/engine/aws"
 	"github.com/webdevops/helm-azure-tpl/pkg/engine/azure"
 	"github.com/webdevops/helm-azure-tpl/pkg/engine/base"
+	"github.com/webdevops/helm-azure-tpl/pkg/engine/gcp"
 	"github.com/webdevops/helm-azure-tpl/pkg/engine/general"
 	"github.com/webdevops/helm-azure-tpl/pkg/engine/hashicorp"
 	"github.com/webdevops/helm-azure-tpl/pkg/engine/helm"
@@ -28,6 +29,7 @@ const (
 	EngineHelm
 	EngineAzure
 	EngineAws
+	EngineGcp
 	EngineKubernetes
 	EngineHashicorp
 )
@@ -60,6 +62,7 @@ func (e *CloudTpl) init() {
 		EngineHelm:       helm.New(e.BaseEngine.Clone()),      // nolint:staticcheck // want to make obvious what we're cloning here
 		EngineAzure:      azure.New(e.BaseEngine.Clone()),     // nolint:staticcheck // want to make obvious what we're cloning here
 		EngineAws:        aws.New(e.BaseEngine.Clone()),       // nolint:staticcheck // want to make obvious what we're cloning here
+		EngineGcp:        gcp.New(e.BaseEngine.Clone()),       // nolint:staticcheck // want to make obvious what we're cloning here
 		EngineKubernetes: k8s.New(e.BaseEngine.Clone()),       // nolint:staticcheck // want to make obvious what we're cloning here
 		EngineHashicorp:  hashicorp.New(e.BaseEngine.Clone()), // nolint:staticcheck // want to make obvious what we're cloning here
 	}
